@@ -65,8 +65,8 @@ U_BYTE GLCD_ReadData(void);
 //      DATA DEFINITIONS                                                      //
 //============================================================================//
 
-static U_BYTE __attribute__((__section__(".lcddatasection"))) m_nLcdDataPort;
-static U_BYTE __attribute__((__section__(".lcdcommmandection")))m_nLcdCommandPort;
+U_BYTE __attribute__((__section__(".lcddatasection"))) m_nLcdDataPort;
+U_BYTE __attribute__((__section__(".lcdcommandsection")))m_nLcdCommandPort;
 
 U_BYTE m_nPixelData[MAX_PIXEL_ROW][MAX_PIXEL_COL_STORAGE];
 U_BYTE m_nPixelBackground[MAX_PIXEL_ROW][MAX_PIXEL_COL_STORAGE];
