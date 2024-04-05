@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Source file for UI_BooleanField.c.
-*       @file       Uphole/src/UI_DataFields/UI_BooleanField.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Source file for UI_BooleanField.c.
+ *       @file       Uphole/src/UI_DataFields/UI_BooleanField.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,26 +25,26 @@
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static char* BooleanFormat(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+static char* BooleanFormat(MENU_ITEM * item)
 {
 	return GetTxtString(item->boolean.value ? TXT_ON : TXT_OFF);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void BooleanDisplay(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void BooleanDisplay(MENU_ITEM * item)
 {
-	FRAME* frame = (FRAME*) item->valueFrame;
+	FRAME *frame = (FRAME*) item->valueFrame;
 
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	if (!item->editing)
 	{
 		item->boolean.value = item->boolean.GetValue();
 	}
-	if(item->boolean.value == 1)
+	if (item->boolean.value == 1)
 	{
 		UI_DisplayStringLeftJustified("On", &frame->area);
 	}
@@ -53,21 +52,20 @@ void BooleanDisplay(MENU_ITEM* item)
 	{
 		UI_DisplayStringLeftJustified("Off", &frame->area);
 	}
-//	UI_DisplayStringLeftJustified(BooleanFormat(item), &frame->area);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void BooleanBeginEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void BooleanBeginEdit(MENU_ITEM * item)
 {
 	item->editing = true;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static RECT* GetFieldRect(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+static RECT* GetFieldRect(MENU_ITEM * item)
 {
 	static RECT rect;
 	U_INT16 xSize = UI_GetTextSize(BooleanFormat(item));
@@ -80,17 +78,17 @@ static RECT* GetFieldRect(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void BooleanHighlight(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void BooleanHighlight(MENU_ITEM * item)
 {
 	UI_InvertLCDArea(GetFieldRect(item), LCD_FOREGROUND_PAGE);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void BooleanFinishEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void BooleanFinishEdit(MENU_ITEM * item)
 {
 	item->boolean.SetValue(item->boolean.value);
 	item->editing = false;
@@ -98,9 +96,9 @@ void BooleanFinishEdit(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void BooleanKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
+ *       @details
+ *******************************************************************************/
+void BooleanKeyPressed(MENU_ITEM * item, BUTTON_VALUE keyPressed)
 {
 	switch (keyPressed)
 	{
@@ -119,7 +117,7 @@ void BooleanKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
 		case BUTTON_PERIOD:
 		case BUTTON_DASH:
 			break;
-		// numeric keys
+			// numeric keys
 		default:
 			break;
 	}

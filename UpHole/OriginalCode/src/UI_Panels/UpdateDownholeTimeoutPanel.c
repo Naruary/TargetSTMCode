@@ -41,12 +41,12 @@ PANEL UpdateDownholeTimeout = { GetEmptyMenu, 0, UpdateDownholeTimeoutPaint };
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void UpdateDownholeTimeoutPaint(TAB_ENTRY* tab)
+static void UpdateDownholeTimeoutPaint(TAB_ENTRY * tab)
 {
-    TabWindowPaint(tab);
-    ShowOperationStatusMessage("Unable to Update Downhole");
+	TabWindowPaint(tab);
+	ShowOperationStatusMessage("Unable to Update Downhole");
 }

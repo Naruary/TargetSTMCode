@@ -67,17 +67,17 @@ const TAB_ENTRY DataTab = {&TabFrame2, TXT_DATA, ShowTab, GetDataMenuItem, GetDa
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static PANEL* Data_CurrentState(void)
 {
-	if(getSurveyEditPanelActive())
+	if (getSurveyEditPanelActive())
 	{
 		return &SurveyEditPanel;
 	}
 	else
 	{
-		switch(NVRAM_data.loggingState)
+		switch (NVRAM_data.loggingState)
 		{
 			default:
 				break;
@@ -89,25 +89,26 @@ static PANEL* Data_CurrentState(void)
 				return &DeleteLastSurveySuccessPanel;
 				break;
 			case DELETE_LAST_SURVEY_NOT_SUCCESS:
-				return &DeleteLastSurveyNotSuccessPanel;;
+				return &DeleteLastSurveyNotSuccessPanel;
+				;
 				break;
 			case BRANCH_POINT_SET_SUCCESS:
 				return &BranchPointSetSuccessPanel;
 				break;
 			case DELETE_LAST_SURVEY:
-				if(getDeleteLastSurveyDecisionPanelActive())
+				if (getDeleteLastSurveyDecisionPanelActive())
 				{
 					return &DeleteLastSurvey_DecisionPanel;
 				}
 				break;
 			case BRANCH_POINT_SET:
-				if(getBranchPointSetDecisionPanelActive())
+				if (getBranchPointSetDecisionPanelActive())
 				{
 					return &BranchPointSet_DecisionPanel;
 				}
 				break;
 			case COMPASS_LOGGING:
-				if(getCompassDecisionPanelActive())
+				if (getCompassDecisionPanelActive())
 				{
 					return &Compass_DecisionPanel;
 				}
@@ -118,11 +119,11 @@ static PANEL* Data_CurrentState(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static MENU_ITEM* GetDataMenuItem(TAB_ENTRY* tab, U_BYTE index)
+ *       @details
+ *******************************************************************************/
+static MENU_ITEM* GetDataMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
-	if(index < tab->MenuSize(tab))
+	if (index < tab->MenuSize(tab))
 	{
 		return Data_CurrentState()->MenuItem(index);
 	}
@@ -130,25 +131,27 @@ static MENU_ITEM* GetDataMenuItem(TAB_ENTRY* tab, U_BYTE index)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_BYTE GetDataMenuSize(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static U_BYTE GetDataMenuSize(TAB_ENTRY * tab)
 {
+	tab = tab;
+
 	return Data_CurrentState()->MenuCount;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void DataTabPaint(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void DataTabPaint(TAB_ENTRY * tab)
 {
 	Data_CurrentState()->Paint(tab);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void DataTabShow(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void DataTabShow(TAB_ENTRY * tab)
 {
 	if (Data_CurrentState()->Show)
 	{
@@ -158,9 +161,9 @@ static void DataTabShow(TAB_ENTRY* tab)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void DataTabRefresh(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void DataTabRefresh(TAB_ENTRY * tab)
 {
 	if (Data_CurrentState()->TimerElapsed)
 	{
@@ -169,9 +172,9 @@ static void DataTabRefresh(TAB_ENTRY* tab)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void DataKeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+ *       @details
+ *******************************************************************************/
+void DataKeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
 	if (Data_CurrentState()->KeyPressed)
 	{

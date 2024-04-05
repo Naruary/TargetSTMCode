@@ -1,12 +1,12 @@
 /*******************************************************************************
-*       @brief      Implementation file for the serial flash chip
-*       @file       Uphole/src/SerialFlash/csvparser.c
-*       @date       October 2023
-*       @copyright  COPYRIGHT (c) 2023 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*This code for Adesto AT45DB321, 32Mb (512/528 x 8192)Serial Flash Chip
-*******************************************************************************/
+ *       @brief      Implementation file for the serial flash chip
+ *       @file       Uphole/src/SerialFlash/csvparser.c
+ *       @date       October 2023
+ *       @copyright  COPYRIGHT (c) 2023 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *This code for Adesto AT45DB321, 32Mb (512/528 x 8192)Serial Flash Chip
+ *******************************************************************************/
 #include "csvparser.h"
 #include <stdbool.h>
 #include <string.h>
@@ -39,8 +39,6 @@
 #include "UI_JobTab.h"
 #include "RecordManager.h"
 #include "FlashMemory.h"
-// #include "ClearAllHoleSuccessPanel.h"
-// #include "UI_RecordDataPanel.h"
 #include "csvparser.h"
 
 #ifndef _CSVFILE
@@ -53,45 +51,57 @@ CSVFileStructure FileStructure;
 #define MAX_COLUMN_LENGTH 50   // each column can have up to 50 characters
 
 // Function to initialize a CSVRowStructure object
-void init_CSVRowStructure(CSVRowStructure* row) {
-    memset(row, 0, sizeof(CSVRowStructure)); // Reset all fields
+void init_CSVRowStructure(CSVRowStructure * row)
+{
+	memset(row, 0, sizeof(CSVRowStructure)); // Reset all fields
 }
 
 // Function to add a character to the line parser
-void add_char_to_line_parser(CSVRowStructure* row, char character) {
-    if (row->current_column >= MAX_COLUMNS) {
-        // Too many columns.
-        return;
-    }
+void add_char_to_line_parser(CSVRowStructure * row, char character)
+{
+	if (row->current_column >= MAX_COLUMNS)
+	{
+		// Too many columns.
+		return;
+	}
 
-    if (character != ',') { // Assuming ',' as the delimiter
-        char* currentItem = row->items[row->current_column];
-        int currentLength = strlen(currentItem);
+	if (character != ',')
+	{ // Assuming ',' as the delimiter
+		char *currentItem = row->items[row->current_column];
+		int currentLength = strlen(currentItem);
 
-        if (currentLength >= (MAX_COLUMN_LENGTH - 1)) {
-            // The column is too long.
-            return;
-        }
+		if (currentLength >= (MAX_COLUMN_LENGTH - 1))
+		{
+			// The column is too long.
+			return;
+		}
 
-        currentItem[currentLength] = character; // Append the character
-        currentItem[currentLength + 1] = '\0';  // Null-terminate the string
-    } else {  // If the character is the delimiter
-        row->current_column++;  // Move to the next column
-    }
+		currentItem[currentLength] = character; // Append the character
+		currentItem[currentLength + 1] = '\0';  // Null-terminate the string
+	}
+	else
+	{  // If the character is the delimiter
+		row->current_column++;  // Move to the next column
+	}
 }
-CSVFileStructure *getFileStructure(void){
-    return &FileStructure;
+CSVFileStructure* getFileStructure(void)
+{
+	return &FileStructure;
 }
 
-CSVRowStructure* parseCsvString(const char* line, CSVRowStructure* row) {
-    init_CSVRowStructure(row);
-    while (*line) {
-        add_char_to_line_parser(row, *line);
-        line++;
-    }
-    return row;
+CSVRowStructure* parseCsvString(const char * line, CSVRowStructure * row)
+{
+	init_CSVRowStructure(row);
+	while (*line)
+	{
+		add_char_to_line_parser(row, *line);
+		line++;
+	}
+	return row;
 }
-bool verify_csv_header(const char* line) {
-    const char* expected_header = "BoreName, Rec#, PipeLength, Azimuth, Pitch, Roll, X, Y, Z, Gamma, TimeStamp, WeekDay, Month, Day, Year, DefltPipeLeDeclin, DesiredAz, ToolFace, Statcode, #Branch, #BoreHole";
-    return strcmp(line, expected_header) == 0;
+bool verify_csv_header(const char * line)
+{
+	const char *expected_header =
+			"BoreName, Rec#, PipeLength, Azimuth, Pitch, Roll, X, Y, Z, Gamma, TimeStamp, WeekDay, Month, Day, Year, DefltPipeLeDeclin, DesiredAz, ToolFace, Statcode, #Branch, #BoreHole";
+	return strcmp(line, expected_header) == 0;
 }

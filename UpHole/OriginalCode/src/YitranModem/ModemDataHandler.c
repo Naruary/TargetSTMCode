@@ -26,64 +26,64 @@ static MODEM_PARAM_KEY_VALUE_PAIR_STRUCT m_nParamKeyValuePair;
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-BOOL computeCheckSum(MODEM_COMMAND_STRUCT *pData, BOOL bStoreCheckSum)
+BOOL computeCheckSum(MODEM_COMMAND_STRUCT * pData, BOOL bStoreCheckSum)
 {
-    U_BYTE  nCalcSum = 0;
-    U_INT32 nDataByteCount = 0;
+	U_BYTE nCalcSum = 0;
+	U_INT32 nDataByteCount = 0;
 
-    nCalcSum = pData->nLength.AsBytes[0];
-    nCalcSum += pData->nLength.AsBytes[1];
-    nCalcSum += pData->nType;
-    nCalcSum += pData->nOpCode;
+	nCalcSum = pData->nLength.AsBytes[0];
+	nCalcSum += pData->nLength.AsBytes[1];
+	nCalcSum += pData->nType;
+	nCalcSum += pData->nOpCode;
 
-    if(pData->nLength.AsHalfWord > 2)
-    {
-        while(nDataByteCount < (pData->nLength.AsHalfWord - 2))
-        {
-            nCalcSum += pData->nData[nDataByteCount++];
-        }
-    }
+	if (pData->nLength.AsHalfWord > 2)
+	{
+		while (nDataByteCount < (U_INT32)(pData->nLength.AsHalfWord - 2))
+		{
+			nCalcSum += pData->nData[nDataByteCount++];
+		}
+	}
 
-    if(bStoreCheckSum)
-    {
-        pData->nCheckSum = nCalcSum;
-    }
+	if (bStoreCheckSum)
+	{
+		pData->nCheckSum = nCalcSum;
+	}
 
-    return (nCalcSum == pData->nCheckSum);
+	return (nCalcSum == pData->nCheckSum);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void GetParamKeyValuePair(MODEM_PARAM_KEY_VALUE_PAIR_STRUCT *pParam)
+void GetParamKeyValuePair(MODEM_PARAM_KEY_VALUE_PAIR_STRUCT * pParam)
 {
-    pParam->key = m_nParamKeyValuePair.key;
-    pParam->value = m_nParamKeyValuePair.value;
+	pParam->key = m_nParamKeyValuePair.key;
+	pParam->value = m_nParamKeyValuePair.value;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetParamKey(U_INT16 nKey)
 {
-    m_nParamKeyValuePair.key = nKey;
-    m_nParamKeyValuePair.value = 0;
+	m_nParamKeyValuePair.key = nKey;
+	m_nParamKeyValuePair.value = 0;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetParamValue(U_INT16 nValue)
 {
-    m_nParamKeyValuePair.value = nValue;
+	m_nParamKeyValuePair.value = nValue;
 }

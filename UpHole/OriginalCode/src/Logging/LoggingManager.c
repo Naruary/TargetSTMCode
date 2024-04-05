@@ -1,17 +1,16 @@
 /*******************************************************************************
-*       @brief      This file contains the implementation for the Logging
-*                   Manager.
-*       @file       Uphole/src/Logging/LoggingManager.c
-*       @date       December 2015
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      This file contains the implementation for the Logging
+ *                   Manager.
+ *       @file       Uphole/src/Logging/LoggingManager.c
+ *       @date       December 2015
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,18 +53,18 @@ static TIME_LR uploadFinished;
 static TIME_LR startUploadWaitStart;
 static TIME_LR lastRequest;
 static TIME_LR requestTimeout;
-static TIME_LR startLoggingWaitStart = (TIME_LR)0;
-static TIME_LR stopLoggingRequestStart = (TIME_LR)0;
-static TIME_LR tYitranConnected = (TIME_LR)0;
+static TIME_LR startLoggingWaitStart = (TIME_LR) 0;
+static TIME_LR stopLoggingRequestStart = (TIME_LR) 0;
+static TIME_LR tYitranConnected = (TIME_LR) 0;
 static BOOL connected = false;
 static BOOL bFirstAttempt = true;
 // Variable for dynamic polling rate; 2 or 10 sec.  Default to faster poll rate.
-static TIME_LR tChangeTab = (TIME_LR)0;
-static TIME_LR tChangePanel = (TIME_LR)0;
+static TIME_LR tChangeTab = (TIME_LR) 0;
+static TIME_LR tChangePanel = (TIME_LR) 0;
 static BOOL CheckShotLock = false;
 static BOOL SaveCheckShot = false;
-TIME_LR tUpdateDownHole = (TIME_LR)0;
-TIME_LR tUpdateDownHoleSuccess = (TIME_LR)0;
+TIME_LR tUpdateDownHole = (TIME_LR) 0;
+TIME_LR tUpdateDownHoleSuccess = (TIME_LR) 0;
 volatile BOOL Shift_Button_Pushed_Flag = 0;
 
 //============================================================================//
@@ -73,9 +72,6 @@ volatile BOOL Shift_Button_Pushed_Flag = 0;
 //============================================================================//
 
 static void WaitForFlashWrite();
-//static void WaitingForLogging(void);
-//static void StopLogging(void);
-//static void StartingUpload(void);
 static void WaitingForUpload(void);
 static void RecordRetrieved(void);
 static void WaitingForUploadComplete(void);
@@ -106,8 +102,8 @@ void CompassStopLogging(void);
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_StartLogging(void)
 {
 	RECORD_OpenLoggingFile();
@@ -116,37 +112,36 @@ void LoggingManager_StartLogging(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_TakeSurvey(void)
 {
 	// requested survey capture.. wait for resulting capture in next state
 	// if survey tool not valid yet, do not go to waiting.
 	lastRequest = ElapsedTimeLowRes(0);
 	TargProtocol_RequestSensorData_log();
-//	SetLoggingState(WAITING_FOR_SURVEY);   // whs 7Jan2022 activated it then deactivated it didn't fix it
 	RepaintNow(&HomeFrame);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_SetConnected(BOOL isConnected)
 {
 	connected = isConnected;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 BOOL LoggingManager_IsConnected(void)  // whs 10Dec2021 yitran modem is connnected to downhole
 {
 	return connected;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_RecordNotReceived(void)
 {
 	RECORD_NextMergeRecord();
@@ -154,10 +149,11 @@ void LoggingManager_RecordNotReceived(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void LoggingManager_RecordRetrieved(STRUCT_RECORD_DATA* record, U_INT16 gamma)
+ *       @details
+ *******************************************************************************/
+void LoggingManager_RecordRetrieved(STRUCT_RECORD_DATA * record, U_INT16 gamma)
 {
+	gamma = gamma;
 	RECORD_TakeSurveyMWD();
 	SetLoggingState(SURVEY_REQUEST_SUCCESS);
 	tChangePanel = ElapsedTimeLowRes(0);
@@ -166,8 +162,8 @@ void LoggingManager_RecordRetrieved(STRUCT_RECORD_DATA* record, U_INT16 gamma)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_UploadComplete(void)
 {
 	WaitForFlashWrite();
@@ -176,46 +172,46 @@ void LoggingManager_UploadComplete(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_Stop(void)
 {
 	SetLoggingState(STOP_LOGGING);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_Reset(void)
 {
-	TAB_ENTRY* tab = GetActiveTab();
+	TAB_ENTRY *tab = GetActiveTab();
 	SetLoggingState(NOT_LOGGING);
 	tab->Show(tab);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_StartUpload(void)
 {
 	SetLoggingState(STARTING_UPLOAD);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_StartedHole(void)
 {
 	SetLoggingState(WAITING_FOR_LOGGING);
 }
 
 /*******************************************************************************
-*       @details
-        LoggingManager() - Called every 10 ms in main.c line 230
-*******************************************************************************/
+ *       @details
+ LoggingManager() - Called every 10 ms in main.c line 230
+ *******************************************************************************/
 void LoggingManager(void)
 {
-	static TIME_LR tGetSurveyData = (TIME_LR)0;
+	static TIME_LR tGetSurveyData = (TIME_LR) 0;
 	switch (GetLoggingState())
 	{
 		default:
@@ -276,7 +272,6 @@ void LoggingManager(void)
 		case WAITING_FOR_UPLOAD:
 			WaitingForUpload();
 			break;
-//		case RECORD_RETRIEVED:
 		case RECORD_NOT_RETRIEVED:
 			RecordRetrieved();
 			break;
@@ -347,37 +342,32 @@ void LoggingManager(void)
 			CompassStopLogging();
 			break;
 	}
-	// if we are set to automatically read the check data every second, do so
-//	if(GetCheckShot())
+
+	if (tGetSurveyData == (TIME_LR) 0)
 	{
-		if(tGetSurveyData == (TIME_LR)0)
-		{
-			tGetSurveyData = ElapsedTimeLowRes(0);
-			TargProtocol_RequestAllData();
-		} // whs 7Jan 2022 below was 1000 made it 2000.  This was a major fix !!!!
-                  // Caused  a periodic lockup 
-		else if(ElapsedTimeLowRes(tGetSurveyData) > (NVRAM_data.nCheckPollTime_sec*1000) ) 
-		{ // the system would periodically lockup using the 1000 setting
-			tGetSurveyData = (TIME_LR)0;
-		}
+		tGetSurveyData = ElapsedTimeLowRes(0);
+		TargProtocol_RequestAllData();
+	} // whs 7Jan 2022 below was 1000 made it 2000.  This was a major fix !!!!
+	  // Caused  a periodic lockup
+	else if (ElapsedTimeLowRes(tGetSurveyData) > ((U_INT32)NVRAM_data.nCheckPollTime_sec * 1000))
+	{ // the system would periodically lockup using the 1000 setting
+		tGetSurveyData = (TIME_LR) 0;
 	}
 	// Edited by walter to to solve issues explained in Oct 5th 2015 day log
-	if(ElapsedTimeLowRes(tYitranConnected) >= (THREE_SECOND + ONE_SECOND + THREE_QUARTER_SECOND + TWO_HUNDRED_MILLI_SECONDS) || bFirstAttempt)
-	{   // whs 7Jan2022 I added one second ... didn't fix intermit ... removed it
+	if (ElapsedTimeLowRes(tYitranConnected) >= (THREE_SECOND + ONE_SECOND + THREE_QUARTER_SECOND + TWO_HUNDRED_MILLI_SECONDS) || bFirstAttempt)
+	{
 		LoggingManager_SetConnected(false);
 		bFirstAttempt = false;
 	}
 	else
 	{
-//		m_nPollTime = FIVE_SECOND;
-		LoggingManager_SetConnected(true);// whs 10Dec2021 very important Logging Manager is "Yitran On" status 
-                // whs 10Dec2021 I think all LoggingManager stuff should be called Yitran power status.
+		LoggingManager_SetConnected(true);   // whs 10Dec2021 very important Logging Manager is "Yitran On" status
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void WaitForFlashWrite()
 {
 	RecordDataPanelInit();
@@ -386,32 +376,26 @@ static void WaitForFlashWrite()
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void WaitingForUpload(void)
 {
 	if (ElapsedTimeLowRes(lastRequest) > 500)
 	{
-//		if(GetCheckShot())
-//		{
-			SetLoggingState(UPLOAD_COMPLETE);
-//		}
+		SetLoggingState(UPLOAD_COMPLETE);
 		RepaintNow(&HomeFrame);
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void RecordRetrieved(void)
 {
 	if (ElapsedTimeLowRes(lastRequest) > 50)
 	{
 		lastRequest = ElapsedTimeLowRes(0);
-		if (RECORD_RequestNextMergeRecord())
-		{
-		}
-		else
+		if (!RECORD_RequestNextMergeRecord())
 		{
 			LoggingManager_UploadComplete();
 		}
@@ -419,8 +403,8 @@ static void RecordRetrieved(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void WaitingForUploadComplete(void)
 {
 	if (ElapsedTimeLowRes(uploadFinished) > 1000)
@@ -431,13 +415,13 @@ static void WaitingForUploadComplete(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void WaitingForSurvey(void)
 {
 	// Increased to 2000 from 1000 since it was not allowing us to take
 	// consective survey without refreshing of the check survey.
-        // whs 7Jan2022 made 4000 to 5000 not work
+	// whs 7Jan2022 made 4000 to 5000 not work
 	if (ElapsedTimeLowRes(lastRequest) > 4000)
 	{
 		requestTimeout = ElapsedTimeLowRes(0);
@@ -447,8 +431,8 @@ static void WaitingForSurvey(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void SurveyRequestTimeout(void)
 {
 	if (ElapsedTimeLowRes(requestTimeout) > 5000)
@@ -459,8 +443,8 @@ static void SurveyRequestTimeout(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LoggingManager_StartConnectedTimer(void)
 {
 	bFirstAttempt = false;
@@ -468,8 +452,8 @@ void LoggingManager_StartConnectedTimer(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void StartNewHoleSelected(void)
 {
 	if (ElapsedTimeLowRes(GetStartNewHoleTimer()) > 2000)
@@ -481,8 +465,8 @@ void StartNewHoleSelected(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void StartNewHoleSuccess(void)
 {
 	if (ElapsedTimeLowRes(tChangePanel) > 5000)
@@ -494,8 +478,8 @@ void StartNewHoleSuccess(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ClearAllHoleSelected(void)
 {
 	if (ElapsedTimeLowRes(GetClearAllHoleTimer()) > 2000)
@@ -507,8 +491,8 @@ void ClearAllHoleSelected(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ClearAllHoleSuccess(void)
 {
 	if (ElapsedTimeLowRes(tChangePanel) > 5000)
@@ -520,8 +504,8 @@ void ClearAllHoleSuccess(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ChangeToParamTab(void)
 {
 	if (ElapsedTimeLowRes(tChangeTab) > 1000)
@@ -532,19 +516,19 @@ void ChangeToParamTab(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void DeleteLastSurveySelected(void)
 {
-	if((GetLoggingState() != (DELETE_LAST_SURVEY_SUCCESS || DELETE_LAST_SURVEY_NOT_SUCCESS)) && (!getDeleteLastSurveyDecisionPanelActive()))
+	if ((GetLoggingState() != (DELETE_LAST_SURVEY_SUCCESS || DELETE_LAST_SURVEY_NOT_SUCCESS)) && (!getDeleteLastSurveyDecisionPanelActive()))
 	{
 		LoggingManager_StartUpload();
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void BranchPointSetSelected(void)
 {
 	if ((GetLoggingState() != BRANCH_POINT_SET_SUCCESS) && (!getBranchPointSetDecisionPanelActive()))
@@ -554,19 +538,19 @@ void BranchPointSetSelected(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void UplaodCompleted(void)
 {
 	SetLoggingState(WAITING_FOR_LOGGING);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void UpdateDownholeSelected(void)
 {
-	if(ElapsedTimeLowRes(tUpdateDownHole) > 2000)
+	if (ElapsedTimeLowRes(tUpdateDownHole) > 2000)
 	{
 		requestTimeout = ElapsedTimeLowRes(0);
 		SetLoggingState(UPDATE_DOWNHOLE_FAILED);
@@ -575,11 +559,11 @@ void UpdateDownholeSelected(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void DownholeUpdateFailed(void)
 {
-	if(ElapsedTimeLowRes(requestTimeout) > 5000)
+	if (ElapsedTimeLowRes(requestTimeout) > 5000)
 	{
 		SetLoggingState(LOGGING);
 		PaintNow(&HomeFrame);
@@ -587,13 +571,12 @@ void DownholeUpdateFailed(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void WakeupDownhole(void)
 {
-	if(ElapsedTimeLowRes(GetUpdateDownHoleRequestTimer()) >= 4000)
+	if (ElapsedTimeLowRes(GetUpdateDownHoleRequestTimer()) >= 4000)
 	{
-//		TargProtocol_RequestUpdateDownholeSettings();
 		SetLoggingState(UPDATE_DOWNHOLE);
 		tUpdateDownHole = ElapsedTimeLowRes(0);
 		RepaintNow(&HomeFrame);
@@ -601,11 +584,11 @@ void WakeupDownhole(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void DownholeUpdateSuccess(void)
 {
-	if(ElapsedTimeLowRes(tUpdateDownHoleSuccess) >= 5000)
+	if (ElapsedTimeLowRes(tUpdateDownHoleSuccess) >= 5000)
 	{
 		SetLoggingState(LOGGING);
 		PaintNow(&HomeFrame);
@@ -613,24 +596,24 @@ void DownholeUpdateSuccess(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void WaitingForDownhole(void)
 {
 	// used to take a survey, but now wait to turn off tone and return to logging
-	if(ElapsedTimeLowRes(GetWaitingForDownholeTimer()) >= TONE_POWERUP_SIGNAL_TIME)
+	if (ElapsedTimeLowRes(GetWaitingForDownholeTimer()) >= TONE_POWERUP_SIGNAL_TIME)
 	{
-	    tone_generator_setstate(false);
+		tone_generator_setstate(false);
 		SetLoggingState(LOGGING);
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void SurveyRequestSuccess(void)
 {
-	if(ElapsedTimeLowRes(tChangePanel) >= 3000)
+	if (ElapsedTimeLowRes(tChangePanel) >= 3000)
 	{
 		SetLoggingState(LOGGING);
 		RepaintNow(&HomeFrame);
@@ -638,11 +621,11 @@ void SurveyRequestSuccess(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void DeleteLastSurveySucess(void)
 {
-	if(ElapsedTimeLowRes(GetDeleteLastSurveyTimer()) >= 5000)
+	if (ElapsedTimeLowRes(GetDeleteLastSurveyTimer()) >= 5000)
 	{
 		LoggingManager_StartUpload();
 		RepaintNow(&WindowFrame);
@@ -650,11 +633,11 @@ void DeleteLastSurveySucess(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void DeleteLastSurveyNotSucess(void)
 {
-	if(ElapsedTimeLowRes(GetDeleteLastSurveyTimer()) >= 5000)
+	if (ElapsedTimeLowRes(GetDeleteLastSurveyTimer()) >= 5000)
 	{
 		LoggingManager_StartUpload();
 		RepaintNow(&WindowFrame);
@@ -662,27 +645,24 @@ void DeleteLastSurveyNotSucess(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void BranchPointSetSuccess(void)
 {
-	if(ElapsedTimeLowRes(GetBranchPointSetTimer()) >= 5000)
+	if (ElapsedTimeLowRes(GetBranchPointSetTimer()) >= 5000)
 	{
 		LoggingManager_StartUpload();
 		RepaintNow(&WindowFrame);
 	}
 }
 
-
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void CompassLogging(void)
 {
-	if(CheckShotLock == false)
+	if (CheckShotLock == false)
 	{
-//		SaveCheckShot = GetCheckShot(); // Save original state
-//		SetCheckShot(true); // turn on check shot
 		CheckShotLock = true; // Lock
 	}
 	LoggingManager_TakeSurvey();
@@ -691,20 +671,18 @@ void CompassLogging(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void CompassStopLogging(void)
 {
-	TAB_ENTRY* tab = GetActiveTab();
+	TAB_ENTRY *tab = GetActiveTab();
 	SetLoggingState(NOT_LOGGING);
 	tab->Show(tab);
-//	PaintNow(&HomeFrame);
-//	RepaintNow(&WindowFrame);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 BOOL GetSavedCheckShot(void)
 {
 	return SaveCheckShot;

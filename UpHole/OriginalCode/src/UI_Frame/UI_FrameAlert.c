@@ -1,17 +1,16 @@
 /*******************************************************************************
-*       @brief      Implementation file for the Home screen in its entirety and
-*                   for each individual quad.
-*       @file       Uphole/src/UI_Frame/UI_FrameAlert.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the Home screen in its entirety and
+ *                   for each individual quad.
+ *       @file       Uphole/src/UI_Frame/UI_FrameAlert.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdio.h>
 #include <stm32f4xx.h>
 #include "portable.h"
@@ -36,13 +35,13 @@
 //      FUNCTION PROTOTYPES                                                   //
 //============================================================================//
 
-static void drawAlertBorder(FRAME* frame);
+static void drawAlertBorder(FRAME * frame);
 
 //============================================================================//
 //      DATA DEFINITIONS                                                      //
 //============================================================================//
 
-static FRAME* m_nHiddenFrame;
+static FRAME *m_nHiddenFrame;
 static TXT_VALUES m_eAlertMessage;
 
 //============================================================================//
@@ -50,8 +49,8 @@ static TXT_VALUES m_eAlertMessage;
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
@@ -67,7 +66,7 @@ static TXT_VALUES m_eAlertMessage;
  ;   No.
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-void AlertFrameHandler(PERIODIC_EVENT *pEvent)
+void AlertFrameHandler(PERIODIC_EVENT * pEvent)
 {
 //	TAB_ENTRY* tab;
 
@@ -79,7 +78,6 @@ void AlertFrameHandler(PERIODIC_EVENT *pEvent)
 	switch (pEvent->Action.eActionType)
 	{
 		case PUSH:
-//			tab = GetActiveTab();
 			switch (pEvent->Action.nValue)
 			{
 				default:
@@ -88,8 +86,8 @@ void AlertFrameHandler(PERIODIC_EVENT *pEvent)
 					UI_SetActiveFrame(m_nHiddenFrame);
 					RepaintNow(&WindowFrame);
 					break;
-                case BUTTON_SHIFT:
-                	UI_SetActiveFrame(m_nHiddenFrame);
+				case BUTTON_SHIFT:
+					UI_SetActiveFrame(m_nHiddenFrame);
 					RepaintNow(&WindowFrame);
 					break;
 			}
@@ -100,19 +98,19 @@ void AlertFrameHandler(PERIODIC_EVENT *pEvent)
 			m_nHiddenFrame = UI_GetActiveFrame();
 			m_eAlertMessage = pEvent->Action.eMessage;
 			UI_SetActiveFrame(&AlertFrame);
-			AlertPaint((FRAME*)&AlertFrame);
+			AlertPaint((FRAME*) &AlertFrame);
 			BuzzerAlarm();
 			break;
 		case NO_ACTION:
 		default:
 			break;
-    }
+	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void AlertPaint(FRAME* thisFrame)
+ *       @details
+ *******************************************************************************/
+void AlertPaint(FRAME * thisFrame)
 {
 	UI_ClearLCDArea(&thisFrame->area, LCD_FOREGROUND_PAGE);
 
@@ -128,15 +126,15 @@ void AlertPaint(FRAME* thisFrame)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void drawAlertBorder(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+static void drawAlertBorder(FRAME * frame)
 {
 	U_BYTE nThickness = 5;
 	RECT thisRect;
 	memcpy(&thisRect, &frame->area, sizeof(RECT));
 
-	while(nThickness-- != 0)
+	while (nThickness-- != 0)
 	{
 		UI_DrawRectangle(thisRect, LCD_FOREGROUND_PAGE);
 		thisRect.ptTopLeft.nRow++;

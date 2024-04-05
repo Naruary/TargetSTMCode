@@ -18,6 +18,7 @@
 
 #include <stdbool.h>
 #include <stm32f4xx.h>
+#include "core_cmFunc.h"
 #include "portable.h"
 #include "adc.h"
 #include "board.h"
@@ -60,58 +61,41 @@ TIME_LR g_tIdleTimer;
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   main()
-;
-; Description:
-;   Initialize the system, launch the low priority background loop.
-;
-; Reentrancy:
-;   No
-;
-; Assumptions:
-;   This loop can take as long as it needs to complete.
-;
-;   At this stage the microcontroller clock setting is already configured,
-;   this is done through SystemInit() function which is called from startup
-;   file (startup_stm32f4xx.s) before the branch to the application main.
-;   To reconfigure the default setting of SystemInit() function, refer to
-;   system_stm32f4xx.c file
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   main()
+ ;
+ ; Description:
+ ;   Initialize the system, launch the low priority background loop.
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ; Assumptions:
+ ;   This loop can take as long as it needs to complete.
+ ;
+ ;   At this stage the microcontroller clock setting is already configured,
+ ;   this is done through SystemInit() function which is called from startup
+ ;   file (startup_stm32f4xx.s) before the branch to the application main.
+ ;   To reconfigure the default setting of SystemInit() function, refer to
+ ;   system_stm32f4xx.c file
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 int main(void)
 {
 	BOOL bGetEvent;
 	PERIODIC_EVENT periodicEvent;
 	U_INT16 nSleepCounter = 0;
-	PERIODIC_EVENT UI_ping_event = { {NO_FRAME, TIMER_ELAPSED}, TRIGGER_TIME_NOW};
+	PERIODIC_EVENT UI_ping_event =
+	{
+	{ NO_FRAME, TIMER_ELAPSED }, TRIGGER_TIME_NOW };
 
-//	__disable_interrupt();
+
 	// All interrupts have been disabled. All system initialization
 	// that requires interrupts be disabled can now be executed.
 
-//	StartIWDT();
-
-//	DBGMCU_Config(DBGMCU_SLEEP, ENABLE);
-//	DBGMCU_Config(DBGMCU_STANDBY, ENABLE);
-
-	//-------------------------------------------------------------
-	//
-	// Setup STM32 system (clock, PLL and Flash configuration)
-	// as well as all peripherals and other hardware items. This
-	// is generally all board related initialization.
-	//
-	//-------------------------------------------------------------
-	// Osc Init up to 168MHz was done by an ST library function.
-	// SystemInit().  It is called as part of Pre-main startup code.
-
-	// NVIC Configuration
-//	NVIC_Setup(); // does not exist any more
-
-//	KickWatchdog();
 
 	// Setup the RCC for general peripherals
 	setup_RCC();		// does not require the systick timer
@@ -151,25 +135,27 @@ int main(void)
 	// Initialize the SysTick (1ms) interrupt
 	//-------------------------------------------------------------
 	SysTick_Init();
-	//DAS TODO __enable_interrupt();
+	__enable_irq();
 	//-------------------------------------------------------------
 	// Detect serial flash, test it, and get our secure parameters
 	// does not require systick, but does use timer polling
 	//-------------------------------------------------------------
 	Serflash_read_DID_data();
 	// code from here on does require the systick timer
-	if(0)//!Serflash_test_device())
+	if (0)	//!Serflash_test_device())
 	{
-		while(1);// wait for watchdog to bite
+		while (1)
+			;	// wait for watchdog to bite
 	}
-	if(!Serflash_read_NV_Block())
+	if (!Serflash_read_NV_Block())
 	{
-		while(1);// wait for watchdog to bite
+		while (1)
+			;	// wait for watchdog to bite
 	}
 	//-------------------------------------------------------------
 	// check our NV data checksum, if fails, set NV values to defaults
 	//-------------------------------------------------------------
-	if(!FLASH_CheckTheNVChecksum())
+	if (!FLASH_CheckTheNVChecksum())
 	{
 		Set_NV_data_to_defaults();
 	}
@@ -177,34 +163,20 @@ int main(void)
 	// whether checksum is OK or not, check boundaries
 	//-------------------------------------------------------------
 	Check_NV_data_boundaries();
-     
-#if 0
-	if(!Serflash_read_Borehole_Block())
-	{
-		// wait for watchdog to bite
-		while(1);
-	}
-	if(!Serflash_read_Newhole_Block())
-	{
-		// wait for watchdog to bite
-		while(1);
-	}
-    // Non Volatile Parameters have been initialized. All initialization code that
-    // requires them can now be executed.
-#endif
+
 	InitPeriodicEvents();
 	KickWatchdog();
-        LCD_Init();
+	LCD_Init();
 	KickWatchdog();
 	UI_Initialize();
 	KickWatchdog();
 	InitModem();  // whs 5Jan202 time to remove this?
-    // Must be after NV Parameters are initialized!
-        VerifyRTC();
-    // SetWatchdogTimer(WDT_20MS_TIMEOUT_VALUE);  
+	// Must be after NV Parameters are initialized!
+	VerifyRTC();
+	// SetWatchdogTimer(WDT_20MS_TIMEOUT_VALUE);
 
-    while (1)
-    {
+	while (1)
+	{
 		KickWatchdog();
 		// simple timer based beeper on/off control
 		BuzzerHandler();
@@ -219,10 +191,9 @@ int main(void)
 		// mainly looks to process modem data
 		UART_ProcessRxData();
 		// the flags are created in the systimer interrupt
-		if(Ten_mS_tick_flag)
+		if (Ten_mS_tick_flag)
 		{
 			Ten_mS_tick_flag = 0;
-//			Keypad_StartCapture();
 			ModemManager();
 			if (UI_StartupComplete())
 			{
@@ -231,16 +202,14 @@ int main(void)
 				PCPORT_UPLOAD_StateMachine();
 			}
 		}
-		if(Hundred_mS_tick_flag)
+		if (Hundred_mS_tick_flag)
 		{
 			Hundred_mS_tick_flag = 0;
 			UpdateRTC();
 			LCD_Update();
 			Serflash_check_NV_Block();
-//			Serflash_check_Borehole_Block();
-//			Serflash_check_Newhole_Block();
 		}
-		if(Thousand_mS_tick_flag)
+		if (Thousand_mS_tick_flag)
 		{
 			WakeUpModemReset = 0;
 			Thousand_mS_tick_flag = 0;
@@ -248,22 +217,19 @@ int main(void)
 			{
 				// every second, slip a timer expire event into the stack..
 				// that will call the tab's appointed onesecond function.
-//				UI_ping_event = { {NO_FRAME, TIMER_ELAPSED}, TRIGGER_TIME_NOW};
 				AddPeriodicEvent(&UI_ping_event);
 				// make sure that no goofy values have been entered by the user
 				Check_NV_data_boundaries();
 			}
-			if(UI_KeyActivity())
+			if (UI_KeyActivity())
 			{
 				nSleepCounter = 0;
 				SetUIKeyPressEvent();
-				if(LCDStatus()== false)
+				if (LCDStatus() == false)
 				{
 					WakeUpModemReset = 1;
 					LCD_ON();
 					ModemDriver_Power(true);
-//					ModemManager();
-//					nModemManagerStateMachine = MODEM_HW_RESET;
 				}
 			}
 			else
@@ -273,23 +239,23 @@ int main(void)
 			// (current draw readings are with the linear regulator)
 			// current draw typ with backlight on 450mA
 			// current draw typ with backlight off 350mA
-			if(nSleepCounter == GetBacklightOnTime())
+			if (nSleepCounter == GetBacklightOnTime())
 			{
 				LCD_SetBacklight(false);
 			}
 			// current draw typ with display off 150mA
-			if(nSleepCounter == GetLCDOnTime())
+			if (nSleepCounter == GetLCDOnTime())
 			{
-                          GPIO_SetBits(LCD_POWER_PORT, LCD_POWER_PIN); // Set LCD_POWER_PIN high
-                          LCD_OFF();
+				GPIO_SetBits(LCD_POWER_PORT, LCD_POWER_PIN); // Set LCD_POWER_PIN high
+				LCD_OFF();
 			}
 			// current draw typ with modem off 80mA
-			if(nSleepCounter == (GetLCDOnTime()))// + 1200))
+			if (nSleepCounter == (GetLCDOnTime())) // + 1200))
 			{
 				ModemDriver_Power(false);
 			}
 			// current draw typ with sleeping enabled 30mA
-			if(nSleepCounter == (GetBacklightOnTime() + 6000))
+			if (nSleepCounter == (GetBacklightOnTime() + 6000))
 			{
 				nSleepCounter = 0;
 				SetUIKeyPressEvent();
@@ -299,52 +265,39 @@ int main(void)
 			}
 			GPIO_WriteBit(GPIOA, GPIO_Pin_0, Bit_SET);
 			ADC_Start();
-//// #if 0 whs 30Nov2021 Everything between here and 314 were notched out by ...Chris Eddy?
-//			if(TakeSurvey_Time_Out_Seconds >= 3)
-//			{
-//				TakeSurvey_Time_Out_Seconds = 0;
-//				if(SurveyTakenFlag == true)
-//				{
-//                                      TargProtocol_RequestSendGammaEnable(0);
-//					TargProtocol_SetSensorPowerState(false);
-//					SurveyTakenFlag = false;
-//				}
-//			}
-//// #endif  whs 30Nov2021 Everything between here and 303 was notched out by ...Chris Eddy? 
-//// system seems to work better when the above is active.   but took I it out again after much testing.  Diff is subtle
 		}
 		// manage the event stack for the UI
 		bGetEvent = GetNextPeriodicEvent(&periodicEvent);
-		if(bGetEvent)
+		if (bGetEvent)
 		{
-			if(periodicEvent.Action.eActionType != NO_ACTION)
+			if (periodicEvent.Action.eActionType != NO_ACTION)
 			{
 				ProcessPeriodicEvent(&periodicEvent);
-				if(periodicEvent.Action.eActionType != SCREEN)
+				if (periodicEvent.Action.eActionType != SCREEN)
 				{
-					g_tIdleTimer = ElapsedTimeLowRes((TIME_LR)0);
+					g_tIdleTimer = ElapsedTimeLowRes((TIME_LR) 0);
 				}
 			}
 		}
 	}
 
-    return -1;
+	return -1;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   setup_RCC()
-;
-; Description:
-;   Configures RCC elements for timers, GPIO and ADC
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   setup_RCC()
+ ;
+ ; Description:
+ ;   Configures RCC elements for timers, GPIO and ADC
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 static void setup_RCC(void)
 {
 	// Disable all peripherals that were used
@@ -360,7 +313,6 @@ static void setup_RCC(void)
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, DISABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, DISABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, DISABLE);
-	//RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, DISABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CCMDATARAMEN, DISABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CCMDATARAMEN, DISABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_ETH_MAC, DISABLE);
@@ -395,12 +347,9 @@ static void setup_RCC(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, DISABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, DISABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C3, DISABLE);
-	// RCC_APB1PeriphClockCmd(RCC_APB1Periph_FMPI2C1, DISABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, DISABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN2, DISABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, DISABLE);
-	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART7, DISABLE);
-	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART8, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, DISABLE);
@@ -410,13 +359,9 @@ static void setup_RCC(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SDIO, DISABLE);
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI4, DISABLE);
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM10, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM11, DISABLE);
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI5, DISABLE);
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI6, DISABLE);
 
 	//TODO Figure out all of the clock dividers here.
 

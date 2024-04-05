@@ -38,10 +38,7 @@
 
 // buffer data for serial communications
 serport_type port;
-BOOL AwakeTimePending = 0;
-BOOL SaveDataToLog_flag = false;
-U_INT16 AwakeTimeSetting = 0;
-U_INT16 RX_message_receptions = 0;
+
 
 typedef struct
 {
@@ -66,8 +63,6 @@ enum {
 static void clearTXbuffer(void);
 static void pushTXbuffer(U_BYTE someTXData, U_BYTE addtoChecksum);
 static void pushTXbuffer16(U_INT16 someTXData, U_BYTE addtoChecksum);
-//static void pushTXbufferi16(INT16 someTXData, U_BYTE addtoChecksum);
-//static void pushTXbuffer32(U_INT32 someTXData, U_BYTE addtoChecksum);
 static void TargProtocol_RequestSendDownholeAwakeTime(U_INT16 awakeTime);
 
 #define MAX_VERSION_LEN 7
@@ -137,8 +132,7 @@ void ProcessTargetRXMessage(U_BYTE *theData, U_INT16 nLength)
 			index += 2;
 			// get total running time in seconds, unsigned 32 (not sleep time)
 			index += 4;
-			// get the total awake time setting (target), u16
-			AwakeTimeSetting = GetUnsignedShort(&theData[index]);
+
 			index += 2;
 			// get the version string, 7 bytes includes null
 			pVersionString = (char *)&theData[index];
@@ -159,7 +153,6 @@ void ProcessTargetRXMessage(U_BYTE *theData, U_INT16 nLength)
 			checksum = ~checksum;
 			if(checksum == theData[index])
 			{
-	RX_message_receptions++;
 				SetSurveyCommsState(surveyCommsState); // whs 14dec2021
 				SetSurveyAzimuth(Azimuth);
 				SetSurveyPitch(Pitch);
@@ -170,8 +163,6 @@ void ProcessTargetRXMessage(U_BYTE *theData, U_INT16 nLength)
 				SetSurveyGamma(GammaData);
 				SetDownholeBatteryVoltage(BatteryVoltage);
 				SetDownholeSignalStrength(SignalStrength);
-//				SetDownholeTotalOnTime(TotalRunningTime);
-//				SetAwakeTimeSetting(AwakeTimeSetting);
 				SetDownholeSWVersion(pVersionString, MAX_VERSION_LEN);
 				SetDownholeSWDate(pDateString, DATE_STRING_LEN);
 				SetCurrentAwakeTime(CurrentOnTime);
@@ -194,7 +185,6 @@ void ProcessTargetRXMessage(U_BYTE *theData, U_INT16 nLength)
 			}
 			break;
 		default:
-//			loopy = message;
 			break;
 	}
 }
@@ -241,28 +231,7 @@ static void pushTXbuffer16(U_INT16 someTXData, U_BYTE addtoChecksum)
 	pushTXbuffer( (U_BYTE)(someTXData >> 8), addtoChecksum );
 }
 
-#if 0
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-static void pushTXbufferi16(INT16 someTXData, U_BYTE addtoChecksum)
-{
-	// order matches simple memcpy on the other end, match endian
-	pushTXbuffer( (U_BYTE)(someTXData & 0xFF), addtoChecksum );
-	pushTXbuffer( (U_BYTE)(someTXData >> 8), addtoChecksum );
-}
 
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-static void pushTXbuffer32(U_INT32 someTXData, U_BYTE addtoChecksum)
-{
-	pushTXbuffer( (U_BYTE)(someTXData & 0xFF), addtoChecksum );
-	pushTXbuffer( (U_BYTE)(someTXData >> 8), addtoChecksum );
-	pushTXbuffer( (U_BYTE)(someTXData >> 16), addtoChecksum );
-	pushTXbuffer( (U_BYTE)(someTXData >> 24), addtoChecksum );
-}
-#endif
 
 /*******************************************************************************
 *       @details
@@ -277,7 +246,6 @@ void TargProtocol_RequestAllData(void)
 	// now push the checksum that we built up
 	pushTXbuffer( getTXChecksum(), false );
 	Modem_MessageToSend(port.tx.buffer, port.tx.count);
-//	SaveDataToLog_flag = false;
 }
 
 /*******************************************************************************
@@ -288,9 +256,6 @@ void TargProtocol_RequestSensorData_log(void)
 	// converted.. we just log the data that is on the screen at the moment.
 	// then we setup a message to turn off sensors when done.
 	STRUCT_RECORD_DATA record;
-//	TargProtocol_RequestAllData();
-//	SaveDataToLog_flag = true;
-//	SaveDataToLog_flag = false;
 	SetSurveyTime(RTC_GetSeconds());
 	record.tSurveyTimeStamp = RTC_GetSeconds();
 	RTC_GetDate(RTC_Format_BIN, &record.date);
@@ -354,8 +319,6 @@ void TargProtocol_RequestSendGammaEnable(BOOL bState)
 
 void SetAwakeTimeTarget(INT16 aTime)
 {
-	AwakeTimePending = 1;
-	AwakeTimeSetting = aTime;
 	TargProtocol_RequestSendDownholeAwakeTime(aTime);
 }
 

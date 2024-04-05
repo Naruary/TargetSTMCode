@@ -67,172 +67,170 @@ PANEL ChangePipeLength_DecisionPanel = {ChangePipeLength_Decision_Menu, sizeof(C
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void setChangePipeLengthDecisionPanelActive(BOOL bFlag)
 {
-    ChangePipeLength_DecisionPanelActive = bFlag;
+	ChangePipeLength_DecisionPanelActive = bFlag;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL getChangePipeLengthDecisionPanelActive(void)
 {
-    return ChangePipeLength_DecisionPanelActive;
+	return ChangePipeLength_DecisionPanelActive;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void ChangePipeLength_Decision_Paint(TAB_ENTRY* tab)
+static void ChangePipeLength_Decision_Paint(TAB_ENTRY * tab)
 {
-    ChangePipeLength_Decision_Show(tab);
-    TabWindowPaint(tab);
-    //GroupBoxPaint(&surveyGroup);
-    ShowChangePipeLengthDecisionMessage("Are you sure. Change Pipe Length?");
-    ShowChangePipeLengthInfoMessage("Edit Pipe Length for next survey.", "Remember: DO NOT RESTART Uphole box","until the next survey is taken.");
+	ChangePipeLength_Decision_Show(tab);
+	TabWindowPaint(tab);
+	ShowChangePipeLengthDecisionMessage("Are you sure. Change Pipe Length?");
+	ShowChangePipeLengthInfoMessage("Edit Pipe Length for next survey.", "Remember: DO NOT RESTART Uphole box", "until the next survey is taken.");
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void ChangePipeLength_Decision_Show(TAB_ENTRY* tab)
+static void ChangePipeLength_Decision_Show(TAB_ENTRY * tab)
 {
-    MENU_ITEM* item = tab->MenuItem(tab, 0);
-    UI_SetActiveFrame(item->labelFrame);
-    SetActiveLabelFrame(item->labelFrame->eID);
+	MENU_ITEM *item = tab->MenuItem(tab, 0);
+	UI_SetActiveFrame(item->labelFrame);
+	SetActiveLabelFrame(item->labelFrame->eID);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void ChangePipeLength_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void ChangePipeLength_Decision_KeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-    switch(key)
-    {
+	tab = tab;
+	switch (key)
+	{
 		default:
 			break;
-        case BUTTON_DASH:
-        {
-            setChangePipeLengthDecisionPanelActive(false);
-            RepaintNow(&WindowFrame);
-            break;
-        }
-    }
+		case BUTTON_DASH:
+		{
+			setChangePipeLengthDecisionPanelActive(false);
+			RepaintNow(&WindowFrame);
+			break;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void ChangePipeLength_Decision_TimerElapsed(TAB_ENTRY* tab)
+static void ChangePipeLength_Decision_TimerElapsed(TAB_ENTRY * tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 static MENU_ITEM* ChangePipeLength_Decision_Menu(U_BYTE index)
 {
-    return &ChangePipeLength_DecisionMenu[index];
+	return &ChangePipeLength_DecisionMenu[index];
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void Yes_ChangePipeLength_Decision(MENU_ITEM* item)
+static void Yes_ChangePipeLength_Decision(MENU_ITEM * item)
 {
-    setChangePipeLengthDecisionPanelActive(false);
-    setEnterNewPipeLengthPanelActive(true);
-    //RECORD_InitNewHole();
-    //SetLoggingState(START_NEW_HOLE);
-    //tCallChangePipeLength = ElapsedTimeLowRes(0);
-    RepaintNow(&WindowFrame);
+	item = item;
+	setChangePipeLengthDecisionPanelActive(false);
+	setEnterNewPipeLengthPanelActive(true);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void No_ChangePipeLength_Decision(MENU_ITEM* item)
+static void No_ChangePipeLength_Decision(MENU_ITEM * item)
 {
-    if(ManualChangePipeLengthFlag)
-    {
-      setChangePipeLengthDecisionPanelActive(false);
-      setEnterSurveyPanelActive(true);
-      ManualChangePipeLengthFlag = false;
-      RepaintNow(&WindowFrame);
-    }
-    else
-    {
-    //RECORD_InitBranchParam();
-    setChangePipeLengthDecisionPanelActive(false);
-    SetLoggingState(LOGGING);
-    RepaintNow(&WindowFrame);
-    SetActiveLabelFrame(LABEL2);
-    }
+	item = item;
+	if (ManualChangePipeLengthFlag)
+	{
+		setChangePipeLengthDecisionPanelActive(false);
+		setEnterSurveyPanelActive(true);
+		ManualChangePipeLengthFlag = false;
+		RepaintNow(&WindowFrame);
+	}
+	else
+	{
+		setChangePipeLengthDecisionPanelActive(false);
+		SetLoggingState(LOGGING);
+		RepaintNow(&WindowFrame);
+		SetActiveLabelFrame(LABEL2);
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 TIME_LR GetChangePipeLengthTimer(void)
 {
-  return tCallChangePipeLength;
+	return tCallChangePipeLength;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowChangePipeLengthDecisionMessage(char* message)
+void ShowChangePipeLengthDecisionMessage(char * message)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message, &area);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowChangePipeLengthInfoMessage(char* message1, char* message2, char* message3)
+void ShowChangePipeLengthInfoMessage(char * message1, char * message2, char * message3)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message1, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
-    UI_DisplayStringCentered(message2, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
-    UI_DisplayStringCentered(message3, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message1, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
+	UI_DisplayStringCentered(message2, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
+	UI_DisplayStringCentered(message3, &area);
 }

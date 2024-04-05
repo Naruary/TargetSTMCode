@@ -41,8 +41,6 @@ static U_BYTE GetJobMenuSize(TAB_ENTRY* tab);
 static void JobTabPaint(TAB_ENTRY* tab);
 static void JobTabMakeRequest(TAB_ENTRY* tab);
 static void JobTabShow(TAB_ENTRY* tab);
-//void ShowJobTabInfoMessage(char* message1, char* message2, char* message3);
-//static void ShowStatusMessageTabJob(char* message);
 ANGLE_TIMES_TEN GetCorrectToolFaceValue(void);
 //============================================================================//
 //      DATA DECLARATIONS                                                     //
@@ -79,51 +77,54 @@ static MENU_ITEM menu[] =
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static MENU_ITEM* GetJobMenuItem(TAB_ENTRY* tab, U_BYTE index)
+ *       @details
+ *******************************************************************************/
+static MENU_ITEM* GetJobMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
 	if (index < tab->MenuSize(tab))
 	{
 		return &menu[index];
 	}
-	return NULL ;
+	return NULL;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_BYTE GetJobMenuSize(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static U_BYTE GetJobMenuSize(TAB_ENTRY * tab)
 {
+	tab = tab;
+
 	return MENU_SIZE;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void JobTabPaint(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void JobTabPaint(TAB_ENTRY * tab)
 {
 	char text[100];
 
 	TabWindowPaint(tab);
-        
-	if (((float)GetToolFaceValue()/10.0f) > 360.0f)     
+
+	if (((float) GetToolFaceValue() / 10.0f) > 360.0f)
 	{   // the above line and below .. if else statement was added 19Nov2019 whs
-        snprintf(text, 100, "%.1f",((double)GetToolFaceValue()/10.0f) - 360.0f);
+		snprintf(text, 100, "%.1f", ((double) GetToolFaceValue() / 10.0f) - 360.0f);
 	}
 	else
 	{   //previously only the below line was here before 19Nov2019 whs
-		snprintf(text, 100, "%.1f",(double)GetToolFaceValue()/10.0f);
+		snprintf(text, 100, "%.1f", (double) GetToolFaceValue() / 10.0f);
 	}   // without the added statements the Uphole Job Tab LCD would show > 360 degrees
-//	ShowStatusMessageTabJobLocate(text, (nMenuCount * 15)+4 );
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void JobTabMakeRequest(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void JobTabMakeRequest(TAB_ENTRY * tab)
 {
-	MENU_ITEM* time = &menu[0];
+	tab = tab;
+
+	MENU_ITEM *time = &menu[0];
 	if ((!time->editing) && (UI_GetActiveFrame()->eID != ALERT_FRAME))
 	{
 		RepaintNow(time->valueFrame);
@@ -131,35 +132,21 @@ static void JobTabMakeRequest(TAB_ENTRY* tab)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void JobTabShow(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void JobTabShow(TAB_ENTRY * tab)
 {
+	tab = tab;
+
 	UI_SetActiveFrame(&LabelFrame1);
 	SetActiveLabelFrame(LABEL1);
 	PaintNow(&HomeFrame);
 }
 
-#if 0
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-void ShowStatusMessageTabJob(char* message)
-{
-	RECT area;
-	const FRAME* frame = &WindowFrame;
-	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 50;
-	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-	UI_DisplayStringCentered(message, &area);
-}
-#endif
-
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void SetDefaultPipeLength(INT16 length)
 {
 	// pipe length is stored in feet
@@ -167,63 +154,64 @@ void SetDefaultPipeLength(INT16 length)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 INT16 GetDefaultPipeLength(void)
 {
 	// pipe length is stored in feet
 	INT16 value;
 	value = NVRAM_data.nDefaultPipeLengthFeet;
-	if(value<0) value=0;
+	if (value < 0)
+		value = 0;
 	return value;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 INT16 GetDesiredAzimuth(void)
 {
 	return NVRAM_data.nDesiredAzimuth;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void SetDesiredAzimuth(INT16 value)
 {
-		NVRAM_data.nDesiredAzimuth = value;
+	NVRAM_data.nDesiredAzimuth = value;
 }
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void SetDeclination(INT16 length)
 {
 	NVRAM_data.nDeclination = length;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 INT16 GetDeclination(void)
 {
 	return NVRAM_data.nDeclination;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void SetBoreholeName(char* value)
+ *       @details
+ *******************************************************************************/
+void SetBoreholeName(char * value)
 {
-	strncpy((char *)NVRAM_data.sBoreholeName, value, MAX_BOREHOLE_NAME_BYTES);
+	strncpy((char*) NVRAM_data.sBoreholeName, value, MAX_BOREHOLE_NAME_BYTES);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 char* GetBoreholeName(void)
 {
 	BOOL endFound = false;
-	for(int i=0; i<MAX_BOREHOLE_NAME_BYTES; i++)
+	for (int i = 0; i < MAX_BOREHOLE_NAME_BYTES; i++)
 	{
 		if (NVRAM_data.sBoreholeName[i] == 0)
 		{
@@ -232,17 +220,17 @@ char* GetBoreholeName(void)
 	}
 	if (!endFound || NVRAM_data.sBoreholeName[0] == 0)
 	{
-		strcpy((char *)NVRAM_data.sBoreholeName, "HOLE           "); //eventually need to remove trailing spaces
+		strcpy((char*) NVRAM_data.sBoreholeName, "HOLE           "); //eventually need to remove trailing spaces
 	}
-	return (char *)NVRAM_data.sBoreholeName;
+	return (char*) NVRAM_data.sBoreholeName;
 }
 
 ANGLE_TIMES_TEN GetCorrectToolFaceValue(void)
 {
-    if ((GetToolFaceValue()/10) > 360)
+	if ((GetToolFaceValue() / 10) > 360)
 	{
 		return GetToolFaceValue() - 3600;
-	}     
+	}
 	else
 	{
 		return GetToolFaceValue();

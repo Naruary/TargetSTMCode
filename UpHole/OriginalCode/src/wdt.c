@@ -41,98 +41,99 @@ WDT_PARAM_STRUCT nWDTParameters[WDT_MAX_LIST] = {{IWDG_Prescaler_4, WDT_20MS_VAL
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 /*
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   KickWatchdog()
-;
-; Description:
-;   Restart the watchdog if a systick has happened since last restart
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ; Function:
+ ;   KickWatchdog()
+ ;
+ ; Description:
+ ;   Restart the watchdog if a systick has happened since last restart
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 void KickWatchdog(void)
 {
-    static TIME_LR nLastTick = START_LOW_RES_TIMER;
+	static TIME_LR nLastTick = START_LOW_RES_TIMER;
 
-    if(ElapsedTimeLowRes(nLastTick) >= FIVE_MILLI_SECONDS)
-    {
-        IWDG_ReloadCounter();
+	if (ElapsedTimeLowRes(nLastTick) >= FIVE_MILLI_SECONDS)
+	{
+		IWDG_ReloadCounter();
 
-        nLastTick = ElapsedTimeLowRes(START_LOW_RES_TIMER);
-    }
+		nLastTick = ElapsedTimeLowRes(START_LOW_RES_TIMER);
+	}
 } // end KickWatchdog
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 /*
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   SetWatchdogTimer()
-;
-; Description:
-;   Initalize the WDT to a set of parmaeters
-;
-; Parameters:
-;   WDT_PARAMETERS nParam => An index to a pre defined set of parameters.
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ; Function:
+ ;   SetWatchdogTimer()
+ ;
+ ; Description:
+ ;   Initalize the WDT to a set of parmaeters
+ ;
+ ; Parameters:
+ ;   WDT_PARAMETERS nParam => An index to a pre defined set of parameters.
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 void SetWatchdogTimer(WDT_PARAMETERS nParam)
 {
-    //Reload so a change to a parameter does not trip the WDT
-    IWDG_ReloadCounter();
+	//Reload so a change to a parameter does not trip the WDT
+	IWDG_ReloadCounter();
 
-    IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
-    IWDG_SetReload((uint16_t)nWDTParameters[nParam].nResetValue);
-    IWDG_SetPrescaler((uint8_t)nWDTParameters[nParam].nPreScale);
-    IWDG_WriteAccessCmd(IWDG_WriteAccess_Disable);
+	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+	IWDG_SetReload((uint16_t) nWDTParameters[nParam].nResetValue);
+	IWDG_SetPrescaler((uint8_t) nWDTParameters[nParam].nPreScale);
+	IWDG_WriteAccessCmd(IWDG_WriteAccess_Disable);
 
-    while (IWDG->SR & (IWDG_SR_PVU | IWDG_SR_RVU))   //uncomment
-        ; // wait for possible update to complete    //uncomment
+	while (IWDG->SR & (IWDG_SR_PVU | IWDG_SR_RVU))
+		//uncomment
+		;// wait for possible update to complete    //uncomment
 
-    //Reload so the full WDT value is avaiable when we exit.
-    IWDG_ReloadCounter();
+	//Reload so the full WDT value is avaiable when we exit.
+	IWDG_ReloadCounter();
 } // end SetWatchdogTimer
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 /*
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   StartIWDT()
-;
-; Description:
-;   Start the watchdog timer.
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ; Function:
+ ;   StartIWDT()
+ ;
+ ; Description:
+ ;   Start the watchdog timer.
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 void StartIWDT(void)
 {
-    RCC->CSR |= RCC_CSR_LSION;
+	RCC->CSR |= RCC_CSR_LSION;
 
-    while((RCC->CSR & RCC_CSR_LSIRDY) != RCC_CSR_LSIRDY)
-      ;
+	while ((RCC->CSR & RCC_CSR_LSIRDY) != RCC_CSR_LSIRDY)
+		;
 
-    IWDG_Enable(); //uncomment
+	IWDG_Enable(); //uncomment
 
-    DBGMCU_Config(( DBGMCU_IWDG_STOP | DBGMCU_WWDG_STOP ), ENABLE);
+	DBGMCU_Config(( DBGMCU_IWDG_STOP | DBGMCU_WWDG_STOP), ENABLE);
 
-    SetWatchdogTimer(WDT_MAX_TIMEOUT_VALUE);
-}// end StartIWDT
+	SetWatchdogTimer(WDT_MAX_TIMEOUT_VALUE);
+} // end StartIWDT

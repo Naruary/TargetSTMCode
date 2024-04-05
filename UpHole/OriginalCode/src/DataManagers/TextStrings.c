@@ -144,40 +144,32 @@ static const char* const g_sEnglishTxtStrings[MAX_TXT_MSG]  = {
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 /*
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   GetTxtString()
-;
-; Description:
-;   Gets the String associated with the enumerated value in the message
-;   table.
-;
-; Parameters:
-;   SENSOR_MESSAGES - Enumerated tag for requested string
-;
-; Return
-;    char *: String value
-;
-; Reentrancy:
-;   No.
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ; Function:
+ ;   GetTxtString()
+ ;
+ ; Description:
+ ;   Gets the String associated with the enumerated value in the message
+ ;   table.
+ ;
+ ; Parameters:
+ ;   SENSOR_MESSAGES - Enumerated tag for requested string
+ ;
+ ; Return
+ ;    char *: String value
+ ;
+ ; Reentrancy:
+ ;   No.
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
 char* GetTxtString(TXT_VALUES eMessage)
 {
-//    switch(CurrentLanguage())
-    {
-//      case USE_ENGLISH:
-        return (char*)g_sEnglishTxtStrings[eMessage];
-//      case USE_CHINESE:
-//        return (char*)g_sChineseTxtStrings[eMessage];
-    }
-
-//    return "UNKNOWN TEXT";
+	return (char*) g_sEnglishTxtStrings[eMessage];
 }
 

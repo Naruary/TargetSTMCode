@@ -33,8 +33,8 @@ static void UI_DisplayText(const char* psDisplayStr, RECT rctDisplay);
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   UI_DisplayCharacter()
@@ -61,71 +61,74 @@ static void UI_DisplayText(const char* psDisplayStr, RECT rctDisplay);
  ;   using the F_ALTFONT flag. The default is the 8 pixel font.
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-void UI_DisplayCharacter(HDC *phDC, CHAR sDisplayChar, U_BYTE *pRow, U_BYTE *pCol, U_BYTE nFlags)
+void UI_DisplayCharacter(HDC * phDC, CHAR sDisplayChar, U_BYTE * pRow, U_BYTE * pCol, U_BYTE nFlags)
 {
-    UIBITMAP bp;
-    UIALPHABITMAP *abp;
+	UIBITMAP bp;
+	UIALPHABITMAP *abp;
 
-    if ((pRow == NULL ) || (pCol == NULL ))
-    {
-        return; //shuts up Lint
-    }
-    setBitmapSize(&bp);
-    if (sDisplayChar != 0)
-    {
-        abp = (UIALPHABITMAP *) &alphabet[(int)sDisplayChar];
-        bp.pData = abp->pData;
-        bp.nKern = abp->nKern;
-        bp.nFlags = abp->nFlags;
+	phDC = phDC;
+	nFlags = nFlags;
 
-        *pCol += abp->nKern;
-    }
+	if ((pRow == NULL) || (pCol == NULL))
+	{
+		return; //shuts up Lint
+	}
+	setBitmapSize(&bp);
+	if (sDisplayChar != 0)
+	{
+		abp = (UIALPHABITMAP*) &alphabet[(int) sDisplayChar];
+		bp.pData = abp->pData;
+		bp.nKern = abp->nKern;
+		bp.nFlags = abp->nFlags;
+
+		*pCol += abp->nKern;
+	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void UI_DisplayStringCentered(const char* string, RECT* area)
+ *       @details
+ *******************************************************************************/
+void UI_DisplayStringCentered(const char * string, RECT * area)
 {
-    RECT rect;
-    U_INT16 nLen = UI_GetTextSize(string);
-    rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 1;
-    rect.ptTopLeft.nCol = ((area->ptBottomRight.nCol - area->ptTopLeft.nCol - nLen) / 2) + area->ptTopLeft.nCol;
-    rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
-    rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
-    UI_DisplayText(string, rect);
+	RECT rect;
+	U_INT16 nLen = UI_GetTextSize(string);
+	rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 1;
+	rect.ptTopLeft.nCol = ((area->ptBottomRight.nCol - area->ptTopLeft.nCol - nLen) / 2) + area->ptTopLeft.nCol;
+	rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
+	rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
+	UI_DisplayText(string, rect);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void UI_DisplayStringLeftJustified(const char* string, RECT* area)
+ *       @details
+ *******************************************************************************/
+void UI_DisplayStringLeftJustified(const char * string, RECT * area)
 {
-    RECT rect;
-    rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 1;
-    rect.ptTopLeft.nCol = area->ptTopLeft.nCol + 3; //This used to be +1
-    rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
-    rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
-    UI_DisplayText(string, rect);
+	RECT rect;
+	rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 1;
+	rect.ptTopLeft.nCol = area->ptTopLeft.nCol + 3; //This used to be +1
+	rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
+	rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
+	UI_DisplayText(string, rect);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void UI_DisplayStringRightJustified(const char* string, RECT* area)
+ *       @details
+ *******************************************************************************/
+void UI_DisplayStringRightJustified(const char * string, RECT * area)
 {
-    RECT rect;
-    U_INT16 nLen = UI_GetTextSize(string);
-    rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 1;
-    rect.ptTopLeft.nCol = area->ptBottomRight.nCol - 1 - nLen;
-    rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
-    rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
-    UI_DisplayText(string, rect);
+	RECT rect;
+	U_INT16 nLen = UI_GetTextSize(string);
+	rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 1;
+	rect.ptTopLeft.nCol = area->ptBottomRight.nCol - 1 - nLen;
+	rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
+	rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
+	UI_DisplayText(string, rect);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   UI_DisplayText()
@@ -144,65 +147,61 @@ void UI_DisplayStringRightJustified(const char* string, RECT* area)
  ; Note:
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-static void UI_DisplayText(const char* psDisplayStr, RECT rctDisplay)
+static void UI_DisplayText(const char * psDisplayStr, RECT rctDisplay)
 {
-    BYTE nRc;
-    U_BYTE loopy;
+	BYTE nRc;
+	U_BYTE loopy;
 	U_BYTE kern;
-    UIBITMAP bp;
-    UIALPHABITMAP const *abp;
-    POINT ptTopLeft, ptBtmRight;
-    static U_INT16 nRow, nCol, nLength;
+	UIBITMAP bp;
+	UIALPHABITMAP const *abp;
+	POINT ptTopLeft;
+	static U_INT16 nRow, nCol, nLength;
 
-    if (psDisplayStr == NULL)
-    {
-        return;
-    }
+	if (psDisplayStr == NULL)
+	{
+		return;
+	}
 
-    ptTopLeft = rctDisplay.ptTopLeft;
-    ptBtmRight = rctDisplay.ptBottomRight;
-    nRow = 0;
-    nCol = 0;
-    setBitmapSize(&bp);
-    // Get each character one at a time and call the correct rendering
-    // routine. Adjust the x and y positions at the end of the loop.
-    loopy = 0;
-    while (psDisplayStr[loopy] != 0)
-    {
-        abp = &alphabet[(U_BYTE)psDisplayStr[loopy]];
-        //set data and kern
-        bp.pData = abp->pData;
-        bp.nKern = abp->nKern;
-        bp.nFlags = abp->nFlags;
-        if (nCol > ptBtmRight.nCol - (bp.nKern & 0x0F))
-        {
-//            return;
-        }
-        //render the bitmap and adjust the col to col += bitmap width
-        UI_RenderBitmap(nRow, nCol, &bp, &nRc);
-        kern = abp->nKern & 0x0F;
-        if (kern == 0x0F)
-        {
-            nCol += 16;
-        }
-        else
-        {
-            nCol += kern;
-        }
-        loopy++;
-    }
-    if (nCol != 0)
-    {
-        nLength = nCol;
-        nRow = ptTopLeft.nRow;
-        nCol = ptTopLeft.nCol;
-        UI_PrintLine(nRow, nCol, 12, nLength);
-    }
+	ptTopLeft = rctDisplay.ptTopLeft;
+
+	nRow = 0;
+	nCol = 0;
+	setBitmapSize(&bp);
+	// Get each character one at a time and call the correct rendering
+	// routine. Adjust the x and y positions at the end of the loop.
+	loopy = 0;
+	while (psDisplayStr[loopy] != 0)
+	{
+		abp = &alphabet[(U_BYTE) psDisplayStr[loopy]];
+		//set data and kern
+		bp.pData = abp->pData;
+		bp.nKern = abp->nKern;
+		bp.nFlags = abp->nFlags;
+		//render the bitmap and adjust the col to col += bitmap width
+		UI_RenderBitmap(nRow, nCol, &bp, &nRc);
+		kern = abp->nKern & 0x0F;
+		if (kern == 0x0F)
+		{
+			nCol += 16;
+		}
+		else
+		{
+			nCol += kern;
+		}
+		loopy++;
+	}
+	if (nCol != 0)
+	{
+		nLength = nCol;
+		nRow = ptTopLeft.nRow;
+		nCol = ptTopLeft.nCol;
+		UI_PrintLine(nRow, nCol, 12, nLength);
+	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   UI_GetTextSize
@@ -225,34 +224,34 @@ static void UI_DisplayText(const char* psDisplayStr, RECT rctDisplay)
  ;
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-U_INT16 UI_GetTextSize(const char* psDisplayStr)
+U_INT16 UI_GetTextSize(const char * psDisplayStr)
 {
-    U_INT16 kern;
+	U_INT16 kern;
 	U_INT16 nCol = 0;
 	U_BYTE loopy;
 
-    if (psDisplayStr == NULL)
-    {
-        return 0;
-    }
-    for (loopy=0; psDisplayStr[loopy] != 0; loopy++)
-    {
-        kern = (U_INT16)alphabet[(U_BYTE)psDisplayStr[loopy]].nKern & 0x0F;
-        if (kern == 0x000F)
-        {
-            nCol += 16;
-        }
-        else
-        {
-            nCol += kern;
-        }
-    }
-    return nCol;
+	if (psDisplayStr == NULL)
+	{
+		return 0;
+	}
+	for (loopy = 0; psDisplayStr[loopy] != 0; loopy++)
+	{
+		kern = (U_INT16) alphabet[(U_BYTE) psDisplayStr[loopy]].nKern & 0x0F;
+		if (kern == 0x000F)
+		{
+			nCol += 16;
+		}
+		else
+		{
+			nCol += kern;
+		}
+	}
+	return nCol;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   setBitmapSize
@@ -274,77 +273,92 @@ U_INT16 UI_GetTextSize(const char* psDisplayStr)
  ;
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-static void setBitmapSize(UIBITMAP *bp)
+static void setBitmapSize(UIBITMAP * bp)
 {
-    if (bp == NULL)
-    {
-        return;
-    }
-    bp->nXSize = 8;
-    bp->nYSize = 9;
-    bp->nNumData = 8;
+	if (bp == NULL)
+	{
+		return;
+	}
+	bp->nXSize = 8;
+	bp->nYSize = 9;
+	bp->nNumData = 8;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void UI_DisplayStringInStatusFrame(const char* string, RECT* area, INT16 y)
+ *       @details
+ *******************************************************************************/
+void UI_DisplayStringInStatusFrame(const char * string, RECT * area, INT16 y)
 {
-    RECT rect;
-    U_INT16 nLen = UI_GetTextSize(string);
-    rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 0; //This used to be +1 at the end
-    rect.ptTopLeft.nCol = ((area->ptBottomRight.nCol - area->ptTopLeft.nCol - nLen) + y ) + area->ptTopLeft.nCol;
-    rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
-    rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
-    UI_DisplayText(string, rect);
+	RECT rect;
+	U_INT16 nLen = UI_GetTextSize(string);
+	rect.ptTopLeft.nRow = ((area->ptBottomRight.nRow - area->ptTopLeft.nRow - 9) / 2) + area->ptTopLeft.nRow + 0; //This used to be +1 at the end
+	rect.ptTopLeft.nCol = ((area->ptBottomRight.nCol - area->ptTopLeft.nCol - nLen) + y) + area->ptTopLeft.nCol;
+	rect.ptBottomRight.nRow = area->ptBottomRight.nRow;
+	rect.ptBottomRight.nCol = area->ptBottomRight.nCol;
+	UI_DisplayText(string, rect);
 }
 
-void UI_DisplayXScaleGraphFrame(const char* string, RECT* area, INT16 y)
+void UI_DisplayXScaleGraphFrame(const char * string, RECT * area, INT16 y)
 {
-    RECT rect;
-    rect.ptTopLeft.nRow = 195;
-    rect.ptTopLeft.nCol = y;
-    rect.ptBottomRight.nRow = 217;
-    rect.ptBottomRight.nCol = 316;
-    UI_DisplayText(string, rect);
+	RECT rect;
+
+	area = area;
+
+	rect.ptTopLeft.nRow = 195;
+	rect.ptTopLeft.nCol = y;
+	rect.ptBottomRight.nRow = 217;
+	rect.ptBottomRight.nCol = 316;
+	UI_DisplayText(string, rect);
 }
 
-void UI_DisplayYScaleGraphFrame(const char* string, RECT* area, INT16 y)  // scale for left side of graph
+void UI_DisplayYScaleGraphFrame(const char * string, RECT * area, INT16 y)  // scale for left side of graph
 {
-    RECT rect;
-    rect.ptTopLeft.nRow = y;
-    rect.ptTopLeft.nCol = 5;
-    rect.ptBottomRight.nRow = 217;
-    rect.ptBottomRight.nCol = 316;
-    UI_DisplayText(string, rect);
+	RECT rect;
+
+	area = area;
+
+	rect.ptTopLeft.nRow = y;
+	rect.ptTopLeft.nCol = 5;
+	rect.ptBottomRight.nRow = 217;
+	rect.ptBottomRight.nCol = 316;
+	UI_DisplayText(string, rect);
 }
 
-void UI_DisplayRightYScaleGraphFrame(const char* string, RECT* area, INT16 y) // scale for right side of graph
+void UI_DisplayRightYScaleGraphFrame(const char * string, RECT * area, INT16 y) // scale for right side of graph
 {
-    RECT rect;
-    rect.ptTopLeft.nRow = y;
-    rect.ptTopLeft.nCol = 285;
-    rect.ptBottomRight.nRow = 217;
-    rect.ptBottomRight.nCol = 316;
-    UI_DisplayText(string, rect);
+	RECT rect;
+
+	area = area;
+
+	rect.ptTopLeft.nRow = y;
+	rect.ptTopLeft.nCol = 285;
+	rect.ptBottomRight.nRow = 217;
+	rect.ptBottomRight.nCol = 316;
+	UI_DisplayText(string, rect);
 }
 
-void UI_DisplayGraphTitleFrame(const char* string, RECT* area, INT16 x, INT16 y)
+void UI_DisplayGraphTitleFrame(const char * string, RECT * area, INT16 x, INT16 y)
 {
-    RECT rect;
-    rect.ptTopLeft.nRow = x;
-    rect.ptTopLeft.nCol = y;
-    rect.ptBottomRight.nRow = 217;
-    rect.ptBottomRight.nCol = 316;
-    UI_DisplayText(string, rect);
+	RECT rect;
+
+	area = area;
+
+	rect.ptTopLeft.nRow = x;
+	rect.ptTopLeft.nCol = y;
+	rect.ptBottomRight.nRow = 217;
+	rect.ptBottomRight.nCol = 316;
+	UI_DisplayText(string, rect);
 }
 
-void UI_DisplayString(const char* string, RECT* area, INT16 x, INT16 y)
+void UI_DisplayString(const char * string, RECT * area, INT16 x, INT16 y)
 {
-    RECT rect;
-    rect.ptTopLeft.nRow = x;
-    rect.ptTopLeft.nCol = y;
-    rect.ptBottomRight.nRow = 217;
-    rect.ptBottomRight.nCol = 316;
-    UI_DisplayText(string, rect);
+	RECT rect;
+
+	area = area;
+
+	rect.ptTopLeft.nRow = x;
+	rect.ptTopLeft.nCol = y;
+	rect.ptBottomRight.nRow = 217;
+	rect.ptBottomRight.nCol = 316;
+	UI_DisplayText(string, rect);
 }

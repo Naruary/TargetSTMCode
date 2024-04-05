@@ -86,160 +86,162 @@ static GroupBox surveyGroup =
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void setBranchPointSetDecisionPanelActive(BOOL bFlag)
 {
-    BranchPointSet_DecisionPanelActive = bFlag;
+	BranchPointSet_DecisionPanelActive = bFlag;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL getBranchPointSetDecisionPanelActive(void)
 {
-    return BranchPointSet_DecisionPanelActive;
+	return BranchPointSet_DecisionPanelActive;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void BranchPointSet_Decision_Paint(TAB_ENTRY* tab)
+static void BranchPointSet_Decision_Paint(TAB_ENTRY * tab)
 {
-    BranchPointSet_Decision_Show(tab);
-    TabWindowPaint(tab);
-    GroupBoxPaint(&surveyGroup);
-    ShowBranchPointSetDecisionMessage("Set Branch Point Here?");
-    ShowBranchPointSetInfoMessage("Once Branch is set here", "subsequent records will", "become inactive records");
+	BranchPointSet_Decision_Show(tab);
+	TabWindowPaint(tab);
+	GroupBoxPaint(&surveyGroup);
+	ShowBranchPointSetDecisionMessage("Set Branch Point Here?");
+	ShowBranchPointSetInfoMessage("Once Branch is set here", "subsequent records will", "become inactive records");
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void BranchPointSet_Decision_Show(TAB_ENTRY* tab)
+static void BranchPointSet_Decision_Show(TAB_ENTRY * tab)
 {
-    MENU_ITEM* item = tab->MenuItem(tab, 0);
-    UI_SetActiveFrame(item->labelFrame);
-    SetActiveLabelFrame(item->labelFrame->eID);
+	MENU_ITEM *item = tab->MenuItem(tab, 0);
+	UI_SetActiveFrame(item->labelFrame);
+	SetActiveLabelFrame(item->labelFrame->eID);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void BranchPointSet_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void BranchPointSet_Decision_KeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-    switch(key)
-    {
+	tab = tab;
+	switch (key)
+	{
 		default:
 			break;
-        case BUTTON_DASH:
-        {
-            setBranchPointSetDecisionPanelActive(false);
-            RepaintNow(&WindowFrame);
-            break;
-        }
-    }
+		case BUTTON_DASH:
+		{
+			setBranchPointSetDecisionPanelActive(false);
+			RepaintNow(&WindowFrame);
+			break;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void BranchPointSet_Decision_TimerElapsed(TAB_ENTRY* tab)
+static void BranchPointSet_Decision_TimerElapsed(TAB_ENTRY * tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 static MENU_ITEM* BranchPointSet_Decision_Menu(U_BYTE index)
 {
-    return &BranchPointSet_DecisionMenu[index];
+	return &BranchPointSet_DecisionMenu[index];
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void Yes_BranchPointSet_Decision(MENU_ITEM* item)
+static void Yes_BranchPointSet_Decision(MENU_ITEM * item)
 {
-
-    // put your logic here
-    RECORD_SetBranchPointIndex(RECORD_getSelectSurveyRecordNumber());
-    RECORD_InitBranchParam();
-    SetLoggingState(BRANCH_POINT_SET_SUCCESS);
-    tCallBranchPointSet = ElapsedTimeLowRes(0);
-    setBranchPointSetDecisionPanelActive(false);
-    RepaintNow(&WindowFrame);
+	item = item;
+	// put your logic here
+	RECORD_SetBranchPointIndex(RECORD_getSelectSurveyRecordNumber());
+	RECORD_InitBranchParam();
+	SetLoggingState(BRANCH_POINT_SET_SUCCESS);
+	tCallBranchPointSet = ElapsedTimeLowRes(0);
+	setBranchPointSetDecisionPanelActive(false);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void No_BranchPointSet_Decision(MENU_ITEM* item)
+static void No_BranchPointSet_Decision(MENU_ITEM * item)
 {
-    setBranchPointSetDecisionPanelActive(false);
+	item = item;
+	setBranchPointSetDecisionPanelActive(false);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 TIME_LR GetBranchPointSetTimer(void)
 {
-  return tCallBranchPointSet;
+	return tCallBranchPointSet;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowBranchPointSetDecisionMessage(char* message)
+void ShowBranchPointSetDecisionMessage(char * message)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 150;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 150;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message, &area);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowBranchPointSetInfoMessage(char* message1, char* message2, char* message3)
+void ShowBranchPointSetInfoMessage(char * message1, char * message2, char * message3)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 150;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message1, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 110;
-    UI_DisplayStringCentered(message2, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 80;
-    UI_DisplayStringCentered(message3, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 150;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message1, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 110;
+	UI_DisplayStringCentered(message2, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 80;
+	UI_DisplayStringCentered(message3, &area);
 }

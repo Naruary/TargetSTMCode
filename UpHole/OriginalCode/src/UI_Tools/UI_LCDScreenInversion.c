@@ -44,58 +44,58 @@
 ;   No
 ;
 ;------------------------------------------------------------------*/
-void UI_InvertLCDArea(const RECT *pRect, BOOL bPage)
+void UI_InvertLCDArea(const RECT * pRect, BOOL bPage)
 {
-    U_INT16 nRowPosn;
+	U_INT16 nRowPosn;
 
-    U_INT16 nColLoLimit;
-    U_INT16 nRowLoLimit;
+	U_INT16 nColLoLimit;
+	U_INT16 nRowLoLimit;
 
-    U_INT16 nColHiLimit;
-    U_INT16 nRowHiLimit;
+	U_INT16 nColHiLimit;
+	U_INT16 nRowHiLimit;
 
-    nColLoLimit = pRect->ptTopLeft.nCol;
-    nColHiLimit = pRect->ptBottomRight.nCol;
+	nColLoLimit = pRect->ptTopLeft.nCol;
+	nColHiLimit = pRect->ptBottomRight.nCol;
 
-    nRowLoLimit = pRect->ptTopLeft.nRow;
-    nRowHiLimit = pRect->ptBottomRight.nRow;
+	nRowLoLimit = pRect->ptTopLeft.nRow;
+	nRowHiLimit = pRect->ptBottomRight.nRow;
 
-    nRowPosn = nRowLoLimit;
+	nRowPosn = nRowLoLimit;
 
-    while(nRowPosn <= nRowHiLimit)
-    {
-        LCD_InvertRow(nRowPosn, nColLoLimit, nColHiLimit, bPage);
-        nRowPosn++;
-    }
+	while (nRowPosn <= nRowHiLimit)
+	{
+		LCD_InvertRow(nRowPosn, nColLoLimit, nColHiLimit, bPage);
+		nRowPosn++;
+	}
 
-}//end UI_InvertLCDArea
+} //end UI_InvertLCDArea
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void UI_ClearLCDArea(const RECT *pRect, BOOL bPage)
+void UI_ClearLCDArea(const RECT * pRect, BOOL bPage)
 {
-    U_INT16 nRowPosn;
+	U_INT16 nRowPosn;
 
-    U_INT16 nColLoLimit;
-    U_INT16 nRowLoLimit;
+	U_INT16 nColLoLimit;
+	U_INT16 nRowLoLimit;
 
-    U_INT16 nColHiLimit;
-    U_INT16 nRowHiLimit;
+	U_INT16 nColHiLimit;
+	U_INT16 nRowHiLimit;
 
-    nColLoLimit = pRect->ptTopLeft.nCol;
-    nColHiLimit = pRect->ptBottomRight.nCol;
+	nColLoLimit = pRect->ptTopLeft.nCol;
+	nColHiLimit = pRect->ptBottomRight.nCol;
 
-    nRowLoLimit = pRect->ptTopLeft.nRow;
-    nRowHiLimit = pRect->ptBottomRight.nRow;
+	nRowLoLimit = pRect->ptTopLeft.nRow;
+	nRowHiLimit = pRect->ptBottomRight.nRow;
 
-    nRowPosn = nRowLoLimit;
+	nRowPosn = nRowLoLimit;
 
-    while(nRowPosn <= nRowHiLimit)
-    {
-        LCD_ClearRow(nRowPosn, nColLoLimit, nColHiLimit, bPage);
-        nRowPosn++;
-    }
+	while (nRowPosn <= nRowHiLimit)
+	{
+		LCD_ClearRow(nRowPosn, nColLoLimit, nColHiLimit, bPage);
+		nRowPosn++;
+	}
 }

@@ -90,125 +90,131 @@ static GroupBox surveyGroup =
 
 void setSurveyEditPanelActive(BOOL bFlag)
 {
-    surveyEditPanelActive = bFlag;
+	surveyEditPanelActive = bFlag;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL getSurveyEditPanelActive(void)
 {
-    return surveyEditPanelActive;
+	return surveyEditPanelActive;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SurveyEdit_Paint(TAB_ENTRY* tab)
+static void SurveyEdit_Paint(TAB_ENTRY * tab)
 {
-    if((RECORD_getSelectSurveyRecordNumber()+PreviousHoleEndingRecordNumber()) > PreviousHoleEndingRecordNumber())
-    {
-        SurveyEdit_Show(tab);
-        TabWindowPaint(tab);
-        GroupBoxPaint(&surveyGroup);
-    }
-    else
-    {
-      setSurveyEditPanelActive(false);
-      RepaintNow(&WindowFrame);
-    }
+	if ((RECORD_getSelectSurveyRecordNumber() + PreviousHoleEndingRecordNumber()) > PreviousHoleEndingRecordNumber())
+	{
+		SurveyEdit_Show(tab);
+		TabWindowPaint(tab);
+		GroupBoxPaint(&surveyGroup);
+	}
+	else
+	{
+		setSurveyEditPanelActive(false);
+		RepaintNow(&WindowFrame);
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SurveyEdit_Show(TAB_ENTRY* tab)
+static void SurveyEdit_Show(TAB_ENTRY * tab)
 {
-    MENU_ITEM* item = tab->MenuItem(tab, 0);
-    UI_SetActiveFrame(item->labelFrame);
-    SetActiveLabelFrame(item->labelFrame->eID);
+	MENU_ITEM *item = tab->MenuItem(tab, 0);
+	UI_SetActiveFrame(item->labelFrame);
+	SetActiveLabelFrame(item->labelFrame->eID);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SurveyEdit_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void SurveyEdit_KeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-    switch(key)
-    {
+	tab = tab;
+	switch (key)
+	{
 		default:
 			break;
 
-        case BUTTON_DASH:
-        {
-            setSurveyEditPanelActive(false);
-            RepaintNow(&WindowFrame);
-            break;
-        }
-    }
+		case BUTTON_DASH:
+		{
+			setSurveyEditPanelActive(false);
+			RepaintNow(&WindowFrame);
+			break;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SurveyEdit_TimerElapsed(TAB_ENTRY* tab)
+static void SurveyEdit_TimerElapsed(TAB_ENTRY * tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 static MENU_ITEM* GetSurveyEditMenu(U_BYTE index)
 {
-    return &SurveyEditMenu[index];
+	return &SurveyEditMenu[index];
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void DeleteSurvey(MENU_ITEM* item)
+static void DeleteSurvey(MENU_ITEM * item)
 {
-      SetLoggingState(DELETE_LAST_SURVEY);
-      setDeleteLastSurveyDecisionPanelActive(true);
-      setSurveyEditPanelActive(false);
-      RepaintNow(&WindowFrame);
+	item = item;
+	SetLoggingState(DELETE_LAST_SURVEY);
+	setDeleteLastSurveyDecisionPanelActive(true);
+	setSurveyEditPanelActive(false);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SetBranchPoint(MENU_ITEM* item)
+static void SetBranchPoint(MENU_ITEM * item)
 {
-    SetLoggingState(BRANCH_POINT_SET);
-    setBranchPointSetDecisionPanelActive(true);
-    setSurveyEditPanelActive(false);
-    RepaintNow(&WindowFrame);
+	item = item;
+
+	SetLoggingState(BRANCH_POINT_SET);
+	setBranchPointSetDecisionPanelActive(true);
+	setSurveyEditPanelActive(false);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void FinishSurveyEdit(MENU_ITEM* item)
+static void FinishSurveyEdit(MENU_ITEM * item)
 {
-    setSurveyEditPanelActive(false);
-    RepaintNow(&WindowFrame);
+	item = item;
+
+	setSurveyEditPanelActive(false);
+	RepaintNow(&WindowFrame);
 }

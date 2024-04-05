@@ -59,7 +59,6 @@ static INT16 NewPipeLength = 0;
 static MENU_ITEM EnterNewPipeLength_Menu[] =
 {
     CREATE_FIXED_FIELD(TXT_ENTER_PIPE_LENGTH,  &LabelFrame1, &ValueFrame1, CurrrentLabelFrame, GetNewPipeLength, SetNewPipeLength, 2, 0, 0, 99), // 1-50
-//    CREATE_FIXED_FIELD(TXT_ENTER_PIPE_LENGTH,  &LabelFrame1, &ValueFrame1, CurrrentLabelFrame, GetNewPipeLength, SetNewPipeLength, 4, 1, 0, 9999), //1000,
     CREATE_MENU_ITEM(TXT_FINISH_SET_LENGTH, &LabelFrame2, FinishEditing),
     CREATE_MENU_ITEM(TXT_BACK, &LabelFrame3, ReturnToMain),
 };
@@ -75,191 +74,194 @@ PANEL EnterNewPipeLength_Panel = {EnterNewPipeLength_MenuPanel, sizeof(EnterNewP
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void setEnterNewPipeLengthPanelActive(BOOL bFlag)
 {
-    EnterNewPipeLength_PanelActive = bFlag;
+	EnterNewPipeLength_PanelActive = bFlag;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL getEnterNewPipeLengthPanelActive(void)
 {
-    return EnterNewPipeLength_PanelActive;
+	return EnterNewPipeLength_PanelActive;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterNewPipeLength_Paint(TAB_ENTRY* tab)
+static void EnterNewPipeLength_Paint(TAB_ENTRY * tab)
 {
-    EnterNewPipeLength_Show(tab);
-    TabWindowPaint(tab);
-    //GroupBoxPaint(&surveyGroup);
-    ShowEnterNewPipeLengthMessage("When done hit \"End Edit\"");
-    ShowEnterNewPipeLengthInfoMessage("Enter the new Pipe Length.","Remember: Pipe Length will set to","new value only for one survey.");
+	EnterNewPipeLength_Show(tab);
+	TabWindowPaint(tab);
+	ShowEnterNewPipeLengthMessage("When done hit \"End Edit\"");
+	ShowEnterNewPipeLengthInfoMessage("Enter the new Pipe Length.", "Remember: Pipe Length will set to", "new value only for one survey.");
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterNewPipeLength_Show(TAB_ENTRY* tab)
+static void EnterNewPipeLength_Show(TAB_ENTRY * tab)
 {
-    MENU_ITEM* item = tab->MenuItem(tab, 0);
-    UI_SetActiveFrame(item->labelFrame);
-    SetActiveLabelFrame(item->labelFrame->eID);
+	MENU_ITEM *item = tab->MenuItem(tab, 0);
+	UI_SetActiveFrame(item->labelFrame);
+	SetActiveLabelFrame(item->labelFrame->eID);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterNewPipeLength_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void EnterNewPipeLength_KeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-    switch(key)
-    {
+	tab = tab;
+	switch (key)
+	{
 		default:
 			break;
 
-        case BUTTON_DASH:
-        {
-            setEnterNewPipeLengthPanelActive(false);
-            RepaintNow(&WindowFrame);
-            break;
-        }
-    }
+		case BUTTON_DASH:
+		{
+			setEnterNewPipeLengthPanelActive(false);
+			RepaintNow(&WindowFrame);
+			break;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterNewPipeLength_TimerElapsed(TAB_ENTRY* tab)
+static void EnterNewPipeLength_TimerElapsed(TAB_ENTRY * tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 static MENU_ITEM* EnterNewPipeLength_MenuPanel(U_BYTE index)
 {
-    return &EnterNewPipeLength_Menu[index];
+	return &EnterNewPipeLength_Menu[index];
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 TIME_LR GetEnterNewPipeLengthTimer(void)
 {
-  return tCallEnterNewPipeLength;
+	return tCallEnterNewPipeLength;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetNewPipeLength(INT16 length)
 {
-    NewPipeLength = length;
+	NewPipeLength = length;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 INT16 GetNewPipeLength(void)
 {
-    INT16 value;
-    value = NewPipeLength;
-    return value;
+	INT16 value;
+	value = NewPipeLength;
+	return value;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void ReturnToMain(MENU_ITEM* item)
+static void ReturnToMain(MENU_ITEM * item)
 {
-    if(ManualChangePipeLengthFlag)
-    {
-      	setEnterSurveyPanelActive(true);
-	    PaintNow(&HomeFrame);
-        ManualChangePipeLengthFlag = false;
-    }
-    else
-    {
-        setEnterNewPipeLengthPanelActive(false);
-        SetLoggingState(LOGGING);
-        RepaintNow(&WindowFrame);
-        SetActiveLabelFrame(LABEL2);
-    }
-}
+	item = item;
 
-
-/*!
-********************************************************************************
-*       @details
-*******************************************************************************/
-
-static void FinishEditing(MENU_ITEM* item)
-{
-    setEnterNewPipeLengthPanelActive(false);
-    setChangePipeLengthCorrectDecisionPanelActive(true);
-    RepaintNow(&WindowFrame);
+	if (ManualChangePipeLengthFlag)
+	{
+		setEnterSurveyPanelActive(true);
+		PaintNow(&HomeFrame);
+		ManualChangePipeLengthFlag = false;
+	}
+	else
+	{
+		setEnterNewPipeLengthPanelActive(false);
+		SetLoggingState(LOGGING);
+		RepaintNow(&WindowFrame);
+		SetActiveLabelFrame(LABEL2);
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowEnterNewPipeLengthMessage(char* message)
+static void FinishEditing(MENU_ITEM * item)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message, &area);
+	item = item;
+
+	setEnterNewPipeLengthPanelActive(false);
+	setChangePipeLengthCorrectDecisionPanelActive(true);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowEnterNewPipeLengthInfoMessage(char* message1, char* message2, char* message3)
+void ShowEnterNewPipeLengthMessage(char * message)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message1, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
-    UI_DisplayStringCentered(message2, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
-    UI_DisplayStringCentered(message3, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message, &area);
+}
+
+/*!
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
+
+void ShowEnterNewPipeLengthInfoMessage(char * message1, char * message2, char * message3)
+{
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message1, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
+	UI_DisplayStringCentered(message2, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
+	UI_DisplayStringCentered(message3, &area);
 }

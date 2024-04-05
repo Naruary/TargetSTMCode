@@ -29,58 +29,64 @@ static char sDownholeSWDate[20] = {0};
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   GetSWVersion()
-;
-; Description:
-;   Returns a pointer to the software version string.
-;
-; Returns:
-;   const char* => software version string
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   GetSWVersion()
+ ;
+ ; Description:
+ ;   Returns a pointer to the software version string.
+ ;
+ ; Returns:
+ ;   const char* => software version string
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 const char* GetSWVersion(void)
 {
 	return m_sVersion;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void SetDownholeSWVersion(char *string, U_BYTE length)
+ *       @details
+ *******************************************************************************/
+void SetDownholeSWVersion(char * string, U_BYTE length)
 {
-	if(length > 20) length = 20;
+	if (length > 20)
+	{
+		length = 20;
+	}
 	memcpy(sDownholeSWVersion, string, length);
-	sDownholeSWVersion[20-1] = 0;
+	sDownholeSWVersion[20 - 1] = 0;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 char* GetDownholeSWVersion(void)
 {
 	return sDownholeSWVersion;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void SetDownholeSWDate(char *string, U_BYTE length)
+ *       @details
+ *******************************************************************************/
+void SetDownholeSWDate(char * string, U_BYTE length)
 {
-	if(length > 20) length = 20;
+	if (length > 20)
+	{
+		length = 20;
+	}
 	memcpy(sDownholeSWDate, string, length);
-	sDownholeSWDate[20-1] = 0;
+	sDownholeSWDate[20 - 1] = 0;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 char* GetDownholeSWDate(void)
 {
 	return sDownholeSWDate;

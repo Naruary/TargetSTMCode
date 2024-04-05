@@ -37,7 +37,6 @@ static MENU_ITEM* setToolFaceZero_Decision_Menu(U_BYTE index);
 static void Yes_setToolFaceZero_Decision(MENU_ITEM* item);
 static void No_setToolFaceZero_Decision(MENU_ITEM* item);
 void ShowToolFaceZeroDecisionMessage(char* message);
-//void ShowClearHoleInfoMessage(char* message1, char* message2, char* message3);
 
 //============================================================================//
 //      DATA DEFINITIONS                                                      //
@@ -80,9 +79,7 @@ static void ToolFaceZero_Decision_Paint(TAB_ENTRY* tab)
 {
 	ToolFaceZero_Decision_Show(tab);
 	TabWindowPaint(tab);
-//	GroupBoxPaint(&surveyGroup);
 	ShowToolFaceZeroDecisionMessage("Are you sure. Set Tool Face Reference?");
-//	ShowClearHoleInfoMessage("ERASE data from Memory PERMANENTLY.", "Remember: to SET correct JOB","values before taking any survey.");
 }
 
 /*******************************************************************************
@@ -100,6 +97,8 @@ static void ToolFaceZero_Decision_Show(TAB_ENTRY* tab)
 *******************************************************************************/
 static void ToolFaceZero_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
 {
+	tab = tab;
+
 	switch(key)
 	{
 		default:
@@ -119,7 +118,7 @@ static void ToolFaceZero_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
 *******************************************************************************/
 static void ToolFaceZero_Decision_TimerElapsed(TAB_ENTRY* tab)
 {
-//	RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*******************************************************************************
@@ -135,10 +134,10 @@ static MENU_ITEM* setToolFaceZero_Decision_Menu(U_BYTE index)
 *******************************************************************************/
 static void Yes_setToolFaceZero_Decision(MENU_ITEM* item)
 {
+	item = item;
+
 	// put your logic here
 	setToolFaceZeroDecisionPanelActive(false);
-//	LoggingManager_StartLogging();
-//	NVRAM_data.loggingState = CLEAR_ALL_HOLE;
 	tToolFaceZero = ElapsedTimeLowRes(0);
 	RepaintNow(&WindowFrame);
 }
@@ -148,10 +147,10 @@ static void Yes_setToolFaceZero_Decision(MENU_ITEM* item)
 *******************************************************************************/
 static void No_setToolFaceZero_Decision(MENU_ITEM* item)
 {
+	item = item;
+
 	// put your logic here
-	//RECORD_InitBranchParam();
 	setToolFaceZeroDecisionPanelActive(false);
-//	NVRAM_data.loggingState = LOGGING;
 	RepaintNow(&WindowFrame);
 	SetActiveLabelFrame(LABEL5);
 }
@@ -169,17 +168,13 @@ TIME_LR GetToolFaceZeroTimer(void)
 *******************************************************************************/
 void SetToolFaceZeroFinalValue(MENU_ITEM* item)
 {
+	item = item;
+
 	// sec param is subtracted from actual for working value.
 	// so capture current value of roll so that it zeros
   	RepaintNow(&WindowFrame);
 	GrabToolfaceCompensation();
 }
-//whs 14Feb2022 removed ...nobody uses it
-//void DownloadToUSB(MENU_ITEM* item)
-//{
-//	//USBDownloadFlag = 1;
-//	PCPORT_ReceiveDataUSB();
-//}
 
 /*******************************************************************************
 *       @details
@@ -196,6 +191,8 @@ INT16 GetToolFaceValue(void)
 *******************************************************************************/
 void ClearToolFaceZero(MENU_ITEM* item)
 {
+	item = item;
+
 	// sec param is subtracted from actual for working value,
 	// so clear the offset by setting it to 0
 	RepaintNow(&WindowFrame);

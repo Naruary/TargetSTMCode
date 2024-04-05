@@ -19,7 +19,6 @@
 //      DATA DEFINITIONS                                                      //
 //============================================================================//
 
-//static BOOL bModemIsPresent = false;
 extern void SetStatusLEDState(BOOL state);
 
 //============================================================================//

@@ -63,169 +63,169 @@ static LOCAL_NODE_STRUCT m_nLocalNodes[MAX_NODES];
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetNetworkID(U_INT16 nNetID)
 {
-    m_nLocalNetwork.nID = nNetID;
-    m_nLocalNetwork.bValid = true;
+	m_nLocalNetwork.nID = nNetID;
+	m_nLocalNetwork.bValid = true;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL NetworkIdAssigned(void)
 {
-    return m_nLocalNetwork.bValid;
+	return m_nLocalNetwork.bValid;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetNetworkDBSizeMax(U_INT16 nSize)
 {
-    m_nLocalDataBase.nSizeMax = nSize;
+	m_nLocalDataBase.nSizeMax = nSize;
 
-    if(m_nLocalDataBase.nSizeCurrent > m_nLocalDataBase.nSizeMax)
-    {
-        m_nLocalDataBase.nSizeCurrent = 0;
-        m_nLocalDataBase.nIndex = 1;
-    }
+	if (m_nLocalDataBase.nSizeCurrent > m_nLocalDataBase.nSizeMax)
+	{
+		m_nLocalDataBase.nSizeCurrent = 0;
+		m_nLocalDataBase.nIndex = 1;
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetNetworkDBSizeCurrent(U_INT16 nSize)
 {
-    m_nLocalDataBase.nSizeCurrent = nSize;
+	m_nLocalDataBase.nSizeCurrent = nSize;
 
-    if(m_nLocalDataBase.nIndex >= m_nLocalDataBase.nSizeCurrent)
-    {
-        m_nLocalDataBase.nIndex = 0;
-    }
+	if (m_nLocalDataBase.nIndex >= m_nLocalDataBase.nSizeCurrent)
+	{
+		m_nLocalDataBase.nIndex = 0;
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-BOOL GetNextDatabaseIndex(U_INT16 *pIndex)
+BOOL GetNextDatabaseIndex(U_INT16 * pIndex)
 {
-    if(++m_nLocalDataBase.nIndex >= m_nLocalDataBase.nSizeCurrent)
-    {
-        m_nLocalDataBase.nIndex = 0;
-    }
+	if (++m_nLocalDataBase.nIndex >= m_nLocalDataBase.nSizeCurrent)
+	{
+		m_nLocalDataBase.nIndex = 0;
+	}
 
-    *pIndex = m_nLocalDataBase.nIndex;
+	*pIndex = m_nLocalDataBase.nIndex;
 
-    return (m_nLocalDataBase.nSizeCurrent != 0);
+	return (m_nLocalDataBase.nSizeCurrent != 0);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void SetNetworkConnectivity(U_BYTE *pData)
+void SetNetworkConnectivity(U_BYTE * pData)
 {
-    static U_INT16 nNodeLocation = 0;
+	static U_INT16 nNodeLocation = 0;
 
-    nNodeLocation = GetUnsignedShort(&pData[0]);
-    m_nLocalNodes[nNodeLocation].bConnected = (pData[18])?true:false;
+	nNodeLocation = GetUnsignedShort(&pData[0]);
+	m_nLocalNodes[nNodeLocation].bConnected = (pData[18]) ? true : false;
 
-    memcpy((void *)&m_nLocalNodes[nNodeLocation].sSerialNum[0], (const void *)&pData[2], 16);
+	memcpy((void*) &m_nLocalNodes[nNodeLocation].sSerialNum[0], (const void*) &pData[2], 16);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void UpdateNetworkNode(U_INT16 nNodeIndex, LOCAL_NODE_STRUCT *pNode)
+void UpdateNetworkNode(U_INT16 nNodeIndex, LOCAL_NODE_STRUCT * pNode)
 {
-    if(pNode->bConnected)
-    {
-        m_nLocalNodes[nNodeIndex].bConnected = true;
-        m_nLocalNodes[nNodeIndex].bDeleteNode = false;
-        m_nLocalNodes[nNodeIndex].tDisconnect = pNode->tDisconnect;
-        memcpy((void *)&m_nLocalNodes[nNodeIndex].sSerialNum[0], (const void *)&pNode->sSerialNum[0], MODEM_SN_LENGTH);
-    }
-    else
-    {
-        m_nLocalNodes[nNodeIndex].bConnected = false;
-        memcpy((void *)&m_nLocalNodes[nNodeIndex].sSerialNum[0], (const void *)&pNode->sSerialNum[0], MODEM_SN_LENGTH);
+	if (pNode->bConnected)
+	{
+		m_nLocalNodes[nNodeIndex].bConnected = true;
+		m_nLocalNodes[nNodeIndex].bDeleteNode = false;
+		m_nLocalNodes[nNodeIndex].tDisconnect = pNode->tDisconnect;
+		memcpy((void*) &m_nLocalNodes[nNodeIndex].sSerialNum[0], (const void*) &pNode->sSerialNum[0], MODEM_SN_LENGTH);
+	}
+	else
+	{
+		m_nLocalNodes[nNodeIndex].bConnected = false;
+		memcpy((void*) &m_nLocalNodes[nNodeIndex].sSerialNum[0], (const void*) &pNode->sSerialNum[0], MODEM_SN_LENGTH);
 
-        if(m_nLocalNodes[nNodeIndex].tDisconnect == START_LOW_RES_TIMER)
-        {
-            m_nLocalNodes[nNodeIndex].tDisconnect = pNode->tDisconnect;
-        }
-    }
+		if (m_nLocalNodes[nNodeIndex].tDisconnect == START_LOW_RES_TIMER)
+		{
+			m_nLocalNodes[nNodeIndex].tDisconnect = pNode->tDisconnect;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-BOOL GetDeleteNode(U_INT16 *pNode)
+BOOL GetDeleteNode(U_INT16 * pNode)
 {
-    U_INT32 nIndex = 0;
+	U_INT32 nIndex = 0;
 
-    while(nIndex < COUNTOF(m_nLocalNodes))
-    {
-        if(m_nLocalNodes[nIndex].bDeleteNode)
-        {
-            *pNode = (U_INT16)nIndex;
-            return true;
-        }
+	while (nIndex < COUNTOF(m_nLocalNodes))
+	{
+		if (m_nLocalNodes[nIndex].bDeleteNode)
+		{
+			*pNode = (U_INT16) nIndex;
+			return true;
+		}
 
-        nIndex++;
-    }
+		nIndex++;
+	}
 
-    return false;
+	return false;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void RemoveNodeEntry(U_INT16 nNode)
 {
-    m_nLocalNodes[nNode].bConnected = false;
-    m_nLocalNodes[nNode].bDeleteNode = false;
-    m_nLocalNodes[nNode].tDisconnect = START_LOW_RES_TIMER;
-    memset((void *)&m_nLocalNodes[nNode].sSerialNum[0], 0, MODEM_SN_LENGTH);
+	m_nLocalNodes[nNode].bConnected = false;
+	m_nLocalNodes[nNode].bDeleteNode = false;
+	m_nLocalNodes[nNode].tDisconnect = START_LOW_RES_TIMER;
+	memset((void*) &m_nLocalNodes[nNode].sSerialNum[0], 0, MODEM_SN_LENGTH);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-BOOL GetConnectedNodeID(U_INT16 *pData)
+BOOL GetConnectedNodeID(U_INT16 * pData)
 {
-    U_INT16 nIndex = 0;
+	U_INT16 nIndex = 0;
 
-    while(!m_nLocalNodes[nIndex].bConnected)
-    {
-        nIndex++;
-        if(nIndex >= COUNTOF(m_nLocalNodes))
-        {
-            return false;
-        }
-    }
+	while (!m_nLocalNodes[nIndex].bConnected)
+	{
+		nIndex++;
+		if (nIndex >= COUNTOF(m_nLocalNodes))
+		{
+			return false;
+		}
+	}
 
-    *pData = nIndex;
-    return true;
+	*pData = nIndex;
+	return true;
 }

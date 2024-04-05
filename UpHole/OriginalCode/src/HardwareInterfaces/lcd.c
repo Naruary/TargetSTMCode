@@ -65,11 +65,11 @@ U_BYTE GLCD_ReadData(void);
 //      DATA DEFINITIONS                                                      //
 //============================================================================//
 
-U_BYTE __attribute__((__section__(".lcddatasection"))) m_nLcdDataPort;
-U_BYTE __attribute__((__section__(".lcdcommandsection")))m_nLcdCommandPort;
+static U_BYTE __attribute__((__section__(".lcddatasection"))) m_nLcdDataPort;
+static U_BYTE __attribute__((__section__(".lcdcommandsection")))m_nLcdCommandPort;
 
 U_BYTE m_nPixelData[MAX_PIXEL_ROW][MAX_PIXEL_COL_STORAGE];
-U_BYTE m_nPixelBackground[MAX_PIXEL_ROW][MAX_PIXEL_COL_STORAGE];
+static U_BYTE m_nPixelBackground[MAX_PIXEL_ROW][MAX_PIXEL_COL_STORAGE];
 
 // variable to keep track of the elapsed time for LCD backlight (LED) dimming
 static TIME_LR m_tLcdBacklightTimer;
@@ -77,26 +77,25 @@ static BOOL m_bPaintLcdBackground;
 static BOOL m_bPaintLcdForeground;
 static BOOL LcdOnOffFlag = true;
 static BOOL LCDRefreshSwitch = true;
-//static BOOL Horizontal_Line = false;
 
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   LCD_InitPins()
-;
-; Description:
-;   Sets up LCD driver pin as an output and turns off the LED
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   LCD_InitPins()
+ ;
+ ; Description:
+ ;   Sets up LCD driver pin as an output and turns off the LED
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void LCD_InitPins(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -109,14 +108,14 @@ void LCD_InitPins(void)
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-        
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-        GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-        GPIO_InitStructure.GPIO_Pin = LCD_POWER_PIN;
-        GPIO_Init(LCD_POWER_PORT, &GPIO_InitStructure);
-        GPIO_ResetBits(LCD_POWER_PORT, LCD_POWER_PIN); // Set LCD_POWER_PIN low to ground it
-    
+
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Pin = LCD_POWER_PIN;
+	GPIO_Init(LCD_POWER_PORT, &GPIO_InitStructure);
+	GPIO_ResetBits(LCD_POWER_PORT, LCD_POWER_PIN); // Set LCD_POWER_PIN low to ground it
+
 	GPIO_InitStructure.GPIO_Pin = LCD_RESET_PIN;
 	GPIO_Init(LCD_RESET_PORT, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = LCD_BACKLIGHT_PIN;
@@ -172,25 +171,27 @@ void LCD_InitPins(void)
 	FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct->FSMC_DataSetupTime = 16;
 	FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);
 	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
+
 	GPIO_SetBits(LCD_BACKLIGHT_PORT, LCD_BACKLIGHT_PIN);
 	GPIO_ResetBits(LCD_RESET_PORT, LCD_RESET_PIN);
 	Delay5us();
 	GPIO_SetBits(LCD_RESET_PORT, LCD_RESET_PIN);
 	GPIO_SetBits(GPIOD, GPIO_Pin_6);
 	Delay5us();
-}//end LCD_InitPins
+
+}  //end LCD_InitPins
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_SetBacklight(BOOL bOnState)
 {
 	GPIO_WriteBit(LCD_BACKLIGHT_PORT, LCD_BACKLIGHT_PIN, (bOnState == true ? Bit_SET : Bit_RESET));
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void M_Turn_LCD_On_And_Reset_Timer(void)
 {
 	LCD_SetBacklight(true);
@@ -199,8 +200,8 @@ void M_Turn_LCD_On_And_Reset_Timer(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_Init(void)
 {
 	m_nLcdCommandPort = 0x40;
@@ -239,24 +240,24 @@ void LCD_Init(void)
 	m_nLcdCommandPort = 0x59;
 	m_nLcdDataPort = 0x14;
 
-	memset((void *) m_nPixelData, 0x00, sizeof(m_nPixelData));
-	memset((void *) m_nPixelBackground, 0x00, sizeof(m_nPixelBackground));
+	memset((void*) m_nPixelData, 0x00, sizeof(m_nPixelData));
+	memset((void*) m_nPixelBackground, 0x00, sizeof(m_nPixelBackground));
 
 	lcd_WritePixelDataBuffer();
 	lcd_WritePixelBackgroundBuffer();
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_Update(void)
 {
-	if(m_bPaintLcdBackground)
+	if (m_bPaintLcdBackground)
 	{
 		lcd_WritePixelBackgroundBuffer();
 		m_bPaintLcdBackground = false;
 	}
-	if(m_bPaintLcdForeground)
+	if (m_bPaintLcdForeground)
 	{
 		lcd_WritePixelDataBuffer();
 		m_bPaintLcdForeground = false;
@@ -268,8 +269,8 @@ void LCD_Update(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_ClearRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, BOOL bPage)
 {
 	U_BYTE nLoBytePosn;
@@ -281,7 +282,7 @@ void LCD_ClearRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, BO
 	U_INT32 nIndex;
 	U_BYTE *nWorkingRow;
 
-	if(bPage)
+	if (bPage)
 	{
 		nWorkingRow = &m_nPixelBackground[nRowPosn][0];
 	}
@@ -290,46 +291,78 @@ void LCD_ClearRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, BO
 		nWorkingRow = &m_nPixelData[nRowPosn][0];
 	}
 
-	nLoBytePosn = (U_BYTE)(nColLoLimit / BITS_IN_BYTE);
-	nLoBitPosn = (U_BYTE)(BITS_IN_BYTE - (nColLoLimit % BITS_IN_BYTE));
-	switch(nLoBitPosn)
+	nLoBytePosn = (U_BYTE) (nColLoLimit / BITS_IN_BYTE);
+	nLoBitPosn = (U_BYTE) (BITS_IN_BYTE - (nColLoLimit % BITS_IN_BYTE));
+	switch (nLoBitPosn)
 	{
-		case 0: nLoBitMask = 0xFF; break;
-		case 1: nLoBitMask = 0xFE; break;
-		case 2: nLoBitMask = 0xFC; break;
-		case 3: nLoBitMask = 0xF8; break;
-		case 4: nLoBitMask = 0xF0; break;
-		case 5: nLoBitMask = 0xE0; break;
-		case 6: nLoBitMask = 0xC0; break;
-		case 7: nLoBitMask = 0x80; break;
+		case 0:
+			nLoBitMask = 0xFF;
+			break;
+		case 1:
+			nLoBitMask = 0xFE;
+			break;
+		case 2:
+			nLoBitMask = 0xFC;
+			break;
+		case 3:
+			nLoBitMask = 0xF8;
+			break;
+		case 4:
+			nLoBitMask = 0xF0;
+			break;
+		case 5:
+			nLoBitMask = 0xE0;
+			break;
+		case 6:
+			nLoBitMask = 0xC0;
+			break;
+		case 7:
+			nLoBitMask = 0x80;
+			break;
 		default:
 			break;
 	}
 
-	nHiBytePosn = (U_BYTE)(nColHiLimit / BITS_IN_BYTE);
-	nHiBitPosn = (U_BYTE)(nColHiLimit % BITS_IN_BYTE);
-	switch(nHiBitPosn)
+	nHiBytePosn = (U_BYTE) (nColHiLimit / BITS_IN_BYTE);
+	nHiBitPosn = (U_BYTE) (nColHiLimit % BITS_IN_BYTE);
+	switch (nHiBitPosn)
 	{
-		case 0: nHiBitMask = 0xFF; break;
-		case 1: nHiBitMask = 0x7F; break;
-		case 2: nHiBitMask = 0x3F; break;
-		case 3: nHiBitMask = 0x1F; break;
-		case 4: nHiBitMask = 0x0F; break;
-		case 5: nHiBitMask = 0x07; break;
-		case 6: nHiBitMask = 0x03; break;
-		case 7: nHiBitMask = 0x01; break;
+		case 0:
+			nHiBitMask = 0xFF;
+			break;
+		case 1:
+			nHiBitMask = 0x7F;
+			break;
+		case 2:
+			nHiBitMask = 0x3F;
+			break;
+		case 3:
+			nHiBitMask = 0x1F;
+			break;
+		case 4:
+			nHiBitMask = 0x0F;
+			break;
+		case 5:
+			nHiBitMask = 0x07;
+			break;
+		case 6:
+			nHiBitMask = 0x03;
+			break;
+		case 7:
+			nHiBitMask = 0x01;
+			break;
 		default:
 			break;
 	}
 
 	nIndex = nLoBytePosn;
-	while(nIndex <= nHiBytePosn)
+	while (nIndex <= nHiBytePosn)
 	{
-		if(nIndex == nLoBytePosn)
+		if (nIndex == nLoBytePosn)
 		{
 			nWorkingRow[nIndex] = nWorkingRow[nIndex] & nLoBitMask;
 		}
-		else if(nIndex == nHiBytePosn)
+		else if (nIndex == nHiBytePosn)
 		{
 			nWorkingRow[nIndex] = nWorkingRow[nIndex] & nHiBitMask;
 		}
@@ -342,8 +375,8 @@ void LCD_ClearRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, BO
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_InvertRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, BOOL bPage)
 {
 	U_BYTE nLoBytePosn;
@@ -354,7 +387,7 @@ void LCD_InvertRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, B
 	U_BYTE *nWorkingRow;
 	U_BYTE nWorkingByte;
 
-	if(bPage)
+	if (bPage)
 	{
 		nWorkingRow = &m_nPixelBackground[nRowPosn][0];
 	}
@@ -364,43 +397,75 @@ void LCD_InvertRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, B
 	}
 
 	nLoBytePosn = (U_BYTE) (nColLoLimit / BITS_IN_BYTE);
-	switch(nColLoLimit % BITS_IN_BYTE)
+	switch (nColLoLimit % BITS_IN_BYTE)
 	{
-		case 0: nLoBitMask = 0xFF; break;
-		case 1: nLoBitMask = 0x7F; break;
-		case 2: nLoBitMask = 0x3F; break;
-		case 3: nLoBitMask = 0x1F; break;
-		case 4: nLoBitMask = 0x0F; break;
-		case 5: nLoBitMask = 0x07; break;
-		case 6: nLoBitMask = 0x03; break;
-		case 7: nLoBitMask = 0x01; break;
+		case 0:
+			nLoBitMask = 0xFF;
+			break;
+		case 1:
+			nLoBitMask = 0x7F;
+			break;
+		case 2:
+			nLoBitMask = 0x3F;
+			break;
+		case 3:
+			nLoBitMask = 0x1F;
+			break;
+		case 4:
+			nLoBitMask = 0x0F;
+			break;
+		case 5:
+			nLoBitMask = 0x07;
+			break;
+		case 6:
+			nLoBitMask = 0x03;
+			break;
+		case 7:
+			nLoBitMask = 0x01;
+			break;
 		default:
 			break;
 	}
 
 	nHiBytePosn = (U_BYTE) (nColHiLimit / BITS_IN_BYTE);
-	switch(nColHiLimit % BITS_IN_BYTE)
+	switch (nColHiLimit % BITS_IN_BYTE)
 	{
-		case 0: nHiBitMask = 0x00; break;
-		case 1: nHiBitMask = 0x80; break;
-		case 2: nHiBitMask = 0xC0; break;
-		case 3: nHiBitMask = 0xE0; break;
-		case 4: nHiBitMask = 0xF0; break;
-		case 5: nHiBitMask = 0xF8; break;
-		case 6: nHiBitMask = 0xFC; break;
-		case 7: nHiBitMask = 0xFE; break;
+		case 0:
+			nHiBitMask = 0x00;
+			break;
+		case 1:
+			nHiBitMask = 0x80;
+			break;
+		case 2:
+			nHiBitMask = 0xC0;
+			break;
+		case 3:
+			nHiBitMask = 0xE0;
+			break;
+		case 4:
+			nHiBitMask = 0xF0;
+			break;
+		case 5:
+			nHiBitMask = 0xF8;
+			break;
+		case 6:
+			nHiBitMask = 0xFC;
+			break;
+		case 7:
+			nHiBitMask = 0xFE;
+			break;
 		default:
 			break;
 	}
 
-	for(nIndex = nLoBytePosn; nIndex <= nHiBytePosn; nIndex++)
+	for (nIndex = nLoBytePosn; nIndex <= nHiBytePosn; nIndex++)
 	{
-		if(nIndex == nLoBytePosn)
+		if (nIndex == nLoBytePosn)
 		{
 			nWorkingByte = ((~nWorkingRow[nIndex]) & nLoBitMask);
 			nWorkingRow[nIndex] = ((nWorkingRow[nIndex] & ~nLoBitMask) | nWorkingByte);
 		}
-		else if(nIndex == nHiBytePosn)
+		else if (nIndex == nHiBytePosn)
 		{
 			nWorkingByte = ((~nWorkingRow[nIndex]) & nHiBitMask);
 			nWorkingRow[nIndex] = ((nWorkingRow[nIndex] & ~nHiBitMask) | nWorkingByte);
@@ -413,32 +478,48 @@ void LCD_InvertRow(U_INT16 nRowPosn, U_INT16 nColLoLimit, U_INT16 nColHiLimit, B
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_ClearPixel(U_INT16 nColPosn, U_BYTE nRowPosn, BOOL bPage)
 {
 	U_BYTE nTestByte;
 	U_BYTE nBytePosn;
 	U_BYTE nBitPosn;
 
-	nBytePosn = (U_BYTE)(nColPosn / 8);
-	nBitPosn = (U_BYTE)(nColPosn % 8);
+	nBytePosn = (U_BYTE) (nColPosn / 8);
+	nBitPosn = (U_BYTE) (nColPosn % 8);
 
-	switch(nBitPosn)
+	switch (nBitPosn)
 	{
-		case 0: nBitPosn = 0x80; break;
-		case 1: nBitPosn = 0x40; break;
-		case 2: nBitPosn = 0x20; break;
-		case 3: nBitPosn = 0x10; break;
-		case 4: nBitPosn = 0x08; break;
-		case 5: nBitPosn = 0x04; break;
-		case 6: nBitPosn = 0x02; break;
-		case 7: nBitPosn = 0x01; break;
+		case 0:
+			nBitPosn = 0x80;
+			break;
+		case 1:
+			nBitPosn = 0x40;
+			break;
+		case 2:
+			nBitPosn = 0x20;
+			break;
+		case 3:
+			nBitPosn = 0x10;
+			break;
+		case 4:
+			nBitPosn = 0x08;
+			break;
+		case 5:
+			nBitPosn = 0x04;
+			break;
+		case 6:
+			nBitPosn = 0x02;
+			break;
+		case 7:
+			nBitPosn = 0x01;
+			break;
 		default:
 			break;
 	}
 
-	if(bPage)
+	if (bPage)
 	{
 		nTestByte = m_nPixelBackground[nRowPosn][nBytePosn];
 	}
@@ -448,7 +529,7 @@ void LCD_ClearPixel(U_INT16 nColPosn, U_BYTE nRowPosn, BOOL bPage)
 	}
 
 	nTestByte &= ~nBitPosn;
-	if(bPage)
+	if (bPage)
 	{
 		m_nPixelBackground[nRowPosn][nBytePosn] = nTestByte;
 	}
@@ -459,12 +540,13 @@ void LCD_ClearPixel(U_INT16 nColPosn, U_BYTE nRowPosn, BOOL bPage)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void lcd_WritePixelDataBuffer(void)
 {
 //	U_INT32 nOldPSW;
-	U_BYTE nCmdData[] = {0x00, 0x00};
+	U_BYTE nCmdData[] =
+	{ 0x00, 0x00 };
 
 //	nOldPSW = ReadPriorityStatusAndChange(BOOST_THREAD_PRIORITY);
 
@@ -472,62 +554,61 @@ static void lcd_WritePixelDataBuffer(void)
 	lcd_Write(0x42, &m_nPixelData[0][0], sizeof(m_nPixelData));
 
 //	RestorePriorityStatus(nOldPSW);
-}//end lcd_WritePixelDataBuffer
+}  //end lcd_WritePixelDataBuffer
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void lcd_WritePixelBackgroundBuffer(void)
 {
-//	U_INT32 nOldPSW;
-	U_BYTE nCmdData[] = {0x80, 0x25};
-
-//	nOldPSW = ReadPriorityStatusAndChange(BOOST_THREAD_PRIORITY);
+	U_BYTE nCmdData[] =
+	{
+		0x80, 0x25
+	};
 
 	lcd_Write(0x46, nCmdData, sizeof(nCmdData));
 	lcd_Write(0x42, &m_nPixelBackground[0][0], sizeof(m_nPixelBackground));
 
-//	RestorePriorityStatus(nOldPSW);
-}//end lcd_WritePixelBackgroundBuffer
+}  //end lcd_WritePixelBackgroundBuffer
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void lcd_Write(U_BYTE nCmd, U_BYTE *pData, U_INT32 nLength)
+ *       @details
+ *******************************************************************************/
+static void lcd_Write(U_BYTE nCmd, U_BYTE * pData, U_INT32 nLength)
 {
 	U_INT32 nIndex = 0;
 
 	m_nLcdCommandPort = nCmd;
-	while(nIndex < nLength)
+	while (nIndex < nLength)
 	{
 		m_nLcdDataPort = pData[nIndex++];
 	}
-}//end lcd_Write
+}  //end lcd_Write
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 U_BYTE* GetLcdBackgroundPage(void)
 {
 	return &m_nPixelBackground[0][0];
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 U_BYTE* GetLcdForegroundPage(void)
 {
 	return &m_nPixelData[0][0];
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_Refresh(BOOL bPage)
 {
-	if(LCDRefreshSwitch == true)
+	if (LCDRefreshSwitch == true)
 	{
-		if(bPage)
+		if (bPage)
 		{
 			m_bPaintLcdBackground = true;
 		}
@@ -539,13 +620,13 @@ void LCD_Refresh(BOOL bPage)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_OFF(void)
 {
 
-	memset((void *) m_nPixelData, 0x00, sizeof(m_nPixelData));
-	memset((void *) m_nPixelBackground, 0x00, sizeof(m_nPixelBackground));
+	memset((void*) m_nPixelData, 0x00, sizeof(m_nPixelData));
+	memset((void*) m_nPixelBackground, 0x00, sizeof(m_nPixelBackground));
 	lcd_WritePixelDataBuffer();
 	lcd_WritePixelBackgroundBuffer();
 
@@ -597,12 +678,11 @@ void LCD_OFF(void)
 
 	LCDRefreshSwitch = false;
 
-	//GPIO_WriteBit(LCD_POWER_PORT, LCD_POWER_PIN, Bit_RESET);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void LCD_ON(void)
 {
 	LCDRefreshSwitch = true;
@@ -614,9 +694,9 @@ void LCD_ON(void)
 	LCD_SetBacklight(true);
 	LCD_Init();
 	LcdOnOffFlag = true;
-	if(getCompassDecisionPanelActive() == true)
+	if (getCompassDecisionPanelActive() == true)
 	{
-		DrawCompass();  
+		DrawCompass();
 	}
 	else
 	{
@@ -626,22 +706,22 @@ void LCD_ON(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 BOOL LCDStatus(void)
 {
 	return LcdOnOffFlag;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void GLCD_Line(int X1, int Y1,int X2,int Y2)
+ *       @details
+ *******************************************************************************/
+void GLCD_Line(int X1, int Y1, int X2, int Y2)
 {
 	int CurrentX, CurrentY, Xinc, Yinc, Dx, Dy, TwoDx, TwoDy, TwoDxAccumulatedError, TwoDyAccumulatedError;
 
-	Dx = (X2-X1);
-	Dy = (Y2-Y1);
+	Dx = (X2 - X1);
+	Dy = (Y2 - Y1);
 
 	TwoDx = Dx + Dx;
 	TwoDy = Dy + Dy;
@@ -652,7 +732,7 @@ void GLCD_Line(int X1, int Y1,int X2,int Y2)
 	Xinc = 1;
 	Yinc = 1;
 
-	if(Dx < 0)
+	if (Dx < 0)
 	{
 		Xinc = -1;
 		Dx = -Dx;
@@ -666,7 +746,7 @@ void GLCD_Line(int X1, int Y1,int X2,int Y2)
 		TwoDy = -TwoDy;
 	}
 
-	GLCD_SetPixel(X1,Y1);
+	GLCD_SetPixel(X1, Y1);
 
 	if ((Dx != 0) || (Dy != 0))
 	{
@@ -677,12 +757,12 @@ void GLCD_Line(int X1, int Y1,int X2,int Y2)
 			{
 				CurrentX += Xinc;
 				TwoDxAccumulatedError += TwoDy;
-				if(TwoDxAccumulatedError > Dx)
+				if (TwoDxAccumulatedError > Dx)
 				{
 					CurrentY += Yinc;
 					TwoDxAccumulatedError -= TwoDx;
 				}
-				GLCD_SetPixel(CurrentX,CurrentY);
+				GLCD_SetPixel(CurrentX, CurrentY);
 			} while (CurrentX != X2);
 		}
 		else
@@ -692,89 +772,33 @@ void GLCD_Line(int X1, int Y1,int X2,int Y2)
 			{
 				CurrentY += Yinc;
 				TwoDyAccumulatedError += TwoDx;
-				if(TwoDyAccumulatedError > Dy)
+				if (TwoDyAccumulatedError > Dy)
 				{
 					CurrentX += Xinc;
 					TwoDyAccumulatedError -= TwoDy;
 				}
-				GLCD_SetPixel(CurrentX,CurrentY);
+				GLCD_SetPixel(CurrentX, CurrentY);
 			} while (CurrentY != Y2);
 		}
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void GLCD_SetPixel(unsigned int x,unsigned int y)
+ *       @details
+ *******************************************************************************/
+void GLCD_SetPixel(unsigned int x, unsigned int y)
 {
-//	unsigned char tmp = 0;
-	unsigned int address = SED1335_GRAPHICSTART + (40 * y) + (x/8);
-	U_BYTE * DataAddress = &m_nPixelData[0][0];
+	unsigned int address = SED1335_GRAPHICSTART + (40 * y) + (x / 8);
+	U_BYTE *DataAddress = &m_nPixelData[0][0];
 
-//	GLCD_SetCursorAddress(address);
-//	m_nLcdCommandPort = SED1335_MREAD;
-//	tmp = GLCD_ReadData();
-//	tmp &= (1 << (SED1335_FX - (x % 8)));
 	DataAddress[address] |= (1 << (7 - (x % 8)));
 
-//	GLCD_SetCursorAddress(address);
-//	m_nLcdCommandPort = SED1335_MWRITE;
-//	m_nLcdDataPort = tmp;
-//	DataAddress[address] = tmp;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-//void GLCD_SetCursorAddress(int addr)
-//{
-//   U_BYTE adress;
-//   m_nLcdCommandPort = 0x46;
-//   adress = addr & 0xFF;
-//   m_nLcdDataPort = adress;
-//   adress = addr >> 8;
-//   m_nLcdDataPort = adress;
-//}
-
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-//U_BYTE GLCD_ReadData(void)
-//{
-//  U_BYTE tmp;
-//
-//  GPIO_ResetBits(GPIOD, GPIO_PinSource5);
-//  GPIO_ResetBits(GPIOD, GPIO_PinSource7);
-//  Delay5us();
-//  tmp = TakeData();
-//  GPIO_SetBits(GPIOD, GPIO_PinSource5);
-//  GPIO_SetBits(GPIOD, GPIO_PinSource7);
-//
-//  return tmp;
-//}
-
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-//U_BYTE TakeData(void)
-//   {
-//   U_BYTE data = 0;
-//   data += GPIO_ReadInputDataBit(GPIOD,  GPIO_Pin_14);
-//   data += GPIO_ReadInputDataBit(GPIOD,  GPIO_Pin_15) * 2;
-//   data += GPIO_ReadInputDataBit(GPIOD,  GPIO_Pin_0) * 4;
-//   data += GPIO_ReadInputDataBit(GPIOD,  GPIO_Pin_1) * 8;
-//   data += GPIO_ReadInputDataBit(GPIOE,  GPIO_Pin_7) * 16;
-//   data += GPIO_ReadInputDataBit(GPIOE,  GPIO_Pin_8) * 32;
-//   data += GPIO_ReadInputDataBit(GPIOE,  GPIO_Pin_9) * 64;
-//   data += GPIO_ReadInputDataBit(GPIOE,  GPIO_Pin_10) * 128;
-//   return data;
-//   }
-
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-void GLCD_Circle(U_INT16 cx, U_INT16 cy ,U_INT16 radius)
+ *       @details
+ *******************************************************************************/
+void GLCD_Circle(U_INT16 cx, U_INT16 cy, U_INT16 radius)
 {
 	INT16 x, y, xchange, ychange, radiusError;
 	x = radius;
@@ -782,20 +806,20 @@ void GLCD_Circle(U_INT16 cx, U_INT16 cy ,U_INT16 radius)
 	xchange = 1 - 2 * radius;
 	ychange = 1;
 	radiusError = 0;
-	while(x >= y)
+	while (x >= y)
 	{
-		GLCD_SetPixel(cx+x, cy+y);
-		GLCD_SetPixel(cx-x, cy+y);
-		GLCD_SetPixel(cx-x, cy-y);
-		GLCD_SetPixel(cx+x, cy-y);
-		GLCD_SetPixel(cx+y, cy+x);
-		GLCD_SetPixel(cx-y, cy+x);
-		GLCD_SetPixel(cx-y, cy-x);
-		GLCD_SetPixel(cx+y, cy-x);
+		GLCD_SetPixel(cx + x, cy + y);
+		GLCD_SetPixel(cx - x, cy + y);
+		GLCD_SetPixel(cx - x, cy - y);
+		GLCD_SetPixel(cx + x, cy - y);
+		GLCD_SetPixel(cx + y, cy + x);
+		GLCD_SetPixel(cx - y, cy + x);
+		GLCD_SetPixel(cx - y, cy - x);
+		GLCD_SetPixel(cx + y, cy - x);
 		y++;
 		radiusError += ychange;
 		ychange += 2;
-		if ( 2*radiusError + xchange > 0 )
+		if (2 * radiusError + xchange > 0)
 		{
 			x--;
 			radiusError += xchange;
@@ -805,9 +829,9 @@ void GLCD_Circle(U_INT16 cx, U_INT16 cy ,U_INT16 radius)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void GLCD_SemiCircle(U_INT16 cx, U_INT16 cy ,U_INT16 radius)
+ *       @details
+ *******************************************************************************/
+void GLCD_SemiCircle(U_INT16 cx, U_INT16 cy, U_INT16 radius)
 {
 	INT16 x, y, xchange, ychange, radiusError;
 	x = radius;
@@ -815,20 +839,20 @@ void GLCD_SemiCircle(U_INT16 cx, U_INT16 cy ,U_INT16 radius)
 	xchange = 1 - 2 * radius;
 	ychange = 1;
 	radiusError = 0;
-	while(x >= y)
+	while (x >= y)
 	{
-		GLCD_SetPixel(cx+x, cy+y);
+		GLCD_SetPixel(cx + x, cy + y);
 		//GLCD_SetPixel(cx-x, cy+y);
 		//GLCD_SetPixel(cx-x, cy-y);
-		GLCD_SetPixel(cx+x, cy-y);
-		GLCD_SetPixel(cx+y, cy+x);
+		GLCD_SetPixel(cx + x, cy - y);
+		GLCD_SetPixel(cx + y, cy + x);
 		//GLCD_SetPixel(cx-y, cy+x);
 		//GLCD_SetPixel(cx-y, cy-x);
-		GLCD_SetPixel(cx+y, cy-x);
+		GLCD_SetPixel(cx + y, cy - x);
 		y++;
 		radiusError += ychange;
 		ychange += 2;
-		if ( 2*radiusError + xchange > 0 )
+		if (2 * radiusError + xchange > 0)
 		{
 			x--;
 			radiusError += xchange;
@@ -838,14 +862,14 @@ void GLCD_SemiCircle(U_INT16 cx, U_INT16 cy ,U_INT16 radius)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void clearLCD(void)
 {
-	U_BYTE * DataAddress = &m_nPixelData[0][0];
-	U_BYTE * BackgdAddress = &m_nPixelBackground[0][0];
+	U_BYTE *DataAddress = &m_nPixelData[0][0];
+	U_BYTE *BackgdAddress = &m_nPixelBackground[0][0];
 
-	memset(DataAddress, 0, sizeof(U_BYTE)*MAX_PIXEL_ROW*MAX_PIXEL_COL_STORAGE);
-	memset(BackgdAddress, 0, sizeof(U_BYTE)*MAX_PIXEL_ROW*MAX_PIXEL_COL_STORAGE);
+	memset(DataAddress, 0, sizeof(U_BYTE) * MAX_PIXEL_ROW * MAX_PIXEL_COL_STORAGE);
+	memset(BackgdAddress, 0, sizeof(U_BYTE) * MAX_PIXEL_ROW * MAX_PIXEL_COL_STORAGE);
 }
 

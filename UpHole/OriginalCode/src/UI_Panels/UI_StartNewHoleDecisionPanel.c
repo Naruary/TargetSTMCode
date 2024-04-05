@@ -60,189 +60,172 @@ static TIME_LR tCallStartNewHole = 0;
 
 PANEL StartNewHole_DecisionPanel = {StartNewHole_Decision_Menu, sizeof(StartNewHole_DecisionMenu) / sizeof(MENU_ITEM), StartNewHole_Decision_Paint, StartNewHole_Decision_Show, StartNewHole_Decision_KeyPressed, StartNewHole_Decision_TimerElapsed};
 
-//static GroupBox surveyGroup =
-//{
-//    TXT_SURVEY,
-//    {
-//        { 35, 180 },
-//        { 180, 310 }
-//    },
-//    {
-//        { TXT_HASH, DisplayUint32Value, .uint32 = RECORD_getSelectSurveyRecordNumber },
-//        { TXT_LENGTH,                DisplayReal32Value, .real32 = RECORD_GetSelectSurveyLength },
-//        { TXT_AZIMUTH,               DisplayReal32Value, .real32 = RECORD_GetSelectSurveyAzimuth },
-//        { TXT_INCLINATION,           DisplayReal32Value, .real32 = RECORD_GetSelectSurveyPitch },
-//        { TXT_TOOLFACE,              DisplayReal32Value, .real32 = RECORD_GetSelectSurveyRoll },
-//        { TXT_UPDOWN,                DisplayReal32Value, .real32 = RECORD_GetSelectSurveyNorthing },
-//        { TXT_LEFTRIGHT,             DisplayReal32Value, .real32 = RECORD_GetSelectSurveyEasting },
-//        { TXT_GAMMA,                 DisplayReal32Value, .real32 = RECORD_GetSelectSurveyGamma},
-//        { TXT_DEPTH,                 DisplayReal32Value, .real32 = RECORD_GetSelectSurveyDepth },
-//    }
-//};
 
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void setStartNewHoleDecisionPanelActive(BOOL bFlag)
 {
-    StartNewHole_DecisionPanelActive = bFlag;
+	StartNewHole_DecisionPanelActive = bFlag;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL getStartNewHoleDecisionPanelActive(void)
 {
-    return StartNewHole_DecisionPanelActive;
+	return StartNewHole_DecisionPanelActive;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void StartNewHole_Decision_Paint(TAB_ENTRY* tab)
+static void StartNewHole_Decision_Paint(TAB_ENTRY * tab)
 {
-    StartNewHole_Decision_Show(tab);
-    TabWindowPaint(tab);
-    //GroupBoxPaint(&surveyGroup);
-    ShowStartNewHoleDecisionMessage("Are you sure. Start New Borehole?");
-    ShowStartNewHoleInfoMessage("Current Borehole will be saved.", "Remember to SET correct JOB","values before taking any survey.");
+	StartNewHole_Decision_Show(tab);
+	TabWindowPaint(tab);
+	ShowStartNewHoleDecisionMessage("Are you sure. Start New Borehole?");
+	ShowStartNewHoleInfoMessage("Current Borehole will be saved.", "Remember to SET correct JOB", "values before taking any survey.");
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void StartNewHole_Decision_Show(TAB_ENTRY* tab)
+static void StartNewHole_Decision_Show(TAB_ENTRY * tab)
 {
-    MENU_ITEM* item = tab->MenuItem(tab, 0);
-    UI_SetActiveFrame(item->labelFrame);
-    SetActiveLabelFrame(item->labelFrame->eID);
+	MENU_ITEM *item = tab->MenuItem(tab, 0);
+	UI_SetActiveFrame(item->labelFrame);
+	SetActiveLabelFrame(item->labelFrame->eID);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void StartNewHole_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void StartNewHole_Decision_KeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-    switch(key)
-    {
+	tab = tab;
+
+	switch (key)
+	{
 		default:
 			break;
 
-        case BUTTON_DASH:
-        {
-            setStartNewHoleDecisionPanelActive(false);
-            RepaintNow(&WindowFrame);
-            break;
-        }
-    }
+		case BUTTON_DASH:
+		{
+			setStartNewHoleDecisionPanelActive(false);
+			RepaintNow(&WindowFrame);
+			break;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void StartNewHole_Decision_TimerElapsed(TAB_ENTRY* tab)
+static void StartNewHole_Decision_TimerElapsed(TAB_ENTRY * tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 static MENU_ITEM* StartNewHole_Decision_Menu(U_BYTE index)
 {
-    return &StartNewHole_DecisionMenu[index];
+	return &StartNewHole_DecisionMenu[index];
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void Yes_StartNewHole_Decision(MENU_ITEM* item)
+static void Yes_StartNewHole_Decision(MENU_ITEM * item)
 {
-    setStartNewHoleDecisionPanelActive(false);
-    RECORD_InitNewHole();
-    SetLoggingState(START_NEW_HOLE);
-    tCallStartNewHole = ElapsedTimeLowRes(0);
-    //RecordDataPanelInit();
-    RepaintNow(&WindowFrame);
-    //PaintNow(&HomeFrame);
+	item = item;
+
+	setStartNewHoleDecisionPanelActive(false);
+	RECORD_InitNewHole();
+	SetLoggingState(START_NEW_HOLE);
+	tCallStartNewHole = ElapsedTimeLowRes(0);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void No_StartNewHole_Decision(MENU_ITEM* item)
+static void No_StartNewHole_Decision(MENU_ITEM * item)
 {
-    //RECORD_InitBranchParam();
-    setStartNewHoleDecisionPanelActive(false);
-    SetLoggingState(LOGGING);
-    RepaintNow(&WindowFrame);
-    SetActiveLabelFrame(LABEL3);
+	item = item;
+
+	setStartNewHoleDecisionPanelActive(false);
+	SetLoggingState(LOGGING);
+	RepaintNow(&WindowFrame);
+	SetActiveLabelFrame(LABEL3);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 TIME_LR GetStartNewHoleTimer(void)
 {
-  return tCallStartNewHole;
+	return tCallStartNewHole;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowStartNewHoleDecisionMessage(char* message)
+void ShowStartNewHoleDecisionMessage(char * message)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message, &area);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowStartNewHoleInfoMessage(char* message1, char* message2, char* message3)
+void ShowStartNewHoleInfoMessage(char * message1, char * message2, char * message3)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message1, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
-    UI_DisplayStringCentered(message2, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
-    UI_DisplayStringCentered(message3, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message1, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
+	UI_DisplayStringCentered(message2, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
+	UI_DisplayStringCentered(message3, &area);
 }

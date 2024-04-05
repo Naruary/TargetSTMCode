@@ -1,17 +1,16 @@
 /*******************************************************************************
-*       @brief      Implementation file for the UI TAB Frames section on the
-*                   screen from Plots
-*       @file       Uphole/src/Graph_Plot/Tab_Graph_Frame.c
-*       @date       Feb 2016
-*       @copyright  COPYRIGHT (c) 2016 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the UI TAB Frames section on the
+ *                   screen from Plots
+ *       @file       Uphole/src/Graph_Plot/Tab_Graph_Frame.c
+ *       @date       Feb 2016
+ *       @copyright  COPYRIGHT (c) 2016 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "lcd.h"
@@ -37,85 +36,73 @@
 //      FUNCTION PROTOTYPES                                                   //
 //============================================================================//
 
-static MENU_ITEM* GetPlanMenuItem(TAB_ENTRY* tab, U_BYTE index);
-static U_BYTE GetPlanMenuSize(TAB_ENTRY* tab);
-static void PlanTabPaint(TAB_ENTRY* tab);
-static void PlanTabMakeRequest(TAB_ENTRY* tab);
-static void PlanTabShow(TAB_ENTRY* tab);
-//static void PlanTabScroll(TAB_ENTRY* tab, BUTTON_VALUE key);
+static MENU_ITEM* GetPlanMenuItem(TAB_ENTRY * tab, U_BYTE index);
+static U_BYTE GetPlanMenuSize(TAB_ENTRY * tab);
+static void PlanTabPaint(TAB_ENTRY * tab);
+static void PlanTabMakeRequest(TAB_ENTRY * tab);
+static void PlanTabShow(TAB_ENTRY * tab);
 
 //============================================================================//
 //      DATA DECLARATIONS                                                     //
 //============================================================================//
 
-const TAB_ENTRY PlanTab = { &TabFrame6, TXT_PLAN, ShowTab, GetPlanMenuItem, GetPlanMenuSize, PlanTabPaint, PlanTabShow, PlanTabMakeRequest};
-//PANEL PlanScroll = {0,0,PlanTabScroll};//GetEmptyMenu
+const TAB_ENTRY PlanTab =
+{ &TabFrame6, TXT_PLAN, ShowTab, GetPlanMenuItem, GetPlanMenuSize, PlanTabPaint, PlanTabShow, PlanTabMakeRequest };
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static MENU_ITEM* GetPlanMenuItem(TAB_ENTRY* tab, U_BYTE index)
+static MENU_ITEM* GetPlanMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
-    return NULL ;
+	tab = tab;
+	index = index;
+	return NULL;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static U_BYTE GetPlanMenuSize(TAB_ENTRY* tab)
+static U_BYTE GetPlanMenuSize(TAB_ENTRY * tab)
 {
-//    return MENU_SIZE;
-      return 0;
+	tab = tab;
+	return 0;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void PlanTabPaint(TAB_ENTRY* tab)
+static void PlanTabPaint(TAB_ENTRY * tab)
 {
-    TabWindowPaint(tab);
-    DrawPlanGraph();
+	TabWindowPaint(tab);
+	DrawPlanGraph();
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void PlanTabMakeRequest(TAB_ENTRY* tab)
-{           
-}
-/*
-void PlanTabScroll(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void PlanTabMakeRequest(TAB_ENTRY * tab)
 {
-    switch (key)
-    {
-    case BUTTON_UP:
-               Xscale = 2;
-    case BUTTON_DOWN:
-               Xscale = 1;
-    default:
-    {}
-    }
-    RepaintNow(&WindowFrame);     
+	tab = tab;
 }
-*/
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void PlanTabShow(TAB_ENTRY* tab)
+static void PlanTabShow(TAB_ENTRY * tab)
 {
-    PaintNow(&HomeFrame);
+	tab = tab;
+	PaintNow(&HomeFrame);
 }
 

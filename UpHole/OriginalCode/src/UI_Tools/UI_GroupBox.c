@@ -58,13 +58,13 @@ static char titleUpper[TITLE_SIZE];
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-char* DisplayInt16Value(DisplayField* field)
+ *       @details
+ *******************************************************************************/
+char* DisplayInt16Value(DisplayField * field)
 {
 	if (LoggingManager_IsConnected()) // whs 10Dec2021 yitran modem is connected to downhole
 	{
-		if(GetSurveyCommsState() == false)
+		if (GetSurveyCommsState() == false)
 		{
 			// if comms but no survey data yet, dashes
 			return "---";
@@ -72,36 +72,22 @@ char* DisplayInt16Value(DisplayField* field)
 		else
 		{
 			INT16 Value = field->int16();
-			snprintf(strValue, 30, "%4.1f", (REAL32)Value / 10.0);
+			snprintf(strValue, 30, "%4.1f", (REAL32) Value / 10.0);
 			return strValue;
 		}
 	}
 	// if no comms at all, exxes
 	return "xxx";
 }
-// whs 3Dec2021 added the following Display fields to output XXXs in place of data on check survey panel
-// had some issues stabbed it out .. left here for future ref.  used by MWD_LoggingPanel.c 
-#if 0 
-char* DisplayInt16ValueXXX(DisplayField* field)
-{
-	return "xxx";
-}
 
-char* DisplayIntU16ValueXXX(DisplayField* field)
-{
-	return "xxx";
-}
-  
-#endif
-          
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-char* DisplayUint16Value(DisplayField* field)
+ *       @details
+ *******************************************************************************/
+char* DisplayUint16Value(DisplayField * field)
 {
 	if (LoggingManager_IsConnected()) //whs 10Dec2021 yitan modem is connected to the downhole
 	{
-		if(GetSurveyCommsState() == false)
+		if (GetSurveyCommsState() == false)
 		{
 			// if comms but no survey data yet, dashes
 			return "---";
@@ -116,36 +102,36 @@ char* DisplayUint16Value(DisplayField* field)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-char* DisplayReal32Value(DisplayField* field)
+ *       @details
+ *******************************************************************************/
+char* DisplayReal32Value(DisplayField * field)
 {
 	snprintf(strValue, 30, "%4.1f", field->real32());
 	return strValue;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-char* DisplaySurveyInt16Value(DisplayField* field)
+ *       @details
+ *******************************************************************************/
+char* DisplaySurveyInt16Value(DisplayField * field)
 {
 	snprintf(strValue, 30, "%d", field->int16());
 	return strValue;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-char* DisplayUint32Value(DisplayField* field)
+ *       @details
+ *******************************************************************************/
+char* DisplayUint32Value(DisplayField * field)
 {
 	snprintf(strValue, 30, "%lu", field->uint32());
 	return strValue;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static char* ToUppercase(char* string, char* s)
+ *       @details
+ *******************************************************************************/
+static char* ToUppercase(char * string, char * s)
 {
 	memset(s, 0, TITLE_SIZE);
 	for (int i = 0; string[i]; i++)
@@ -163,17 +149,17 @@ static char* ToUppercase(char* string, char* s)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_INT16 GetMaxLabelSize(GroupBox* box)
+ *       @details
+ *******************************************************************************/
+static U_INT16 GetMaxLabelSize(GroupBox * box)
 {
 	int loopy;
 	U_INT16 maxSize = 0;
 	U_INT16 labelSize;
 
-	for(loopy = 0; loopy < MAX_FIELDS; loopy++)
+	for (loopy = 0; loopy < MAX_FIELDS; loopy++)
 	{
-		if(box->Fields[loopy].Label == 0)
+		if (box->Fields[loopy].Label == 0)
 		{
 			break;
 		}
@@ -187,21 +173,21 @@ static U_INT16 GetMaxLabelSize(GroupBox* box)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void GroupBoxPaint(GroupBox* box)
+ *       @details
+ *******************************************************************************/
+void GroupBoxPaint(GroupBox * box)
 {
 	int loopy;
 	U_INT16 labelSize = GetMaxLabelSize(box) + 6;
 	U_INT16 separatorSize = UI_GetTextSize(FIELD_SEPARATOR);
-	char* title = ToUppercase(GetTxtString(box->Title), titleUpper);
+	char *title = ToUppercase(GetTxtString(box->Title), titleUpper);
 	U_INT16 titleSize = UI_GetTextSize(title);
 	RECT fieldArea;
 	fieldArea.ptTopLeft.nRow = box->Area.ptTopLeft.nRow + (DISPLAY_FIELD_HEIGHT / 2) + 3;
 	fieldArea.ptBottomRight.nRow = box->Area.ptTopLeft.nRow + DISPLAY_FIELD_HEIGHT;
 	fieldArea.ptTopLeft.nCol = box->Area.ptTopLeft.nCol;
 	fieldArea.ptBottomRight.nCol = (box->Area.ptTopLeft.nCol + box->Area.ptBottomRight.nCol) / 2;
-	for(loopy = 0; loopy < MAX_FIELDS && box->Fields[loopy].Label != 0; loopy++)
+	for (loopy = 0; loopy < MAX_FIELDS && box->Fields[loopy].Label != 0; loopy++)
 	{
 		fieldArea.ptTopLeft.nCol = box->Area.ptTopLeft.nCol;
 		fieldArea.ptBottomRight.nCol = box->Area.ptTopLeft.nCol + labelSize - 1;

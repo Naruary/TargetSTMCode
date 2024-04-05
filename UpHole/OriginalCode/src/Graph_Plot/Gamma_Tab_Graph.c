@@ -1,17 +1,16 @@
 /*******************************************************************************
-*       @brief      Implementation file for the UI TAB Frames section on the
-*                   screen from Plots
-*       @file       Uphole/src/Graph_Plot/Gamma_Tab_Graph.c
-*       @date       Feb 2016
-*       @copyright  COPYRIGHT (c) 2016 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the UI TAB Frames section on the
+ *                   screen from Plots
+ *       @file       Uphole/src/Graph_Plot/Gamma_Tab_Graph.c
+ *       @date       Feb 2016
+ *       @copyright  COPYRIGHT (c) 2016 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "lcd.h"
@@ -36,68 +35,75 @@
 //      FUNCTION PROTOTYPES                                                   //
 //============================================================================//
 
-static MENU_ITEM* GetGammaMenuItem(TAB_ENTRY* tab, U_BYTE index);
-static U_BYTE GetGammaMenuSize(TAB_ENTRY* tab);
-static void GammaTabPaint(TAB_ENTRY* tab);
-static void GammaTabMakeRequest(TAB_ENTRY* tab);
-static void GammaTabShow(TAB_ENTRY* tab);
+static MENU_ITEM* GetGammaMenuItem(TAB_ENTRY *tab, U_BYTE index);
+static U_BYTE GetGammaMenuSize(TAB_ENTRY *tab);
+static void GammaTabPaint(TAB_ENTRY *tab);
+static void GammaTabMakeRequest(TAB_ENTRY *tab);
+static void GammaTabShow(TAB_ENTRY *tab);
 
 //============================================================================//
 //      DATA DECLARATIONS                                                     //
 //============================================================================//
 
-const TAB_ENTRY GammaTab = { &TabFrame8, TXT_GAMMAPLT, ShowTab, GetGammaMenuItem, GetGammaMenuSize, GammaTabPaint, GammaTabShow, GammaTabMakeRequest};
+const TAB_ENTRY GammaTab = { &TabFrame8, TXT_GAMMAPLT, ShowTab,
+		GetGammaMenuItem, GetGammaMenuSize, GammaTabPaint, GammaTabShow,
+		GammaTabMakeRequest };
 
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static MENU_ITEM* GetGammaMenuItem(TAB_ENTRY* tab, U_BYTE index)
+static MENU_ITEM* GetGammaMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
-    return NULL ;
+	tab = tab;
+	index = index;
+	return NULL;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static U_BYTE GetGammaMenuSize(TAB_ENTRY* tab)
+static U_BYTE GetGammaMenuSize(TAB_ENTRY * tab)
 {
-     return 0;
+	tab = tab;
+	return 0;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void GammaTabPaint(TAB_ENTRY* tab)
+static void GammaTabPaint(TAB_ENTRY * tab)
 {
-    TabWindowPaint(tab);
-    DrawGammaGraph();
+	TabWindowPaint(tab);
+	DrawGammaGraph();
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void GammaTabMakeRequest(TAB_ENTRY* tab)
+static void GammaTabMakeRequest(TAB_ENTRY * tab)
 {
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void GammaTabShow(TAB_ENTRY* tab)
+static void GammaTabShow(TAB_ENTRY * tab)
 {
-    PaintNow(&HomeFrame);
+	tab = tab;
+	PaintNow(&HomeFrame);
 }

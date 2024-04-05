@@ -24,7 +24,6 @@
 #include "UI_Frame.h"
 #include "UI_LCDScreenInversion.h"
 #include "UI_api.h"
-//#include "UI_ChangePipeLengthDecisionPanel.h"
 #include "UI_EnterSurveyDecisionPanel.h"
 #include "UI_EnterSurvey.h"
 #include "UI_RecordDataPanel.h"
@@ -66,163 +65,154 @@ PANEL EnterSurvey_DecisionPanel = {EnterSurvey_Decision_Menu, sizeof(EnterSurvey
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void setEnterSurveyDecisionPanelActive(BOOL bFlag)
 {
-    EnterSurvey_DecisionPanelActive = bFlag;
+	EnterSurvey_DecisionPanelActive = bFlag;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 BOOL getEnterSurveyDecisionPanelActive(void)
 {
-    return EnterSurvey_DecisionPanelActive;    
+	return EnterSurvey_DecisionPanelActive;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterSurvey_Decision_Paint(TAB_ENTRY* tab)
+static void EnterSurvey_Decision_Paint(TAB_ENTRY * tab)
 {
-    EnterSurvey_Decision_Show(tab);
-    TabWindowPaint(tab);
-    //GroupBoxPaint(&surveyGroup);
-    ShowEnterSurveyDecisionMessage("Are you sure. Enter Survey(s) Manually?");
-    ShowEnterSurveyInfoMessage("Enter Survey(s) Manually.", "Remember: DO NOT RESTART Uphole box","until the next survey is taken.");
+	EnterSurvey_Decision_Show(tab);
+	TabWindowPaint(tab);
+	ShowEnterSurveyDecisionMessage("Are you sure. Enter Survey(s) Manually?");
+	ShowEnterSurveyInfoMessage("Enter Survey(s) Manually.", "Remember: DO NOT RESTART Uphole box", "until the next survey is taken.");
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterSurvey_Decision_Show(TAB_ENTRY* tab)
+static void EnterSurvey_Decision_Show(TAB_ENTRY * tab)
 {
-    MENU_ITEM* item = tab->MenuItem(tab, 0);
-    UI_SetActiveFrame(item->labelFrame);
-    SetActiveLabelFrame(item->labelFrame->eID);
+	MENU_ITEM *item = tab->MenuItem(tab, 0);
+	UI_SetActiveFrame(item->labelFrame);
+	SetActiveLabelFrame(item->labelFrame->eID);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterSurvey_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+static void EnterSurvey_Decision_KeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-    switch(key)
-    {
+	tab = tab;
+
+	switch (key)
+	{
 		default:
 			break;
 
-        case BUTTON_DASH:
-        {
-            setEnterSurveyDecisionPanelActive(false);
-            RepaintNow(&WindowFrame);
-            break;
-        }
-    }
+		case BUTTON_DASH:
+		{
+			setEnterSurveyDecisionPanelActive(false);
+			RepaintNow(&WindowFrame);
+			break;
+		}
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void EnterSurvey_Decision_TimerElapsed(TAB_ENTRY* tab)
+static void EnterSurvey_Decision_TimerElapsed(TAB_ENTRY * tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 static MENU_ITEM* EnterSurvey_Decision_Menu(U_BYTE index)
 {
-    return &EnterSurvey_DecisionMenu[index];
+	return &EnterSurvey_DecisionMenu[index];
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void Yes_EnterSurvey_Decision(MENU_ITEM* item)
+static void Yes_EnterSurvey_Decision(MENU_ITEM * item)
 {
-    setEnterSurveyDecisionPanelActive(false);
-    setEnterSurveyPanelActive(true);
-    //RECORD_InitNewHole();
-    //SetLoggingState(START_NEW_HOLE);
-    //tCallChangePipeLength = ElapsedTimeLowRes(0);
-    RepaintNow(&WindowFrame);
+	item = item;
+
+	setEnterSurveyDecisionPanelActive(false);
+	setEnterSurveyPanelActive(true);
+	RepaintNow(&WindowFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void No_EnterSurvey_Decision(MENU_ITEM* item)
+static void No_EnterSurvey_Decision(MENU_ITEM * item)
 {
-    //RECORD_InitBranchParam();
-    setEnterSurveyDecisionPanelActive(false);
-    SetLoggingState(LOGGING);
-    RepaintNow(&WindowFrame);
-    SetActiveLabelFrame(LABEL5);
+	item = item;
+
+	setEnterSurveyDecisionPanelActive(false);
+	SetLoggingState(LOGGING);
+	RepaintNow(&WindowFrame);
+	SetActiveLabelFrame(LABEL5);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
-/*
-TIME_LR GetEnterSurveyTimer(void)
-{
-  return tCallEnterSurvey;
-}
-*/
-/*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowEnterSurveyDecisionMessage(char* message)
+void ShowEnterSurveyDecisionMessage(char * message)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 70;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message, &area);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void ShowEnterSurveyInfoMessage(char* message1, char* message2, char* message3)
+void ShowEnterSurveyInfoMessage(char * message1, char * message2, char * message3)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message1, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
-    UI_DisplayStringCentered(message2, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
-    UI_DisplayStringCentered(message3, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 140;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message1, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
+	UI_DisplayStringCentered(message2, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 60;
+	UI_DisplayStringCentered(message3, &area);
 }

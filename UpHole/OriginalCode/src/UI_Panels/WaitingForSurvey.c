@@ -43,8 +43,8 @@ PANEL WaitingPanel = { GetEmptyMenu, 0, WaitingPaint };
 *       @details
 *******************************************************************************/
 
-static void WaitingPaint(TAB_ENTRY* tab)
+static void WaitingPaint(TAB_ENTRY * tab)
 {
-    TabWindowPaint(tab);
-    ShowOperationStatusMessage("Please Wait...");
+	TabWindowPaint(tab);
+	ShowOperationStatusMessage("Please Wait...");
 }

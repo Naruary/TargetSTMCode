@@ -1,17 +1,16 @@
 /*******************************************************************************
-*       @brief      Implementation file for the UI TAB Frames section on the
-*                   screen from Plots
-*       @file       Uphole/src/Graph_Plot/SideGamma_Tab_Graph.c
-*       @date       Feb 2016
-*       @copyright  COPYRIGHT (c) 2016 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the UI TAB Frames section on the
+ *                   screen from Plots
+ *       @file       Uphole/src/Graph_Plot/SideGamma_Tab_Graph.c
+ *       @date       Feb 2016
+ *       @copyright  COPYRIGHT (c) 2016 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "lcd.h"
@@ -35,66 +34,73 @@
 //      FUNCTION PROTOTYPES                                                   //
 //============================================================================//
 
-static MENU_ITEM* GetSideGammaMenuItem(TAB_ENTRY* tab, U_BYTE index);
-static U_BYTE GetSideGammaMenuSize(TAB_ENTRY* tab);
-static void SideGammaTabPaint(TAB_ENTRY* tab);
-static void SideGammaTabMakeRequest(TAB_ENTRY* tab);
-static void SideGammaTabShow(TAB_ENTRY* tab);
+static MENU_ITEM* GetSideGammaMenuItem(TAB_ENTRY *tab, U_BYTE index);
+static U_BYTE GetSideGammaMenuSize(TAB_ENTRY *tab);
+static void SideGammaTabPaint(TAB_ENTRY *tab);
+static void SideGammaTabMakeRequest(TAB_ENTRY *tab);
+static void SideGammaTabShow(TAB_ENTRY *tab);
 
 //============================================================================//
 //      DATA DECLARATIONS                                                     //
 //============================================================================//
 
-const TAB_ENTRY SideGammaTab = { &TabFrame9, TXT_SIDEGAMMA, ShowTab, GetSideGammaMenuItem, GetSideGammaMenuSize, SideGammaTabPaint, SideGammaTabShow, SideGammaTabMakeRequest};
+const TAB_ENTRY SideGammaTab = { &TabFrame9, TXT_SIDEGAMMA, ShowTab,
+		GetSideGammaMenuItem, GetSideGammaMenuSize, SideGammaTabPaint,
+		SideGammaTabShow, SideGammaTabMakeRequest };
 
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static MENU_ITEM* GetSideGammaMenuItem(TAB_ENTRY* tab, U_BYTE index)
+ *       @details
+ *******************************************************************************/
+static MENU_ITEM* GetSideGammaMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
-    return NULL ;
+	tab = tab;
+	index = index;
+	return NULL;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static U_BYTE GetSideGammaMenuSize(TAB_ENTRY* tab)
+static U_BYTE GetSideGammaMenuSize(TAB_ENTRY * tab)
 {
-     return 0 ;
+	tab = tab;
+	return 0;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SideGammaTabPaint(TAB_ENTRY* tab)
+static void SideGammaTabPaint(TAB_ENTRY * tab)
 {
-    TabWindowPaint(tab);
-    DrawSideGammaGraph();
+	TabWindowPaint(tab);
+	DrawSideGammaGraph();
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SideGammaTabMakeRequest(TAB_ENTRY* tab)
+static void SideGammaTabMakeRequest(TAB_ENTRY * tab)
 {
+	tab = tab;
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void SideGammaTabShow(TAB_ENTRY* tab)
+static void SideGammaTabShow(TAB_ENTRY * tab)
 {
-    PaintNow(&HomeFrame);
+	tab = tab;
+	PaintNow(&HomeFrame);
 }

@@ -51,9 +51,6 @@ static void Compass_Decision_TimerElapsed(TAB_ENTRY* tab);
 
 
 
-//static MENU_ITEM* GetMenu(U_BYTE index);
-//#define MENU_SIZE (sizeof(menuGamma) / sizeof(MENU_ITEM))
-
 //============================================================================//
 //      DATA DEFINITIONS                                                      //
 //============================================================================//
@@ -62,7 +59,6 @@ BOOL Compass_DecisionPanelActive = false;
 static TIME_LR tCallCompass = 0;
 PANEL Compass_DecisionPanel = {GetEmptyMenu, 0, Compass_Decision_Paint, Compass_Decision_Show, Compass_Decision_KeyPressed, Compass_Decision_TimerElapsed};
 
-//GetEmptyMenu
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
@@ -94,8 +90,7 @@ BOOL getCompassDecisionPanelActive(void)
 *******************************************************************************/
 static void Compass_Decision_Paint(TAB_ENTRY* tab)
 {
-//	tCallCompass = ElapsedTimeLowRes(0);
-//	DrawCompass();
+	tab = tab;
 }
 
 /*******************************************************************************
@@ -103,6 +98,7 @@ static void Compass_Decision_Paint(TAB_ENTRY* tab)
 *******************************************************************************/
 static void Compass_Decision_Show(TAB_ENTRY* tab)
 {
+	tab = tab;
 }
 
 /*******************************************************************************
@@ -110,6 +106,7 @@ static void Compass_Decision_Show(TAB_ENTRY* tab)
 *******************************************************************************/
 static void Compass_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
 {
+	tab = tab;
 	switch(key)
 	{
 		default:
@@ -125,6 +122,7 @@ static void Compass_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
 *******************************************************************************/
 static void Compass_Decision_TimerElapsed(TAB_ENTRY* tab)
 {
+	tab = tab;
     DrawCompass();
 }
 

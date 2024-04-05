@@ -117,19 +117,19 @@ BUTTON_VALUE convert_to_button[BUTTON_QUANTITY] = {
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   KEYPAD_InitPins()
-;
-; Description:
-;   Sets up keypad driver pins as inputs or output as required
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   KEYPAD_InitPins()
+ ;
+ ; Description:
+ ;   Sets up keypad driver pins as inputs or output as required
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void KEYPAD_InitPins(void)
 {
 	U_BYTE index;
@@ -150,7 +150,7 @@ void KEYPAD_InitPins(void)
 	GPIO_InitStructure.GPIO_Pin = (ROW_THREE | ROW_FOUR);
 	GPIO_Init(ROW_PORT_34, &GPIO_InitStructure);
 	GPIO_WriteBit(ROW_PORT_34, (ROW_THREE | ROW_FOUR), Bit_SET);
-	for(index=0; index<BUTTON_QUANTITY; index++)
+	for (index = 0; index < BUTTON_QUANTITY; index++)
 	{
 		key_data[index].debounce = 0;
 		key_data[index].pressed = 0;
@@ -159,63 +159,64 @@ void KEYPAD_InitPins(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   KeyPadManager()
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   KeyPadManager()
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void KeyPadManager(void)
 {
 	static U_BYTE index = 0;
 	static U_INT32 m_nKeypadRowData = 0ul;
 	static U_BYTE m_nKeypadSampleState = 0;
-	static U_BYTE  m_nSwitchScanResult  = 0;
+	static U_BYTE m_nSwitchScanResult = 0;
 
 	// get here once per mS from the systick
-	switch(m_nKeypadSampleState)
+	switch (m_nKeypadSampleState)
 	{
 		case 0:
 			GPIO_ResetBits(m_nKeypadRowDriver[index].GPIOx, m_nKeypadRowDriver[index].GPIO_Pin);
 			m_nKeypadRowData |= ((GPIO_ReadInputData(COL_PORT) & COL_MASK) << m_nKeypadRowDriver[index].nShiftCount);
 			GPIO_SetBits(m_nKeypadRowDriver[index].GPIOx, m_nKeypadRowDriver[index].GPIO_Pin);
-			if((++index) >= MAX_KEYPAD_ROWS)
+			if ((++index) >= MAX_KEYPAD_ROWS)
 			{
 				m_nKeypadRowData ^= 0x0000FFFFul;
 				m_nKeypadSampleState++;
 			}
 			break;
 		case 1:
-			m_nSwitchScanResult = ((U_BYTE)(~((GPIO_ReadInputData(SW_PORT) & SW_MASK) >> SW_SHIFT)));
-			if(m_nSwitchScanResult & 0x0001)
+			m_nSwitchScanResult = ((U_BYTE) (~((GPIO_ReadInputData(SW_PORT) & SW_MASK) >> SW_SHIFT)));
+			if (m_nSwitchScanResult & 0x0001)
 			{
 				m_nKeypadRowData |= 0x10000ul;
 			}
-			if(m_nSwitchScanResult & 0x0002)
+			if (m_nSwitchScanResult & 0x0002)
 			{
 				m_nKeypadRowData |= 0x20000ul;
 			}
 			m_nKeypadSampleState++;
 			break;
 		case 2:
-			for(index=0; index<BUTTON_QUANTITY; index++)
+			for (index = 0; index < BUTTON_QUANTITY; index++)
 			{
-				if(m_nKeypadRowData & (1ul << index))
+				if (m_nKeypadRowData & (1ul << index))
 				{
-					if(key_data[index].debounce < 0xFF)
+					if (key_data[index].debounce < 0xFF)
+					{
 						key_data[index].debounce++;
+					}
 				}
 				else
 				{
 					key_data[index].debounce = 0;
 				}
-				key_data[index].pressed =
-					(key_data[index].debounce > KeyDebounceCount) ? 1 : 0;
-				if((key_data[index].pressed_last==0) && (key_data[index].pressed==1))
+				key_data[index].pressed = (key_data[index].debounce > KeyDebounceCount) ? 1 : 0;
+				if ((key_data[index].pressed_last == 0) && (key_data[index].pressed == 1))
 				{
 					AddButtonEvent(convert_to_button[index]);
 					// on any keypress, if compass is shown, unshow it..
-					if(getCompassDecisionPanelActive() == true)
+					if (getCompassDecisionPanelActive() == true)
 					{
 						setCompassDecisionPanelActive(false);
 					}
@@ -228,7 +229,7 @@ void KeyPadManager(void)
 		case 4:
 		case 5:
 		case 6:
-			if(m_nKeypadSampleState >= 6)
+			if (m_nKeypadSampleState >= 6)
 			{
 				index = 0;
 				m_nKeypadRowData = 0ul;
@@ -239,17 +240,19 @@ void KeyPadManager(void)
 				m_nKeypadSampleState++;
 			}
 			break;
+		default:
+			break;
 	}
 }
 INT16 GetDebounceTime(void)
 {
-    return KeyDebounceCount;
+	return KeyDebounceCount;
 }
 
 void SetDebounceTime(INT16 value)
 {
-    if(value >= 1 && value <= 20)
-    {
-        KeyDebounceCount = value;
-    }
+	if (value >= 1 && value <= 20)
+	{
+		KeyDebounceCount = value;
+	}
 }

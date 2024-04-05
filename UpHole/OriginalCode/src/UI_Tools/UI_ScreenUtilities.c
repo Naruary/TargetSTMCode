@@ -33,67 +33,68 @@ static BOOL m_bStartupComplete;
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   UI_SetStartupComplete()
-;
-; Description:
-;   sets whether the startup sequence is complete
-;
-; Parameter:
-;   BOOL - true - startup complete.  false - startup no complete
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   UI_SetStartupComplete()
+ ;
+ ; Description:
+ ;   sets whether the startup sequence is complete
+ ;
+ ; Parameter:
+ ;   BOOL - true - startup complete.  false - startup no complete
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void UI_SetStartupComplete(BOOL bComplete)
 {
 	m_bStartupComplete = bComplete;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   UI_StartupComplete()
-;
-; Description:
-;   Gets whether the startup sequence is complete
-;
-; Return:
-;   BOOL - true - startup complete.  false - startup not complete
-;
-; Reentrancy:
-;   No
-;
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   UI_StartupComplete()
+ ;
+ ; Description:
+ ;   Gets whether the startup sequence is complete
+ ;
+ ; Return:
+ ;   BOOL - true - startup complete.  false - startup not complete
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 BOOL UI_StartupComplete(void)
 {
 	return m_bStartupComplete;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-BOOL ShowTab(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+BOOL ShowTab(TAB_ENTRY * tab)
 {
+	tab = tab;
 	return (true);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void UI_Initialize(void)
 {
 	SetAllowKeypadActions(false);
 	UI_SetStartupComplete(false);
-	for(FRAME_ID i=NO_FRAME; i<LAST_FRAME; i++)
+	for (FRAME_ID i = NO_FRAME; i < LAST_FRAME; i++)
 	{
-		FRAME* frame = (FRAME*)GetFrame(i);
+		FRAME *frame = (FRAME*) GetFrame(i);
 		if (frame->Initialize)
 		{
 			frame->Initialize(frame);
@@ -104,9 +105,9 @@ void UI_Initialize(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void EditValue(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void EditValue(MENU_ITEM * item)
 {
 	UI_SetActiveFrame(item->valueFrame);
 	SetActiveValueFrame(item->valueFrame->eID);

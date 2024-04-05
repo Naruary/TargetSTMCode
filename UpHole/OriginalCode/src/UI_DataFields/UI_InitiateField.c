@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Source file for UI_BooleanField.c.
-*       @file       Uphole/src/UI_DataFields/UI_InitiateField.c
-*       @date       January 2019
-*       @copyright  COPYRIGHT (c) 2019 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Source file for UI_BooleanField.c.
+ *       @file       Uphole/src/UI_DataFields/UI_InitiateField.c
+ *       @date       January 2019
+ *       @copyright  COPYRIGHT (c) 2019 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,19 +25,19 @@
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static char* InitiateFormat(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+static char* InitiateFormat(MENU_ITEM * item)
 {
 	return GetTxtString(item->boolean.value ? TXT_ON : TXT_OFF);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void InitiateDisplay(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void InitiateDisplay(MENU_ITEM * item)
 {
-	FRAME* frame = (FRAME*) item->valueFrame;
+	FRAME *frame = (FRAME*) item->valueFrame;
 
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	if (!item->editing)
@@ -49,17 +48,17 @@ void InitiateDisplay(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void InitiateBeginEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void InitiateBeginEdit(MENU_ITEM * item)
 {
 	item->editing = true;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static RECT* GetFieldRect(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+static RECT* GetFieldRect(MENU_ITEM * item)
 {
 	static RECT rect;
 	U_INT16 xSize = UI_GetTextSize(InitiateFormat(item));
@@ -72,17 +71,17 @@ static RECT* GetFieldRect(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void InitiateHighlight(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void InitiateHighlight(MENU_ITEM * item)
 {
 	UI_InvertLCDArea(GetFieldRect(item), LCD_FOREGROUND_PAGE);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void InitiateFinishEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void InitiateFinishEdit(MENU_ITEM * item)
 {
 	item->boolean.SetValue(item->boolean.value);
 	item->editing = false;
@@ -90,9 +89,9 @@ void InitiateFinishEdit(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void InitiateKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
+ *       @details
+ *******************************************************************************/
+void InitiateKeyPressed(MENU_ITEM * item, BUTTON_VALUE keyPressed)
 {
 	switch (keyPressed)
 	{
@@ -111,7 +110,7 @@ void InitiateKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
 		case BUTTON_PERIOD:
 		case BUTTON_DASH:
 			break;
-		// numeric keys
+			// numeric keys
 		default:
 			break;
 	}

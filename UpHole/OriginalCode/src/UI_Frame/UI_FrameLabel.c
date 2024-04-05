@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Implementation file for the Labels within the Window Frame
-*       @file       Uphole/src/UI_Frame/UI_FrameLabel.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the Labels within the Window Frame
+ *       @file       Uphole/src/UI_Frame/UI_FrameLabel.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stm32f4xx.h>
@@ -53,18 +52,18 @@ static FRAME_ID m_eActiveLabelFrameID;
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
 void SetActiveLabelFrame(FRAME_ID frame)
 {
-    m_eActiveLabelFrameID = frame;
+	m_eActiveLabelFrameID = frame;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   LabelFrameHandler()
@@ -79,30 +78,28 @@ void SetActiveLabelFrame(FRAME_ID frame)
  ;   No.
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-void LabelFrameHandler(PERIODIC_EVENT *pEvent)
+void LabelFrameHandler(PERIODIC_EVENT * pEvent)
 {
-    if (pEvent == NULL)
-    {
-        return;
-    }
+	if (pEvent == NULL)
+	{
+		return;
+	}
 
-    switch (pEvent->Action.eActionType)
-    {
-        case PUSH:
-        {
-            BOOL bSilenceBuzzer = false;
-            TAB_ENTRY* tab = GetActiveTab();
+	switch (pEvent->Action.eActionType)
+	{
+		case PUSH:
+		{
+			BOOL bSilenceBuzzer = false;
+			TAB_ENTRY *tab = GetActiveTab();
 			switch (pEvent->Action.nValue)
 			{
 				case BUTTON_LEFT:
 				case BUTTON_RIGHT:
 					bSilenceBuzzer = true;
-					AddButtonEventWithFrame(
-						(pEvent->Action.nValue),
-						GetActiveTabFrame());
+					AddButtonEventWithFrame((pEvent->Action.nValue), GetActiveTabFrame());
 					break;
 				case BUTTON_DOWN:
-					if((m_eActiveLabelFrameID - LABEL1) < tab->MenuSize(tab) - 1)
+					if ((m_eActiveLabelFrameID - LABEL1) < tab->MenuSize(tab) - 1)
 					{
 						FRAME_ID oldLabel = m_eActiveLabelFrameID;
 						m_eActiveLabelFrameID++;
@@ -111,9 +108,9 @@ void LabelFrameHandler(PERIODIC_EVENT *pEvent)
 					}
 					else
 					{
-						if(tab)
+						if (tab)
 						{
-							if(tab->KeyPressed)
+							if (tab->KeyPressed)
 							{
 								tab->KeyPressed(tab, BUTTON_DOWN);
 							}
@@ -130,7 +127,7 @@ void LabelFrameHandler(PERIODIC_EVENT *pEvent)
 					}
 					else
 					{
-						if(tab)
+						if (tab)
 						{
 							if (tab->KeyPressed)
 							{
@@ -140,40 +137,40 @@ void LabelFrameHandler(PERIODIC_EVENT *pEvent)
 					}
 					break;
 				case BUTTON_SELECT:
-					if(tab->MenuSize(tab) > 0 && m_eActiveLabelFrameID != NO_FRAME)
+					if (tab->MenuSize(tab) > 0 && m_eActiveLabelFrameID != NO_FRAME)
 					{
-						MENU_ITEM* item = tab->MenuItem(tab, m_eActiveLabelFrameID - LABEL1);
+						MENU_ITEM *item = tab->MenuItem(tab, m_eActiveLabelFrameID - LABEL1);
 						item->Selected(item);
 					}
 					break;
 				case BUTTON_SHIFT:
-                                        if (GetGammaPoweredState()) 
-                                        {
-                                          // If Gamma is powered ON (assuming the function returns a non-zero value when ON)
-        
-                                          SetLoggingState(COMPASS_LOGGING);
-                                          setCompassDecisionPanelActive(true);
-                                          setSurveyEditPanelActive(false);
-                                          setClearAllHoleDataDecisionPanelActive(false);
-                                          setBranchPointSetDecisionPanelActive(false);
-                                          setStartNewHoleDecisionPanelActive(false);
-                                          setClearAllHoleDataDecisionPanelActive(false);
-                                          setDeleteLastSurveyDecisionPanelActive(false);
-                                          } 
-                                        else 
-                                          { 
-                                            // If Gamma is not powered ON
-                                            if (tab->MenuSize(tab) > 0 && m_eActiveLabelFrameID != NO_FRAME) 
-                                              {
-                                                MENU_ITEM* item = tab->MenuItem(tab, m_eActiveLabelFrameID - LABEL1);
-                                                item->Selected(item);
-                                              }
-                                          }
-                                       break;
-				default:
-					if(tab)
+					if (GetGammaPoweredState())
 					{
-						if(tab->KeyPressed)
+						// If Gamma is powered ON (assuming the function returns a non-zero value when ON)
+
+						SetLoggingState(COMPASS_LOGGING);
+						setCompassDecisionPanelActive(true);
+						setSurveyEditPanelActive(false);
+						setClearAllHoleDataDecisionPanelActive(false);
+						setBranchPointSetDecisionPanelActive(false);
+						setStartNewHoleDecisionPanelActive(false);
+						setClearAllHoleDataDecisionPanelActive(false);
+						setDeleteLastSurveyDecisionPanelActive(false);
+					}
+					else
+					{
+						// If Gamma is not powered ON
+						if (tab->MenuSize(tab) > 0 && m_eActiveLabelFrameID != NO_FRAME)
+						{
+							MENU_ITEM *item = tab->MenuItem(tab, m_eActiveLabelFrameID - LABEL1);
+							item->Selected(item);
+						}
+					}
+					break;
+				default:
+					if (tab)
+					{
+						if (tab->KeyPressed)
 						{
 							tab->KeyPressed(tab, pEvent->Action.nValue);
 						}
@@ -195,19 +192,20 @@ void LabelFrameHandler(PERIODIC_EVENT *pEvent)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void LabelInitialize(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void LabelInitialize(FRAME * frame)
 {
+	frame = frame;
 	SetActiveLabelFrame(NO_FRAME);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void LabelPaint(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void LabelPaint(FRAME * frame)
 {
-	TAB_ENTRY* tab = GetActiveTab();
+	TAB_ENTRY *tab = GetActiveTab();
 	MENU_ITEM *item = tab->MenuItem(tab, frame->eID - LABEL1);
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	UI_DisplayStringLeftJustified(GetTxtString(item->label), &frame->area);

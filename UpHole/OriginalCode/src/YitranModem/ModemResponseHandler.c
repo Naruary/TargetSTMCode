@@ -44,45 +44,45 @@ TIME_LR tResponse;
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 MODEM_REPLY_TYPE ProcessOnlineResponse(void)
 {
 	U_INT16 nNodeIndex;
 	LOCAL_NODE_STRUCT thisNode;
 
-	if(m_nResponse.bReplyReady)
+	if (m_nResponse.bReplyReady)
 	{
-		switch(m_nResponse.eReply)
+		switch (m_nResponse.eReply)
 		{
 			case MODEM_RESPONSE_GET_DB_SIZE:
-				if(m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS)
+				if (m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS)
 				{
-					SetNetworkDBSizeMax(GetUnsignedShort((U_BYTE *)&m_nResponse.nData[1]));
-					SetNetworkDBSizeCurrent(GetUnsignedShort((U_BYTE *)&m_nResponse.nData[3]));
+					SetNetworkDBSizeMax(GetUnsignedShort((U_BYTE*) &m_nResponse.nData[1]));
+					SetNetworkDBSizeCurrent(GetUnsignedShort((U_BYTE*) &m_nResponse.nData[3]));
 				}
 				break;
 			case MODEM_RESPONSE_GET_NODE_INFO:
-				nNodeIndex = GetUnsignedShort((U_BYTE *)&m_nResponse.nData[NODE_INDEX]);
+				nNodeIndex = GetUnsignedShort((U_BYTE*) &m_nResponse.nData[NODE_INDEX]);
 				thisNode.bConnected = m_nResponse.nData[NODE_CONNECTED_INDEX];
 				thisNode.tDisconnect = ElapsedTimeLowRes(START_LOW_RES_TIMER);
-				memcpy((void *)&thisNode.sSerialNum[0], (const void *)&m_nResponse.nData[NODE_SERIAL_NUM_INDEX], MODEM_SN_LENGTH);
+				memcpy((void*) &thisNode.sSerialNum[0], (const void*) &m_nResponse.nData[NODE_SERIAL_NUM_INDEX], MODEM_SN_LENGTH);
 				UpdateNetworkNode(nNodeIndex, &thisNode);
 				break;
 			case MODEM_RESPONSE_TX_PACKET:
-				if(m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS)
+				if (m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS)
 				{
 					asm("nop");
-					switch(m_nResponse.nData[REPLY_TX_RESPONSE_NUMBER_INDEX])
+					switch (m_nResponse.nData[REPLY_TX_RESPONSE_NUMBER_INDEX])
 					{
 						case 1:
-							if(!bFirstResponseReceived)
+							if (!bFirstResponseReceived)
 							{
 								bFirstResponseReceived = true;
 							}
 							break;
 						case 3:
-							if(bFirstResponseReceived)
+							if (bFirstResponseReceived)
 							{
 								ModemData_ResetTxMessageResponse();
 								ModemData_ResetTxMessage();
@@ -102,8 +102,8 @@ MODEM_REPLY_TYPE ProcessOnlineResponse(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ResetTxMessageResponse(void)
 {
 	bFirstResponseReceived = false;
@@ -111,16 +111,16 @@ void ModemData_ResetTxMessageResponse(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 BOOL ModemData_RxLookingForResponse(void)
 {
 	return bLookingForResponse;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_SetResponseExpected(void)
 {
 	bLookingForResponse = true;
@@ -128,11 +128,11 @@ void ModemData_SetResponseExpected(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_CheckForStaleMessage(void)
 {
-	if(bLookingForResponse && (ElapsedTimeLowRes(tResponse) > FIVE_SECOND))
+	if (bLookingForResponse && (ElapsedTimeLowRes(tResponse) > FIVE_SECOND))
 	{
 		ModemData_ResetTxMessageResponse();
 		ModemData_ResetTxMessage();

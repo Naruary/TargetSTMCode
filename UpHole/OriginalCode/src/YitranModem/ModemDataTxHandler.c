@@ -109,47 +109,50 @@ static U_INT32 m_nTxMessageTransactionCounter = 0;
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-BOOL Modem_MessageToSend(U_BYTE *pData, U_INT32 nLength)
+ *       @details
+ *******************************************************************************/
+BOOL Modem_MessageToSend(U_BYTE * pData, U_INT32 nLength)
 {
-	if(pData == NULL) return false;
-	if(nLength == 0ul) return false;
-	if(m_nSendingMessage.bMessageInBuffer) return false;
+	if (pData == NULL)
+		return false;
+	if (nLength == 0ul)
+		return false;
+	if (m_nSendingMessage.bMessageInBuffer)
+		return false;
 	m_nSendingMessage.nMessageLength = nLength;
-	memcpy((void*)m_nSendingMessage.nMessageData, (const void*)pData, m_nSendingMessage.nMessageLength);
+	memcpy((void*) m_nSendingMessage.nMessageData, (const void*) pData, m_nSendingMessage.nMessageLength);
 	m_nSendingMessage.bMessageInBuffer = true;
 	m_nSendingMessage.bMessageSent = false;
 	return true;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ResetTxMessage(void)
 {
 	m_nSendingMessage = m_nDefaultModemTxMessage;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 BOOL TxMessageInBuffer(void)
 {
 	return m_nSendingMessage.bMessageInBuffer;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 BOOL TxMessageSent(void)
 {
 	return m_nSendingMessage.bMessageSent;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ProcessTxPacketRequest(void)
 {
 	BOOL bConnected;
@@ -171,17 +174,17 @@ void ModemData_ProcessTxPacketRequest(void)
 	nDataToTx[2] = nPacketHeader.nAckService;
 	nDataToTx[3] = nPacketHeader.nHops;
 	nDataToTx[4] = nPacketHeader.nGain;
-	memcpy((void *)&nDataToTx[5], (const void*)&nPacketHeader.nTag, 2);
+	memcpy((void*) &nDataToTx[5], (const void*) &nPacketHeader.nTag, 2);
 	nDataToTx[7] = nPacketHeader.nEncrypt;
 	nDataToTx[8] = nPacketHeader.nDestinationPort;
-	memcpy((void *)&nDataToTx[9], (const void*)&nPacketHeader.nDestinationAddress, 2);
+	memcpy((void*) &nDataToTx[9], (const void*) &nPacketHeader.nDestinationAddress, 2);
 
 	m_nTxMessageTransactionCounter++;
 
-	memcpy((void *)&nDataToTx[11], (const void*)&m_nTxMessageTransactionCounter, sizeof(m_nTxMessageTransactionCounter));
-	memcpy((void *)&nDataToTx[15], (const void*)m_nSendingMessage.nMessageData, m_nSendingMessage.nMessageLength);
+	memcpy((void*) &nDataToTx[11], (const void*) &m_nTxMessageTransactionCounter, sizeof(m_nTxMessageTransactionCounter));
+	memcpy((void*) &nDataToTx[15], (const void*) m_nSendingMessage.nMessageData, m_nSendingMessage.nMessageLength);
 
-	if(bConnected)
+	if (bConnected)
 	{
 		ModemData_ProcessRequest(MODEM_REQUEST_TX_PACKET, nDataToTx, (11 + 4 + m_nSendingMessage.nMessageLength));
 		m_nSendingMessage.bMessageSent = true;
@@ -189,8 +192,8 @@ void ModemData_ProcessTxPacketRequest(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ProcessGetSerialNumberRequest(void)
 {
 	CONFIG_PARAM_STRUCT nModemSerailNumParameter;
@@ -199,12 +202,12 @@ void ModemData_ProcessGetSerialNumberRequest(void)
 	nModemSerailNumParameter.nIndex = 0xBAAB;
 	nModemSerailNumParameter.nCount = 16;
 
-	ModemData_ProcessRequest(MODEM_REQUEST_GET_DEVICE_PARAM, (U_BYTE *)&nModemSerailNumParameter, sizeof(nModemSerailNumParameter));
+	ModemData_ProcessRequest(MODEM_REQUEST_GET_DEVICE_PARAM, (U_BYTE*) &nModemSerailNumParameter, sizeof(nModemSerailNumParameter));
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ProcessGetConfigParameterRequest(MODEM_CONFIG_PARAMETER_TYPE nParameterIndex)
 {
 	CONFIG_PARAM_STRUCT nModemConfigParameter;
@@ -215,13 +218,13 @@ void ModemData_ProcessGetConfigParameterRequest(MODEM_CONFIG_PARAMETER_TYPE nPar
 
 	SetParamKey(nModemConfigParameter.nIndex);
 
-	ModemData_ProcessRequest(MODEM_REQUEST_GET_DEVICE_PARAM, (U_BYTE *)&nModemConfigParameter, sizeof(nModemConfigParameter));
+	ModemData_ProcessRequest(MODEM_REQUEST_GET_DEVICE_PARAM, (U_BYTE*) &nModemConfigParameter, sizeof(nModemConfigParameter));
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void ModemData_ProcessRequest(MODEM_REQUEST eOpCode, U_BYTE *pRequestData, U_INT16 nRequestLength)
+ *       @details
+ *******************************************************************************/
+void ModemData_ProcessRequest(MODEM_REQUEST eOpCode, U_BYTE * pRequestData, U_INT16 nRequestLength)
 {
 	U_INT16 nLength;
 
@@ -230,26 +233,26 @@ void ModemData_ProcessRequest(MODEM_REQUEST eOpCode, U_BYTE *pRequestData, U_INT
 	m_nModemTxCommand.nOpCode = m_nModemRequestList[eOpCode].nOpCode;
 	m_nModemTxCommand.nLength.AsHalfWord = MODEM_REQUEST_BASE_LENGTH;
 
-	if(nRequestLength == 0)
+	if (nRequestLength == 0)
 	{
 		nRequestLength = m_nModemRequestList[eOpCode].nDataLength;
-		pRequestData =  m_nModemRequestList[eOpCode].pRequestData;
+		pRequestData = m_nModemRequestList[eOpCode].pRequestData;
 	}
 
-	if(nRequestLength > 0)
+	if (nRequestLength > 0)
 	{
 		m_nModemTxCommand.nLength.AsHalfWord += nRequestLength;
-		memcpy((void *)m_nModemTxCommand.nData, (const void *)pRequestData, nRequestLength);
+		memcpy((void*) m_nModemTxCommand.nData, (const void*) pRequestData, nRequestLength);
 	}
 
-	(void)computeCheckSum(&m_nModemTxCommand, true);
+	(void) computeCheckSum(&m_nModemTxCommand, true);
 	nLength = copyMessageToTxBuffer();
-	UART_SendMessage(CLIENT_DATA_LINK, (const U_BYTE *)m_nModemTransmitBuffer, nLength );
-}//end ModemData_ProcessRequest
+	UART_SendMessage(CLIENT_DATA_LINK, (const U_BYTE*) m_nModemTransmitBuffer, nLength);
+} //end ModemData_ProcessRequest
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static U_INT16 copyMessageToTxBuffer(void)
 {
 	U_BYTE *pData;
@@ -260,13 +263,13 @@ static U_INT16 copyMessageToTxBuffer(void)
 	*pData++ = m_nModemTxCommand.nLength.AsBytes[1];
 	*pData++ = m_nModemTxCommand.nType;
 	*pData++ = m_nModemTxCommand.nOpCode;
-	if(m_nModemTxCommand.nLength.AsHalfWord > 2)
+	if (m_nModemTxCommand.nLength.AsHalfWord > 2)
 	{
-		while(nDataByteCount < (m_nModemTxCommand.nLength.AsHalfWord - 2))
+		while (nDataByteCount < (U_INT32)(m_nModemTxCommand.nLength.AsHalfWord - 2))
 		{
 			*pData++ = m_nModemTxCommand.nData[nDataByteCount++];
 		}
 	}
 	*pData++ = m_nModemTxCommand.nCheckSum;
-	return (U_INT16)(m_nModemTxCommand.nLength.AsHalfWord + 4);
-}//end copyMessageToTxBuffer
+	return (U_INT16) (m_nModemTxCommand.nLength.AsHalfWord + 4);
+} //end copyMessageToTxBuffer

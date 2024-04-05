@@ -46,19 +46,15 @@ static U_BYTE Previous(CHARACTER_WHEEL* wheel);
 //============================================================================//
 
 static CHARACTER_WHEEL Editor = {32, 125, 65, Next, Previous}; //176 previously which incudes chinese characters
-#if 0
-static char wheel1[] = {'A','B','C','D','E','F','G','H','I','J','K','L','M',\
-	'N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4',\
-	'5','6','7','8','9','-','+','_','#','$'};
-#endif
+
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_BYTE Next(CHARACTER_WHEEL* wheel)
+ *       @details
+ *******************************************************************************/
+static U_BYTE Next(CHARACTER_WHEEL * wheel)
 {
 	if (wheel->Current < wheel->Maximum - 1)
 	{
@@ -72,9 +68,9 @@ static U_BYTE Next(CHARACTER_WHEEL* wheel)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_BYTE Previous(CHARACTER_WHEEL* wheel)
+ *       @details
+ *******************************************************************************/
+static U_BYTE Previous(CHARACTER_WHEEL * wheel)
 {
 	if (wheel->Current > wheel->Minimum + 1)
 	{
@@ -88,11 +84,11 @@ static U_BYTE Previous(CHARACTER_WHEEL* wheel)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void StringDisplay(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void StringDisplay(MENU_ITEM * item)
 {
-	FRAME* frame = (FRAME*)item->valueFrame;
+	FRAME *frame = (FRAME*) item->valueFrame;
 
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	if (!item->editing)
@@ -103,9 +99,9 @@ void StringDisplay(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void StringBeginEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void StringBeginEdit(MENU_ITEM * item)
 {
 	item->editing = true;
 	item->string.position = 0;
@@ -113,9 +109,9 @@ void StringBeginEdit(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static char* BeginString(char* string, int endIndex)
+ *       @details
+ *******************************************************************************/
+static char* BeginString(char * string, int endIndex)
 {
 	static char before[9];
 	before[endIndex] = 0;
@@ -127,12 +123,12 @@ static char* BeginString(char* string, int endIndex)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static RECT* GetCharacterRect(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+static RECT* GetCharacterRect(MENU_ITEM * item)
 {
 	static RECT rect;
-	RECT* frame = (RECT*)&item->valueFrame->area;
+	RECT *frame = (RECT*) &item->valueFrame->area;
 	U_INT16 offset = UI_GetTextSize(BeginString(item->string.value, item->string.position));
 	U_INT16 xSize = UI_GetTextSize(BeginString(item->string.value, item->string.position + 1));
 	rect.ptTopLeft.nCol = frame->ptTopLeft.nCol + offset;
@@ -143,9 +139,9 @@ static RECT* GetCharacterRect(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void StringFinishEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void StringFinishEdit(MENU_ITEM * item)
 {
 	item->string.SetValue(item->string.value);
 	item->editing = false;
@@ -153,9 +149,9 @@ void StringFinishEdit(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void StringKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
+ *       @details
+ *******************************************************************************/
+void StringKeyPressed(MENU_ITEM * item, BUTTON_VALUE keyPressed)
 {
 	int stringLength = strlen(item->string.value);
 
@@ -224,16 +220,16 @@ void StringKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
 			break;
 		case BUTTON_PERIOD:
 			break;
-		// numeric keys
+			// numeric keys
 		default:
 			break;
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void StringHighlight(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void StringHighlight(MENU_ITEM * item)
 {
 	UI_InvertLCDArea(GetCharacterRect(item), LCD_FOREGROUND_PAGE);
 }

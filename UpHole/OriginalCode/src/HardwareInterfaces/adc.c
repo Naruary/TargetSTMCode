@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      This module provides ADC functionallity
-*       @file       Uphole/src/HardwareInterfaces/adc.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      This module provides ADC functionallity
+ *       @file       Uphole/src/HardwareInterfaces/adc.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stm32f4xx.h>
 #include <misc.h>
 #include "portable.h"
@@ -23,11 +22,12 @@
 
 #define ADC_PERIPH      ADC1
 
-enum ADC_PARAMETERS {
-    ADC_SAMPLE_LIST_START,
-    ADC_CHAN_BATT = ADC_SAMPLE_LIST_START,
-    ADC_SAMPLE_LIST_END = ADC_CHAN_BATT,
-    MAX_ADC_PARAMETERS
+enum ADC_PARAMETERS
+{
+	ADC_SAMPLE_LIST_START,
+	ADC_CHAN_BATT = ADC_SAMPLE_LIST_START,
+	ADC_SAMPLE_LIST_END = ADC_CHAN_BATT,
+	MAX_ADC_PARAMETERS
 };
 
 //============================================================================//
@@ -36,15 +36,14 @@ enum ADC_PARAMETERS {
 
 __IO uint16_t ADC1ConvertedValue[8];
 static REAL32 BatteryInputVoltage = 0.0;
-//REAL32 DownholeVoltage;
 
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ADC_InitPins(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -60,17 +59,17 @@ void ADC_InitPins(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_WriteBit(GPIOA, GPIO_Pin_0, Bit_RESET);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ADC_Initialize(void)
 {
-	#define ADC_DATA_REGISTER_OFFSET 0x4C
+#define ADC_DATA_REGISTER_OFFSET 0x4C
 
 	ADC_InitTypeDef ADC_InitStructure;
 	ADC_CommonInitTypeDef ADC_CommonInitStructure;
@@ -80,8 +79,8 @@ void ADC_Initialize(void)
 	// DMA2 Stream0 channel0 configuration
 	DMA_StructInit(&DMA_InitStructure);
 	DMA_InitStructure.DMA_Channel = DMA_Channel_0;
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (U_INT32)ADC1 + ADC_DATA_REGISTER_OFFSET;
-	DMA_InitStructure.DMA_Memory0BaseAddr = (U_INT32)&ADC1ConvertedValue[0];
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (U_INT32) ADC1 + ADC_DATA_REGISTER_OFFSET;
+	DMA_InitStructure.DMA_Memory0BaseAddr = (U_INT32) &ADC1ConvertedValue[0];
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
 	DMA_InitStructure.DMA_BufferSize = 8;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -125,23 +124,13 @@ void ADC_Initialize(void)
 	// ADC1 regular channel configuration
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_15Cycles); // Sampling time changed to make up for fast clock speed
 
-	// Enable DMA request after last transfer (Single-ADC mode)
-//	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
-
-	// Enable ADC1 DMA
-//	ADC_DMACmd(ADC3, ENABLE);
-
-	// Enable ADC1
-//	ADC_Cmd(ADC3, ENABLE);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ADC_Start(void)
 {
-	//nSystemVoltage =
-	//DMA2_Stream0->M0AR = (U_INT32)&ADC3ConvertedValue[0];
 	// Enable DMA request after last transfer (Single-ADC mode)
 	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
 	/* Enable ADC1 DMA */
@@ -152,22 +141,22 @@ void ADC_Start(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Function:
-;   DMA2_Stream0_IRQHandler()
-;
-; Description:
-;   Handles DMA2_Stream0 interrupts. DMA2_Stream0 interrupts are mapped to
-;   ADC1 for receiving data from ADC1.
-;
-; Reentrancy:
-;   No
-;
-; Assumptions:
-;   This function must be compiled for ARM (32-bit) instructions.
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ; Function:
+ ;   DMA2_Stream0_IRQHandler()
+ ;
+ ; Description:
+ ;   Handles DMA2_Stream0 interrupts. DMA2_Stream0 interrupts are mapped to
+ ;   ADC1 for receiving data from ADC1.
+ ;
+ ; Reentrancy:
+ ;   No
+ ;
+ ; Assumptions:
+ ;   This function must be compiled for ARM (32-bit) instructions.
+ ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void DMA2_Stream0_IRQHandler(void)
 {
 	uint8_t loopy;
@@ -181,31 +170,31 @@ void DMA2_Stream0_IRQHandler(void)
 	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TEIF0))
 	{
 		DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TEIF0);
-//		ErrorState(ERR_DMA);
 	}
 
 	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0))
 	{
 		DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-//	ADC3ConvertedVoltage = ADC3ConvertedValue* 3300/4095;
-//	On 100 pin Package Vref+ (Pin 21) is connected to VDDA (Pin 22)
-//	ON PCB layout VDDA (pin 22) is 3.3V
+		//	ADC3ConvertedVoltage = ADC3ConvertedValue* 3300/4095;
+		//	On 100 pin Package Vref+ (Pin 21) is connected to VDDA (Pin 22)
+		//	ON PCB layout VDDA (pin 22) is 3.3V
 		working_u32 = 0ul;
-		for(loopy=0; loopy<8; loopy++)
+		for (loopy = 0; loopy < 8; loopy++)
+		{
 			working_u32 += (uint32_t) ADC1ConvertedValue[loopy];
+		}
 		working_u32 *= 3300;
 		working_u32 /= 8;
 		working_u32 /= 4095;
 		//Vin = (Vout (R1+R2))/R2; R2 = 1K Ohms, R1 = 5.6K Ohms
 		//Vin = Vout * 6.6
-		BatteryInputVoltage = ((REAL32)working_u32 * 6.6)/1000.0; // ZD October 20 2023 Was originally divided by 1000 (not 524) for BV, but after boards were redesigned with new resistors the formula was edited to match the correct value.
-		//SetBatteryInputVoltage(BatteryInputVoltage);
+		BatteryInputVoltage = ((REAL32) working_u32 * 6.6) / 1000.0; // ZD October 20 2023 Was originally divided by 1000 (not 524) for BV, but after boards were redesigned with new resistors the formula was edited to match the correct value.
 	}
-}// End DMA2_Stream0_IRQHandler()
+}		// End DMA2_Stream0_IRQHandler()
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 REAL32 GetUpholeBatteryLife(void)
 {
 	return BatteryInputVoltage;

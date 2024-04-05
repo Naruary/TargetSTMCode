@@ -41,12 +41,12 @@ PANEL UpdateDownholeSuccess = { GetEmptyMenu, 0, UpdateDownholeSuccessPaint };
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void UpdateDownholeSuccessPaint(TAB_ENTRY* tab)
+static void UpdateDownholeSuccessPaint(TAB_ENTRY * tab)
 {
-    TabWindowPaint(tab);
-    ShowOperationStatusMessage("Update Downhole Successful");
+	TabWindowPaint(tab);
+	ShowOperationStatusMessage("Update Downhole Successful");
 }

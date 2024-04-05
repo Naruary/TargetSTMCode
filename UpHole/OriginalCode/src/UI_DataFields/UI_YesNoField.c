@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Source file for UI_YesNoField.c.
-*       @file       Uphole/src/UI_DataFields/UI_BooleanField.c
-*       @date       December 2019
-*       @copyright  COPYRIGHT (c) 2019 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Source file for UI_YesNoField.c.
+ *       @file       Uphole/src/UI_DataFields/UI_BooleanField.c
+ *       @date       December 2019
+ *       @copyright  COPYRIGHT (c) 2019 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,26 +25,22 @@
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-//static char* YesNoFormat(MENU_ITEM* item)
-//{
-//	return GetTxtString(item->boolean.value ? TXT_YES : TXT_NO);
-//}
+ *       @details
+ *******************************************************************************/
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void YesNoDisplay(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void YesNoDisplay(MENU_ITEM * item)
 {
-	FRAME* frame = (FRAME*) item->valueFrame;
+	FRAME *frame = (FRAME*) item->valueFrame;
 
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	if (!item->editing)
 	{
 		item->boolean.value = item->boolean.GetValue();
 	}
-	if(item->boolean.value == 1)
+	if (item->boolean.value == 1)
 	{
 		UI_DisplayStringLeftJustified("Yes", &frame->area);
 	}
@@ -53,26 +48,25 @@ void YesNoDisplay(MENU_ITEM* item)
 	{
 		UI_DisplayStringLeftJustified("No", &frame->area);
 	}
-//	UI_DisplayStringLeftJustified(YesNoFormat(item), &frame->area);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void YesNoBeginEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void YesNoBeginEdit(MENU_ITEM * item)
 {
 	item->editing = true;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static RECT* GetFieldRect(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+static RECT* GetFieldRect(MENU_ITEM * item)
 {
 	static RECT rect;
 	U_INT16 xSize;
 
-	if(item->boolean.value == 1)
+	if (item->boolean.value == 1)
 	{
 		xSize = 3; // yes
 	}
@@ -88,17 +82,17 @@ static RECT* GetFieldRect(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void YesNoHighlight(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void YesNoHighlight(MENU_ITEM * item)
 {
 	UI_InvertLCDArea(GetFieldRect(item), LCD_FOREGROUND_PAGE);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void YesNoFinishEdit(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void YesNoFinishEdit(MENU_ITEM * item)
 {
 	item->boolean.SetValue(item->boolean.value);
 	item->editing = false;
@@ -106,9 +100,9 @@ void YesNoFinishEdit(MENU_ITEM* item)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void YesNoKeyPressed(MENU_ITEM* item, BUTTON_VALUE keyPressed)
+ *       @details
+ *******************************************************************************/
+void YesNoKeyPressed(MENU_ITEM * item, BUTTON_VALUE keyPressed)
 {
 	switch (keyPressed)
 	{

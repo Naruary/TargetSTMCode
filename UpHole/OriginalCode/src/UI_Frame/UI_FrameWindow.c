@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Implementation file for the Window Frame
-*       @file       Uphole/src/UI_Frame/UI_FrameWindow.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the Window Frame
+ *       @file       Uphole/src/UI_Frame/UI_FrameWindow.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include "portable.h"
 #include "buzzer.h"
 #include "lcd.h"
@@ -29,15 +28,15 @@
 //      FUNCTION PROTOTYPES                                                   //
 //============================================================================//
 
-static void drawWindowBorder(FRAME* frame);
+static void drawWindowBorder(FRAME * frame);
 
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   WindowFrameHandler()
@@ -52,7 +51,7 @@ static void drawWindowBorder(FRAME* frame);
  ;   No.
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-void WindowFrameHandler(PERIODIC_EVENT *pEvent)
+void WindowFrameHandler(PERIODIC_EVENT * pEvent)
 {
 	if (pEvent == NULL)
 	{
@@ -71,20 +70,20 @@ void WindowFrameHandler(PERIODIC_EVENT *pEvent)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void WindowPaint(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void WindowPaint(FRAME * frame)
 {
-	TAB_ENTRY* tab = GetActiveTab();
+	TAB_ENTRY *tab = GetActiveTab();
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	drawWindowBorder(frame);
 	tab->Paint(tab);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void drawWindowBorder(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+static void drawWindowBorder(FRAME * frame)
 {
 	RECT thisRect;
 	memcpy(&thisRect, &frame->area, sizeof(RECT));

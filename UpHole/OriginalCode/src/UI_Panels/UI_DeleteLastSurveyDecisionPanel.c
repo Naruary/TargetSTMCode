@@ -139,6 +139,7 @@ static void DeleteLastSurvey_Decision_Show(TAB_ENTRY* tab)
 
 static void DeleteLastSurvey_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
 {
+	tab = tab;
     switch(key)
     {
 		default:
@@ -160,7 +161,7 @@ static void DeleteLastSurvey_Decision_KeyPressed(TAB_ENTRY* tab, BUTTON_VALUE ke
 
 static void DeleteLastSurvey_Decision_TimerElapsed(TAB_ENTRY* tab)
 {
-    //RepaintNow(&WindowFrame);
+	tab = tab;
 }
 
 /*!
@@ -180,6 +181,7 @@ static MENU_ITEM* DeleteLastSurvey_Decision_Menu(U_BYTE index)
 static void Yes_DeleteLastSurvey_Decision(MENU_ITEM* item)
 {
     STRUCT_RECORD_DATA lastRecoord;
+    item = item;
 
     if(GetLastRecordNumber() == RECORD_getSelectSurveyRecordNumber()) 
     {
@@ -188,7 +190,6 @@ static void Yes_DeleteLastSurvey_Decision(MENU_ITEM* item)
         {
             // If the survey is a branch point, show the error panel and do not delete it.
             SetLoggingState(DELETE_LAST_SURVEY_NOT_SUCCESS);
-            //return; // Do not proceed with deletion.
         }
         else 
         {
@@ -211,6 +212,7 @@ static void Yes_DeleteLastSurvey_Decision(MENU_ITEM* item)
 
 static void No_DeleteLastSurvey_Decision(MENU_ITEM* item)
 {
+	item = item;
     setDeleteLastSurveyDecisionPanelActive(false);
 }
 

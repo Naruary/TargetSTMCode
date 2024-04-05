@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Implementation file for the HOME Frame.
-*       @file       Uphole/src/UI_Frame/UI_FrameHome.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the HOME Frame.
+ *       @file       Uphole/src/UI_Frame/UI_FrameHome.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include <stdbool.h>
 #include "portable.h"
 #include "buzzer.h"
@@ -36,9 +35,9 @@ static void drawHomeBorder(void);
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 /*
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
@@ -55,71 +54,60 @@ static void drawHomeBorder(void);
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-void HomeFrameHandler(PERIODIC_EVENT *pEvent)
+void HomeFrameHandler(PERIODIC_EVENT * pEvent)
 {
-    if (pEvent == NULL)
-    {
-        return;
-    }
+	if (pEvent == NULL)
+	{
+		return;
+	}
 
-    switch (pEvent->Action.eActionType)
-    {
-        case PUSH:
-        {
-            BOOL bSilenceBuzzer = false;
-            TAB_ENTRY* tab = GetActiveTab();
-//            switch (pEvent->Action.ButtonPush.eButtonType)
-            {
-//                case KEYPAD:
-//                    switch (pEvent->Action.ButtonPush.eDepressType)
-                    {
-//                        case SHORT_DEPRESS:
-                            if (tab->KeyPressed)
-                            {
-                                tab->KeyPressed(tab, pEvent->Action.nValue);
-                            }
-//                            break;
-                    }
-//                    break;
-            }
+	switch (pEvent->Action.eActionType)
+	{
+		case PUSH:
+			BOOL bSilenceBuzzer = false;
+			TAB_ENTRY *tab = GetActiveTab();
+			if (tab->KeyPressed)
+			{
+				tab->KeyPressed(tab, pEvent->Action.nValue);
+			}
 
-            if (!bSilenceBuzzer)
-            {
-                //Turn on the LCD backlight for any activity.
-                BuzzerKeypress();
-                M_Turn_LCD_On_And_Reset_Timer();
-            }
-        }
-            break;
+			if (!bSilenceBuzzer)
+			{
+				//Turn on the LCD backlight for any activity.
+				BuzzerKeypress();
+				M_Turn_LCD_On_And_Reset_Timer();
+			}
+			break;
 
-        case NO_ACTION:
-        default:
-            break;
-    }
+		case NO_ACTION:
+		default:
+			break;
+	}
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-void HomePaint(FRAME* frame)
+void HomePaint(FRAME * frame)
 {
-    clearLCD();
-    LCD_Refresh(LCD_FOREGROUND_PAGE);
-    LCD_Refresh(LCD_BACKGROUND_PAGE);
-    drawHomeBorder();
-    for (U_BYTE i = 0; i < GetTabCount(); i++)
-    {
-        PaintNow(tabs[i]->frame);
-    }
-    PaintNow(&StatusFrame);
+	frame = frame;
+	clearLCD();
+	LCD_Refresh(LCD_FOREGROUND_PAGE);
+	LCD_Refresh(LCD_BACKGROUND_PAGE);
+	drawHomeBorder();
+	for (U_BYTE i = 0; i < GetTabCount(); i++)
+	{
+		PaintNow(tabs[i]->frame);
+	}
+	PaintNow(&StatusFrame);
 }
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 /*
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
@@ -138,14 +126,14 @@ void HomePaint(FRAME* frame)
  */
 static void drawHomeBorder(void)
 {
-    RECT rect;
-    memcpy(&rect, &HomeFrame.area, sizeof(RECT));
-    UI_DrawRectangle(rect, LCD_BACKGROUND_PAGE);
+	RECT rect;
+	memcpy(&rect, &HomeFrame.area, sizeof(RECT));
+	UI_DrawRectangle(rect, LCD_BACKGROUND_PAGE);
 
-    rect.ptTopLeft.nRow++;
-    rect.ptTopLeft.nCol++;
-    rect.ptBottomRight.nRow--;
-    rect.ptBottomRight.nCol--;
-    UI_DrawRectangle(rect, LCD_BACKGROUND_PAGE);
-    LCD_Refresh(LCD_BACKGROUND_PAGE);
+	rect.ptTopLeft.nRow++;
+	rect.ptTopLeft.nCol++;
+	rect.ptBottomRight.nRow--;
+	rect.ptBottomRight.nCol--;
+	UI_DrawRectangle(rect, LCD_BACKGROUND_PAGE);
+	LCD_Refresh(LCD_BACKGROUND_PAGE);
 }

@@ -41,21 +41,21 @@ PANEL Uploading = { GetEmptyMenu, 0, UploadingPaint };
 //============================================================================//
 
 /*!
-********************************************************************************
-*       @details
-*******************************************************************************/
+ ********************************************************************************
+ *       @details
+ *******************************************************************************/
 
-static void UploadingPaint(TAB_ENTRY* tab)
+static void UploadingPaint(TAB_ENTRY * tab)
 {
-    char strValue[64];
-    TabWindowPaint(tab);
-    if (GetLastRecordNumber() == 0)
-    {
-        snprintf(strValue, 64, "%s ...", GetTxtString(TXT_MAIN_GET_HOLE_DATA));
-    }
-    else
-    {
-        snprintf(strValue, 64, "Loading Surveys");
-    }
-    ShowStatusMessage(strValue);
+	char strValue[64];
+	TabWindowPaint(tab);
+	if (GetLastRecordNumber() == 0)
+	{
+		snprintf(strValue, 64, "%s ...", GetTxtString(TXT_MAIN_GET_HOLE_DATA));
+	}
+	else
+	{
+		snprintf(strValue, 64, "Loading Surveys");
+	}
+	ShowStatusMessage(strValue);
 }

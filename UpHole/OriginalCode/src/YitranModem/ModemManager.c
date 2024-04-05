@@ -104,8 +104,8 @@ typedef enum {
 } ONLINE_MODEM_SUBSTATE;
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemManager(void)
 {
 	static MODEM_STATE nModemManagerStateMachine = MODEM_HW_RESET;
@@ -115,13 +115,13 @@ void ModemManager(void)
 	static TIME_LR tDelayTimeout;
 	static TIME_LR tHeartBeatMonitor;
 	static BOOL bNetworkManagerBusy = false;
-        
-	if(WakeUpModemReset == 1)
+
+	if (WakeUpModemReset == 1)
 	{
-			nModemManagerStateMachine = MODEM_SW_RESET;
+		nModemManagerStateMachine = MODEM_SW_RESET;
 	}
 
-	switch(nModemManagerStateMachine)
+	switch (nModemManagerStateMachine)
 	{
 		default:
 			break;
@@ -132,13 +132,13 @@ void ModemManager(void)
 			{
 				SetModemIsPresent(true);
 			}
-			if(bFirstRunTrough)
+			if (bFirstRunTrough)
 			{
 				bFirstRunTrough = false;
 				tDelayTimeout = ElapsedTimeLowRes(START_LOW_RES_TIMER);
 				ModemDriver_PutInHardwareReset(true);
 			}
-			if(ElapsedTimeLowRes(tDelayTimeout) > HALF_SECOND)
+			if (ElapsedTimeLowRes(tDelayTimeout) > HALF_SECOND)
 			{
 				bFirstRunTrough = true;
 				tDelayTimeout = ElapsedTimeLowRes(START_LOW_RES_TIMER);
@@ -147,7 +147,7 @@ void ModemManager(void)
 				nModemManagerStateMachine = MODEM_RESET_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_SW_RESET:
 		{
 			tDelayTimeout = ElapsedTimeLowRes(START_LOW_RES_TIMER);
@@ -155,19 +155,16 @@ void ModemManager(void)
 			ModemData_ProcessRequest(MODEM_REQUEST_SW_RESET, NULL, 0);
 			nModemManagerStateMachine = MODEM_RESET_WAIT;
 		}
-		break;
+			break;
 		case MODEM_RESET_WAIT:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
-			if((m_nResponse.bReplyReady) &&
-				(m_nResponse.eReply == MODEM_RESPONSE_RESET) &&
-				(m_nResponse.nData[0] == RESET_SUCCESS))
+			if ((m_nResponse.bReplyReady) && (m_nResponse.eReply == MODEM_RESPONSE_RESET) && (m_nResponse.nData[0] == RESET_SUCCESS))
 			{
 				nModemManagerStateMachine = MODEM_RESET_DONE;
 				ModemData_ResetRxResponse();
 				bModemDiscovery = false;
 			}
-			else if(ElapsedTimeLowRes(tDelayTimeout) > FIVE_SECOND)
+			else if (ElapsedTimeLowRes(tDelayTimeout) > FIVE_SECOND)
 			{
 				nModemManagerStateMachine = MODEM_HW_RESET;
 				if (bModemDiscovery)
@@ -177,29 +174,27 @@ void ModemManager(void)
 				}
 			}
 		}
-		break;
+			break;
 		case MODEM_RESET_DONE:
 		{
-			if(ElapsedTimeLowRes(tDelayTimeout) > ONE_SECOND)
+			if (ElapsedTimeLowRes(tDelayTimeout) > ONE_SECOND)
 			{
 				tDelayTimeout = ElapsedTimeLowRes(START_LOW_RES_TIMER);
 				nModemManagerStateMachine = MODEM_GET_NC_MODE;
 			}
 		}
-		break;
+			break;
 		case MODEM_GET_NC_MODE:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
 			MODEM_PARAM_KEY_VALUE_PAIR_STRUCT nParam;
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
-				if((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) &&
-					(m_nResponse.eReply == MODEM_RESPONSE_GET_PARAM))
+				if ((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) && (m_nResponse.eReply == MODEM_RESPONSE_GET_PARAM))
 				{
-					SetParamValue(GetUnsignedShort((U_BYTE *)&m_nResponse.nData[1]));
+					SetParamValue(GetUnsignedShort((U_BYTE*) &m_nResponse.nData[1]));
 					GetParamKeyValuePair(&nParam);
 					ModemData_ResetRxResponse();
-					if((nParam.key == MODEM_CONFIG_OPERATION_MODE) && (nParam.value == CORRECT_NC_MODE))
+					if ((nParam.key == MODEM_CONFIG_OPERATION_MODE) && (nParam.value == CORRECT_NC_MODE))
 					{
 						nModemManagerStateMachine = MODEM_GET_SERIAL_NUM;
 					}
@@ -221,14 +216,12 @@ void ModemManager(void)
 				nModemManagerStateMachine = MODEM_RESPONSE_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_SET_NC_MODE:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
-				if((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) &&
-					(m_nResponse.eReply == MODEM_RESPONSE_SET_PARAM))
+				if ((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) && (m_nResponse.eReply == MODEM_RESPONSE_SET_PARAM))
 				{
 					nModemManagerStateMachine = MODEM_SAVE_PARAM;
 				}
@@ -243,22 +236,21 @@ void ModemManager(void)
 				tDelayTimeout = ElapsedTimeLowRes(START_LOW_RES_TIMER);
 				//TODO - Do something better here for data.
 				// 6=set parameter, 0x0031=operation mode, 0x0003=NC
-				U_BYTE nNodeValue[] = {0x06, 0x31, 0x00, 0x03, 0x00};
+				U_BYTE nNodeValue[] =
+				{ 0x06, 0x31, 0x00, 0x03, 0x00 };
 				ModemData_ProcessRequest(MODEM_REQUEST_SET_DEVICE_PARAM, nNodeValue, sizeof(nNodeValue));
 				nSavedModemManagerStateMachine = nModemManagerStateMachine;
 				nModemManagerStateMachine = MODEM_RESPONSE_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_GET_SERIAL_NUM:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
-				if((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) &&
-					(m_nResponse.eReply == MODEM_RESPONSE_GET_PARAM))
+				if ((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) && (m_nResponse.eReply == MODEM_RESPONSE_GET_PARAM))
 				{
-					if(memcmp((const void *)&m_nResponse.nData[1],(const void *)&sSerialNumber[0], MODEM_SN_LENGTH) == 0)
+					if (memcmp((const void*) &m_nResponse.nData[1], (const void*) &sSerialNumber[0], MODEM_SN_LENGTH) == 0)
 					{
 						nModemManagerStateMachine = MODEM_GO_ONLINE;
 					}
@@ -277,14 +269,12 @@ void ModemManager(void)
 				nModemManagerStateMachine = MODEM_RESPONSE_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_SET_SERIAL_NUM:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
-				if((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) &&
-					(m_nResponse.eReply == MODEM_RESPONSE_SET_PARAM))
+				if ((m_nResponse.nData[REPLY_STATUS_INDEX] == COMMAND_SUCCESS) && (m_nResponse.eReply == MODEM_RESPONSE_SET_PARAM))
 				{
 					nModemManagerStateMachine = MODEM_SAVE_PARAM;
 				}
@@ -297,21 +287,21 @@ void ModemManager(void)
 			else
 			{
 				// code for set serial number
-				U_BYTE nHeader[3] = {0x05, 0xAB, 0xBA};
+				U_BYTE nHeader[3] =
+				{ 0x05, 0xAB, 0xBA };
 				U_BYTE nNodeValue[19];
-				memcpy((void *)&nNodeValue[0], &nHeader[0], sizeof(nHeader));
-				memcpy((void *)&nNodeValue[3], (void *)&sSerialNumber[0], sizeof(sSerialNumber));
+				memcpy((void*) &nNodeValue[0], &nHeader[0], sizeof(nHeader));
+				memcpy((void*) &nNodeValue[3], (void*) &sSerialNumber[0], sizeof(sSerialNumber));
 				tDelayTimeout = ElapsedTimeLowRes(START_LOW_RES_TIMER);
 				ModemData_ProcessRequest(MODEM_REQUEST_SET_DEVICE_PARAM, nNodeValue, sizeof(nNodeValue));
 				nSavedModemManagerStateMachine = nModemManagerStateMachine;
 				nModemManagerStateMachine = MODEM_RESPONSE_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_SAVE_PARAM:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
 				nModemManagerStateMachine = MODEM_HW_RESET;
 				ModemData_ResetRxResponse();
@@ -324,11 +314,10 @@ void ModemManager(void)
 				nModemManagerStateMachine = MODEM_RESPONSE_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_GO_ONLINE:
 		{
-//			const MODEM_REPLY_DATA_STRUCT* pResponse = GetRxResponse();
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
 				nModemManagerStateMachine = MODEM_ONLINE;
 				ModemData_ResetRxResponse();
@@ -345,7 +334,7 @@ void ModemManager(void)
 				nModemManagerStateMachine = MODEM_RESPONSE_WAIT;
 			}
 		}
-		break;
+			break;
 		case MODEM_ONLINE:
 		{
 			// from the IT700 Host Interface Command Set User Guide::
@@ -357,24 +346,24 @@ void ModemManager(void)
 			//	is required to inform the host application of
 			//	significant networking events.
 			// Do Indication First
-			if(m_nIndication.bReplyReady)
+			if (m_nIndication.bReplyReady)
 			{
 				ProcessOnlineIndication();
 				ModemData_ResetRxIndication();
 			}
 			// Do Response Second
-			else if(m_nResponse.bReplyReady)
+			else if (m_nResponse.bReplyReady)
 			{
-				switch(ProcessOnlineResponse())
+				switch (ProcessOnlineResponse())
 				{
 					case MODEM_RESPONSE_GET_DB_SIZE:
 					{
 						U_INT16 nNextNode;
-						if(GetNextDatabaseIndex(&nNextNode))
+						if (GetNextDatabaseIndex(&nNextNode))
 						{
 							U_BYTE nNodeValue[3];
 							nNodeValue[0] = 0x00;
-							memcpy((void *)&nNodeValue[1], &nNextNode, sizeof(U_INT16));
+							memcpy((void*) &nNodeValue[1], &nNextNode, sizeof(U_INT16));
 							ModemData_ProcessRequest(MODEM_REQUEST_GET_NODE_INFO, nNodeValue, sizeof(nNodeValue));
 						}
 						else
@@ -382,14 +371,14 @@ void ModemManager(void)
 							bNetworkManagerBusy = false;
 						}
 					}
-					break;
+						break;
 					case MODEM_RESPONSE_GET_NODE_INFO:
 					{
-						if((GetDeleteNode(&m_nNodeToDelete)) && (m_nNodeToDelete != 0))
+						if ((GetDeleteNode(&m_nNodeToDelete)) && (m_nNodeToDelete != 0))
 						{
 							U_BYTE nNodeValue[3];
 							nNodeValue[0] = 0x01;
-							memcpy((void *)&nNodeValue[1], &m_nNodeToDelete, sizeof(U_INT16));
+							memcpy((void*) &nNodeValue[1], &m_nNodeToDelete, sizeof(U_INT16));
 							ModemData_ProcessRequest(MODEM_REQUEST_DELETE_NODE_INFO, nNodeValue, sizeof(nNodeValue));
 						}
 						else
@@ -397,40 +386,40 @@ void ModemManager(void)
 							bNetworkManagerBusy = false;
 						}
 					}
-					break;
+						break;
 					case MODEM_RESPONSE_DELETE_NODE_INFO:
 					{
 						RemoveNodeEntry(m_nNodeToDelete);
 						m_nNodeToDelete = 0;
 						bNetworkManagerBusy = false;
 					}
-					break;
+						break;
 					default:
-					break;
+						break;
 				}
 				ModemData_ResetRxResponse();
 			}
-			else if(nOnlineStateMachine != MODEM_ONLINE_REST)
+			else if (nOnlineStateMachine != MODEM_ONLINE_REST)
 			{
-				switch(nOnlineStateMachine)
+				switch (nOnlineStateMachine)
 				{
 #ifdef NETWORK_CONTROLLER
 					case MODEM_ONLINE_GET_DB_SIZE:
 					{
-						if(NetworkIdAssigned())
+						if (NetworkIdAssigned())
 						{
 							ModemData_ProcessRequest(MODEM_REQUEST_GET_DB_SIZE, NULL, 0);
 						}
 						nOnlineStateMachine = MODEM_ONLINE_REST;
 					}
-					break;
+						break;
 #endif
 					default:
 						nOnlineStateMachine = MODEM_ONLINE_REST;
 						break;
 				}
 			}
-			else if(ElapsedTimeLowRes(tHeartBeatMonitor) > TWENTY_SECOND)
+			else if (ElapsedTimeLowRes(tHeartBeatMonitor) > TWENTY_SECOND)
 			{
 				tHeartBeatMonitor = ElapsedTimeLowRes(START_LOW_RES_TIMER);
 				bNetworkManagerBusy = true;
@@ -439,32 +428,32 @@ void ModemManager(void)
 			else
 			{
 				U_INT16 nDummyData;
-				if(GetConnectedNodeID(&nDummyData) && TxMessageInBuffer() && !TxMessageSent() && !bNetworkManagerBusy)
+				if (GetConnectedNodeID(&nDummyData) && TxMessageInBuffer() && !TxMessageSent() && !bNetworkManagerBusy)
 				{
 					ModemData_ProcessTxPacketRequest();
 					ModemData_ResetTxMessageResponse();
 					ModemData_SetResponseExpected();
 				}
-				else if(ModemData_RxLookingForResponse())
+				else if (ModemData_RxLookingForResponse())
 				{
 					ModemData_CheckForStaleMessage();
 				}
 			}
 		}
-		break;
+			break;
 		case MODEM_RESPONSE_WAIT:
 		{
-			if(m_nResponse.bReplyReady)
+			if (m_nResponse.bReplyReady)
 			{
 				nModemManagerStateMachine = nSavedModemManagerStateMachine;
 				nSavedModemManagerStateMachine = MODEM_HW_RESET;
 			}
-			else if(ElapsedTimeLowRes(tDelayTimeout) > FIVE_SECOND)
+			else if (ElapsedTimeLowRes(tDelayTimeout) > FIVE_SECOND)
 			{
 				nModemManagerStateMachine = MODEM_HW_RESET;
 				nSavedModemManagerStateMachine = MODEM_HW_RESET;
 			}
 		}
-		break;
+			break;
 	}
 }

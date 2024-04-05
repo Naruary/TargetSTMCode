@@ -1,16 +1,15 @@
 /*******************************************************************************
-*       @brief      Implementation file for the Labels within the Window Frame
-*       @file       Uphole/src/UI_Frame/UI_FrameValue.c
-*       @date       December 2014
-*       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
-*                   without the prior written consent of the copyright holder.
-*******************************************************************************/
+ *       @brief      Implementation file for the Labels within the Window Frame
+ *       @file       Uphole/src/UI_Frame/UI_FrameValue.c
+ *       @date       December 2014
+ *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
+ *                   reserved.  Reproduction in whole or in part is prohibited
+ *                   without the prior written consent of the copyright holder.
+ *******************************************************************************/
 
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
 #include "portable.h"
 #include "buzzer.h"
 #include "lcd.h"
@@ -37,16 +36,16 @@ static FRAME_ID m_eActiveValueFrame;
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void SetActiveValueFrame(FRAME_ID eNewFrame)
 {
 	m_eActiveValueFrame = eNewFrame;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   ValueFrameHandler()
@@ -61,100 +60,98 @@ void SetActiveValueFrame(FRAME_ID eNewFrame)
  ;   No.
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-void ValueFrameHandler(PERIODIC_EVENT *pEvent)
+void ValueFrameHandler(PERIODIC_EVENT * pEvent)
 {
-    TAB_ENTRY* tab;
-    MENU_ITEM* item;
+	TAB_ENTRY *tab;
+	MENU_ITEM *item;
 
-    tab = GetActiveTab();
-    
-    if (pEvent == NULL)
-    {
-        return;
-    }
+	tab = GetActiveTab();
 
-    switch (pEvent->Action.eActionType)
-    {
-#if UI_FIXED_NEW_WAY == 1
-        case SCREEN:
-            switch (pEvent->Action.ScreenTask)
-            {
-                case BLINK_CURSOR:
-                    if (m_eActiveValueFrame != NO_FRAME)
-                    {
-                        item = tab->MenuItem(tab, m_eActiveValueFrame - VALUE1);
-                        if (item->editing && item->HighlightValue)
-                        {
-                            item->highlight = !item->highlight;
-                            AddScreenEvent(BLINK_CURSOR, item->valueFrame->eID, item->highlight ? 700 : 300);
-                            PaintNow(item->valueFrame);
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-            break;
-#endif
-        case PUSH:
-            item = tab->MenuItem(tab, m_eActiveValueFrame - VALUE1);
-            
-            if (pEvent->Action.nValue == BUTTON_SELECT || pEvent->Action.nValue == BUTTON_SHIFT)
-            {
-                item->FinishEdit(item);
-                PaintNow(&WindowFrame);
-            }
-            else if (item->KeyPressed)
-            {
-                item->KeyPressed(item, pEvent->Action.nValue);
-            }
-            
-            BuzzerKeypress();
-            M_Turn_LCD_On_And_Reset_Timer();
-            break;
+	if (pEvent == NULL)
+	{
+		return;
+	}
 
-        case NO_ACTION:
-        default:
-            break;
-    }
+	switch (pEvent->Action.eActionType)
+	{
+		case SCREEN:
+			switch (pEvent->Action.ScreenTask)
+			{
+				case BLINK_CURSOR:
+					if (m_eActiveValueFrame != NO_FRAME)
+					{
+						item = tab->MenuItem(tab, m_eActiveValueFrame - VALUE1);
+						if (item->editing && item->HighlightValue)
+						{
+							item->highlight = !item->highlight;
+							AddScreenEvent(BLINK_CURSOR, item->valueFrame->eID, item->highlight ? 700 : 300);
+							PaintNow(item->valueFrame);
+						}
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+		case PUSH:
+			item = tab->MenuItem(tab, m_eActiveValueFrame - VALUE1);
+
+			if (pEvent->Action.nValue == BUTTON_SELECT || pEvent->Action.nValue == BUTTON_SHIFT)
+			{
+				item->FinishEdit(item);
+				PaintNow(&WindowFrame);
+			}
+			else if (item->KeyPressed)
+			{
+				item->KeyPressed(item, pEvent->Action.nValue);
+			}
+
+			BuzzerKeypress();
+			M_Turn_LCD_On_And_Reset_Timer();
+			break;
+
+		case NO_ACTION:
+		default:
+			break;
+	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void ValueInitialize(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void ValueInitialize(FRAME * frame)
 {
+	frame = frame;
 	m_eActiveValueFrame = NO_FRAME;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void CurrrentLabelFrame(MENU_ITEM* item)
+ *       @details
+ *******************************************************************************/
+void CurrrentLabelFrame(MENU_ITEM * item)
 {
-        UI_SetActiveFrame(item->labelFrame);
+	UI_SetActiveFrame(item->labelFrame);
 	SetActiveLabelFrame(item->labelFrame->eID);
 	SetActiveValueFrame(NO_FRAME);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void ValuePaint(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void ValuePaint(FRAME * frame)
 {
-	TAB_ENTRY* tab = GetActiveTab();
-	if(tab==NULL) return;
-	MENU_ITEM* item = tab->MenuItem(tab, frame->eID - VALUE1);
-	if(item==NULL) return;
+	TAB_ENTRY *tab = GetActiveTab();
+	if (tab == NULL)
+		return;
+	MENU_ITEM *item = tab->MenuItem(tab, frame->eID - VALUE1);
+	if (item == NULL)
+		return;
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
-	if( (item->DisplayValue) )//&& (!item->editing) )
+	if ((item->DisplayValue)) //&& (!item->editing) )
 	{
 		UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 		item->DisplayValue(item);
 	}
-//cle
-//if(item->editing==false)
-{
 	if (m_eActiveValueFrame == frame->eID)
 	{
 		if (item->editing && item->HighlightValue && item->highlight)
@@ -162,6 +159,5 @@ void ValuePaint(FRAME* frame)
 			item->HighlightValue(item);
 		}
 	}
-}
 	LCD_Refresh(LCD_FOREGROUND_PAGE);
 }

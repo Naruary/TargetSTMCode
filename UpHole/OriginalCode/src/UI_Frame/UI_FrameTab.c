@@ -84,8 +84,8 @@ const TAB_ENTRY* const tabs[] =
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 FRAME_ID GetActiveTabFrame(void)
 {
 // get here every time the periodic timer in main expires, typ 1 second ehhhh
@@ -95,12 +95,12 @@ FRAME_ID GetActiveTabFrame(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static TAB_ENTRY* GetTab(FRAME_ID frame)
 {
 	BYTE index = frame - TAB1;
-	if (index < 0 || index >= NUMBER_OF_TABS)
+	if (index < 0 || index >= (BYTE)NUMBER_OF_TABS)
 	{
 		return NULL;
 	}
@@ -108,34 +108,34 @@ static TAB_ENTRY* GetTab(FRAME_ID frame)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 U_BYTE GetTabCount(void)
 {
 	return NUMBER_OF_TABS;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 TAB_ENTRY* GetActiveTab(void)
 {
-	return (TAB_ENTRY*)GetTab(m_eActiveTabFrameID);
+	return (TAB_ENTRY*) GetTab(m_eActiveTabFrameID);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void TabChanged(void)
 {
 	RecordDataPanelInit();
-	TAB_ENTRY* tab = GetActiveTab();
+	TAB_ENTRY *tab = GetActiveTab();
 	tab->Show(tab);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   TabFrameHandler()
@@ -151,10 +151,10 @@ static void TabChanged(void)
  ;   No.
  ;
  ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-void TabFrameHandler(PERIODIC_EVENT *pEvent)
+void TabFrameHandler(PERIODIC_EVENT * pEvent)
 {
-	TAB_ENTRY* tab;
-	if(pEvent == NULL)
+	TAB_ENTRY *tab;
+	if (pEvent == NULL)
 	{
 		return;
 	}
@@ -168,9 +168,9 @@ void TabFrameHandler(PERIODIC_EVENT *pEvent)
 			{
 				case BUTTON_RIGHT:
 					tab = GetTab((FRAME_ID) (m_eActiveTabFrameID + 1));
-					if(tab)
+					if (tab)
 					{
-						if(tab->IsVisible(tab))
+						if (tab->IsVisible(tab))
 						{
 							m_eActiveTabFrameID++;
 							TabChanged();
@@ -186,7 +186,7 @@ void TabFrameHandler(PERIODIC_EVENT *pEvent)
 					break;
 				default:
 					tab = GetActiveTab();
-					if(tab)
+					if (tab)
 					{
 						if (tab->KeyPressed)
 						{
@@ -204,19 +204,20 @@ void TabFrameHandler(PERIODIC_EVENT *pEvent)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void TabInitialize(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void TabInitialize(FRAME * frame)
 {
+	frame = frame;
 	m_eActiveTabFrameID = TAB1;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void TabPaint(FRAME* frame)
+ *       @details
+ *******************************************************************************/
+void TabPaint(FRAME * frame)
 {
-	TAB_ENTRY* tab = GetTab(frame->eID);
+	TAB_ENTRY *tab = GetTab(frame->eID);
 	UI_ClearLCDArea(&frame->area, LCD_FOREGROUND_PAGE);
 	if (tab->IsVisible(tab))
 	{
@@ -231,9 +232,9 @@ void TabPaint(FRAME* frame)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void TabWindowPaint(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+void TabWindowPaint(TAB_ENTRY * tab)
 {
 	U_BYTE nMenuCount = tab->MenuSize(tab);
 	if (nMenuCount >= NUMBER_OF_MENU_POSN)
@@ -248,8 +249,8 @@ void TabWindowPaint(TAB_ENTRY* tab)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ; Function:
  ;   drawTab()
@@ -265,19 +266,19 @@ void TabWindowPaint(TAB_ENTRY* tab)
  ;    No
  ;
  ;;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-static void drawTab(TAB_ENTRY* tab)
+static void drawTab(TAB_ENTRY * tab)
 {
-	FRAME* thisFrame = (FRAME*) tab->frame;
-	char* sTxtString = GetTxtString(tab->label);
+	FRAME *thisFrame = (FRAME*) tab->frame;
+	char *sTxtString = GetTxtString(tab->label);
 	UI_DisplayStringCentered(sTxtString, &thisFrame->area);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void MainToParam(void)
 {
-	TAB_ENTRY* tab = GetTab((FRAME_ID) (m_eActiveTabFrameID + 2));
+	TAB_ENTRY *tab = GetTab((FRAME_ID) (m_eActiveTabFrameID + 2));
 	if (tab && tab->IsVisible(tab))
 	{
 		m_eActiveTabFrameID++;

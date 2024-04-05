@@ -55,7 +55,6 @@ static void MainTabShow(TAB_ENTRY* tab);
 static void MainTabPaint(TAB_ENTRY* tab);
 static void TimerElapsed(TAB_ENTRY* tab);
 static void MainTabKeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key);
-//void ShowDownholeLife(char* message);
 
 //============================================================================//
 //      DATA DEFINITIONS                                                      //
@@ -78,49 +77,45 @@ const TAB_ENTRY MainTab = {
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static PANEL* CurrentState(void)
 {
-	if(getStartNewHoleDecisionPanelActive())
+	if (getStartNewHoleDecisionPanelActive())
 	{
 		return &StartNewHole_DecisionPanel;
 	}
-	else if(getClearAllHoleDataDecisionPanelActive())
+	else if (getClearAllHoleDataDecisionPanelActive())
 	{
 		return &ClearAllHoleData_DecisionPanel;
 	}
-//	else if(getUpdateDiagnosticDownholeDecisionPanelActive())
-//	{
-//		return &UpdateDiagnosticDownhole_DecisionPanel;
-//	}
-	else if(getCompassDecisionPanelActive())
+	else if (getCompassDecisionPanelActive())
 	{
 		return &Compass_DecisionPanel;
 	}
-	else if(getChangePipeLengthDecisionPanelActive())
+	else if (getChangePipeLengthDecisionPanelActive())
 	{
 		return &ChangePipeLength_DecisionPanel;
 	}
-	else if(getEnterSurveyDecisionPanelActive())
+	else if (getEnterSurveyDecisionPanelActive())
 	{
 		return &EnterSurvey_DecisionPanel;
 	}
-	else if(getEnterSurveyPanelActive())
+	else if (getEnterSurveyPanelActive())
 	{
 		return &EnterSurvey_Panel;
 	}
-	else if(getEnterNewPipeLengthPanelActive())
+	else if (getEnterNewPipeLengthPanelActive())
 	{
 		return &EnterNewPipeLength_Panel;
 	}
-	else if(getChangePipeLengthCorrectDecisionPanelActive())
+	else if (getChangePipeLengthCorrectDecisionPanelActive())
 	{
 		return &ChangePipeLengthCorrect_DecisionPanel;
 	}
 	else
 	{
-		switch(NVRAM_data.loggingState)
+		switch (NVRAM_data.loggingState)
 		{
 			default:
 				break;
@@ -156,53 +151,56 @@ static PANEL* CurrentState(void)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static MENU_ITEM* GetMainMenuItem(TAB_ENTRY* tab, U_BYTE index)
+ *       @details
+ *******************************************************************************/
+static MENU_ITEM* GetMainMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
 	PANEL *apanel;
-	if(index < tab->MenuSize(tab))
+	if (index < tab->MenuSize(tab))
 	{
 		apanel = CurrentState();
-		if(apanel == NULL) return NULL;
+		if (apanel == NULL)
+			return NULL ;
 		return CurrentState()->MenuItem(index);
 	}
-	return NULL;
+	return NULL ;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_BYTE GetMainMenuSize(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static U_BYTE GetMainMenuSize(TAB_ENTRY * tab)
 {
+	tab = tab;
+
 	return CurrentState()->MenuCount;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void MainTabPaint(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void MainTabPaint(TAB_ENTRY * tab)
 {
 	CurrentState()->Paint(tab);
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void TimerElapsed(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void TimerElapsed(TAB_ENTRY * tab)
 {
-	if(CurrentState()->TimerElapsed)
+	if (CurrentState()->TimerElapsed)
 	{
 		CurrentState()->TimerElapsed(tab);
 	}
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void MainTabShow(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void MainTabShow(TAB_ENTRY * tab)
 {
-	if(CurrentState()->Show)
+	if (CurrentState()->Show)
 	{
 		CurrentState()->Show(tab);
 	}
@@ -210,11 +208,11 @@ static void MainTabShow(TAB_ENTRY* tab)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void MainTabKeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+ *       @details
+ *******************************************************************************/
+static void MainTabKeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-	if(CurrentState()->KeyPressed)
+	if (CurrentState()->KeyPressed)
 	{
 		CurrentState()->KeyPressed(tab, key);
 	}
@@ -222,27 +220,27 @@ static void MainTabKeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
 
 // used by PANELS attached to this TAB
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void ShowStatusMessage(char* message)
+ *       @details
+ *******************************************************************************/
+void ShowStatusMessage(char * message)
 {
 	RECT area;
-	const FRAME* frame = &WindowFrame;
-	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol;// + 5;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol; // + 5;
 	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 18;
-	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol;// - 5;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol; // - 5;
 	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
 	UI_DisplayStringCentered(message, &area);
 }
 
 // used by PANELS attached to this TAB
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void ShowOperationStatusMessage(char* message)
+ *       @details
+ *******************************************************************************/
+void ShowOperationStatusMessage(char * message)
 {
 	RECT area;
-	const FRAME* frame = &WindowFrame;
+	const FRAME *frame = &WindowFrame;
 	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
 	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 100;
 	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
@@ -276,34 +274,25 @@ void ShowOperationStatusMessage(char* message)
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-//REAL32 RealValue(INT16 value)
-//{
-//	return (REAL32) (value / 10.);
-//}
-
-// used by PANELS attached to this TAB
-/*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 MENU_ITEM* GetEmptyMenu(U_BYTE index)
 {
-	return NULL;
+	index = index;
+
+	return NULL ;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-///1
-void ShowArmedStatusMessage(char* message)
+ *       @details
+ *******************************************************************************/
+void ShowArmedStatusMessage(char * message)
 {
 	RECT area;
-	const FRAME* frame = &WindowFrame;
-	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol;// + 5;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol; // + 5;
 	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 114;
-	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 75;// - 5;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 75; // - 5;
 	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 17;
 	UI_DisplayStringCentered(message, &area);
 }
-///1

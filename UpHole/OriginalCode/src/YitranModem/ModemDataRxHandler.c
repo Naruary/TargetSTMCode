@@ -74,57 +74,56 @@ static const U_BYTE m_nModemReplyOpCodeList[MAX_MODEM_REPLY] = {
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ReceiveRxData(U_BYTE nData)
 {
 	m_nModemReceiveBuffer[m_nModemReceiveBufferHead++] = nData;
-	if(m_nModemReceiveBufferHead >= MODEM_RECEIVE_BUFFER_SIZE)
+	if (m_nModemReceiveBufferHead >= MODEM_RECEIVE_BUFFER_SIZE)
 	{
 		m_nModemReceiveBufferHead = 0;
 	}
-}//end ModemData_ReceiveRxData
+} //end ModemData_ReceiveRxData
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ProcessRxData(void)
 {
 	BOOL bMessageProcessingPending = false;
 
-	while((m_nModemReceiveBufferHead != m_nModemReceiveBufferTail) &&
-		(bMessageProcessingPending == false))
+	while ((m_nModemReceiveBufferHead != m_nModemReceiveBufferTail) && (bMessageProcessingPending == false))
 	{
-		switch(m_nModemStateMachine_RX)
+		switch (m_nModemStateMachine_RX)
 		{
 			case MODEM_RX_WAITING_FOR_COMMAND:
 			{
 				U_BYTE nTempData = m_nModemReceiveBuffer[m_nModemReceiveBufferTail++];
-				if((nTempData == CONFIGURATION_CONSTANT) || (nTempData == COMMAND_CONSTANT))
+				if ((nTempData == CONFIGURATION_CONSTANT) || (nTempData == COMMAND_CONSTANT))
 				{
 					m_nModemRxCommand.nCommand = nTempData;
 					m_nModemReceivedLengthByteCount = 0;
 					m_nModemStateMachine_RX = MODEM_RX_WAITING_FOR_LENGTH;
 				}
 			}
-			break;
+				break;
 
 			case MODEM_RX_WAITING_FOR_LENGTH:
 			{
 				m_nModemRxCommand.nLength.AsBytes[m_nModemReceivedLengthByteCount++] = m_nModemReceiveBuffer[m_nModemReceiveBufferTail++];
-				if(m_nModemReceivedLengthByteCount >= sizeof( m_nModemRxCommand.nLength))
+				if (m_nModemReceivedLengthByteCount >= sizeof(m_nModemRxCommand.nLength))
 				{
 					m_nModemStateMachine_RX = MODEM_RX_WAITING_FOR_TYPE;
 				}
 			}
-			break;
+				break;
 
 			case MODEM_RX_WAITING_FOR_TYPE:
 			{
 				m_nModemRxCommand.nType = m_nModemReceiveBuffer[m_nModemReceiveBufferTail++];
 				m_nModemStateMachine_RX = MODEM_RX_WAITING_FOR_OPCODE;
 			}
-			break;
+				break;
 
 			case MODEM_RX_WAITING_FOR_OPCODE:
 			{
@@ -132,14 +131,14 @@ void ModemData_ProcessRxData(void)
 				m_nModemReceivedDataByteCount = 0;
 				m_nModemStateMachine_RX = MODEM_RX_WAITING_FOR_DATA;
 			}
-			break;
+				break;
 
 			case MODEM_RX_WAITING_FOR_DATA:
 			{
-				if(m_nModemReceivedDataByteCount >= (m_nModemRxCommand.nLength.AsHalfWord - 2))
+				if (m_nModemReceivedDataByteCount >= (m_nModemRxCommand.nLength.AsHalfWord - 2))
 				{
 					m_nModemRxCommand.nCheckSum = m_nModemReceiveBuffer[m_nModemReceiveBufferTail++];
-					if(computeCheckSum(&m_nModemRxCommand, false))
+					if (computeCheckSum(&m_nModemRxCommand, false))
 					{
 						bMessageProcessingPending = true;
 					}
@@ -150,25 +149,25 @@ void ModemData_ProcessRxData(void)
 					m_nModemRxCommand.nData[m_nModemReceivedDataByteCount++] = m_nModemReceiveBuffer[m_nModemReceiveBufferTail++];
 				}
 			}
-			break;
+				break;
 		}
-		if(m_nModemReceiveBufferTail >= MODEM_RECEIVE_BUFFER_SIZE)
+		if (m_nModemReceiveBufferTail >= MODEM_RECEIVE_BUFFER_SIZE)
 		{
 			m_nModemReceiveBufferTail = 0;
 		}
 	}
-	if(bMessageProcessingPending)
+	if (bMessageProcessingPending)
 	{
 		modemData_ProcessRxMessage();
 	}
-}//end Modem_ProcessRxData
+} //end Modem_ProcessRxData
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 static void modemData_ProcessRxMessage(void)
 {
-	switch(m_nModemRxCommand.nCommand)
+	switch (m_nModemRxCommand.nCommand)
 	{
 		case CONFIGURATION_CONSTANT:
 			//This is for auto modem detection.
@@ -176,13 +175,13 @@ static void modemData_ProcessRxMessage(void)
 			//Nothing else to do here.  This is the welcome message for firmware upgrade.
 			break;
 		case COMMAND_CONSTANT:
-			switch(m_nModemRxCommand.nType)
+			switch (m_nModemRxCommand.nType)
 			{
 				case TYPE_RESPONSE:
 					m_nResponse.nLength = m_nModemRxCommand.nLength.AsHalfWord - 2;
 					m_nResponse.eReply = getReplyOpCodeIndex(m_nModemRxCommand.nOpCode);
-					memcpy((void *)&m_nResponse.nData, (const void *)&m_nModemRxCommand.nData, m_nResponse.nLength);
-					if(m_nResponse.eReply != INVALID_MODEM_REPLY)
+					memcpy((void*) &m_nResponse.nData, (const void*) &m_nModemRxCommand.nData, m_nResponse.nLength);
+					if (m_nResponse.eReply != INVALID_MODEM_REPLY)
 					{
 						m_nResponse.bReplyReady = true;
 					}
@@ -190,8 +189,8 @@ static void modemData_ProcessRxMessage(void)
 				case TYPE_INDICATION:
 					m_nIndication.nLength = m_nModemRxCommand.nLength.AsHalfWord - 2;
 					m_nIndication.eReply = getReplyOpCodeIndex(m_nModemRxCommand.nOpCode);
-					memcpy((void *)&m_nIndication.nData, (const void *)&m_nModemRxCommand.nData, m_nIndication.nLength);
-					if(m_nIndication.eReply != INVALID_MODEM_REPLY)
+					memcpy((void*) &m_nIndication.nData, (const void*) &m_nModemRxCommand.nData, m_nIndication.nLength);
+					if (m_nIndication.eReply != INVALID_MODEM_REPLY)
 					{
 						m_nIndication.bReplyReady = true;
 					}
@@ -203,53 +202,37 @@ static void modemData_ProcessRxMessage(void)
 		default:
 			break;
 	}
-}//end modem_ProcessRxMessage
+} //end modem_ProcessRxMessage
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 MODEM_REPLY_TYPE getReplyOpCodeIndex(U_BYTE nOpCode)
 {
 	U_BYTE nIndex = 0;
 
 	do
 	{
-		if(m_nModemReplyOpCodeList[nIndex] == nOpCode)
+		if (m_nModemReplyOpCodeList[nIndex] == nOpCode)
 		{
-			return (MODEM_REPLY_TYPE)nIndex;
+			return (MODEM_REPLY_TYPE) nIndex;
 		}
-	}
-	while(nIndex++ < MAX_MODEM_REPLY);
+	} while (nIndex++ < MAX_MODEM_REPLY);
 	return INVALID_MODEM_REPLY;
-}//end getReplyOpCodeIndex
+} //end getReplyOpCodeIndex
+
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-//const MODEM_REPLY_DATA_STRUCT* GetRxResponse(void)
-//{
-//	return &m_nResponse;
-//}
-
-/*******************************************************************************
-*       @details
-*******************************************************************************/
-//const MODEM_REPLY_DATA_STRUCT* GetRxIndication(void)
-//{
-//	return &m_nIndication;
-//}
-
-/*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ResetRxResponse(void)
 {
 	m_nResponse = m_nDefaultModemReplyData;
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ResetRxIndication(void)
 {
 	m_nIndication = m_nDefaultModemReplyData;
@@ -258,25 +241,25 @@ void ModemData_ResetRxIndication(void)
 // timed buffer method..
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 void ModemData_ReceiveData(U_BYTE nData)
 {
 	m_nModemReceiveBuffer[m_nModemReceiveBufferHead++] = nData;
-	if(m_nModemReceiveBufferHead >= MODEM_RECEIVE_BUFFER_SIZE)
+	if (m_nModemReceiveBufferHead >= MODEM_RECEIVE_BUFFER_SIZE)
 	{
 		m_nModemReceiveBufferHead = 0;
 	}
-	tMessageGapTimer = ElapsedTimeLowRes((TIME_LR)0);
-}//end ModemData_ReceiveRxData
+	tMessageGapTimer = ElapsedTimeLowRes((TIME_LR) 0);
+} //end ModemData_ReceiveRxData
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
+ *       @details
+ *******************************************************************************/
 U_BYTE getBufferByte(void)
 {
 	U_BYTE nTempData = m_nModemReceiveBuffer[m_nModemReceiveBufferTail++];
-	if(m_nModemReceiveBufferTail >= MODEM_RECEIVE_BUFFER_SIZE)
+	if (m_nModemReceiveBufferTail >= MODEM_RECEIVE_BUFFER_SIZE)
 	{
 		m_nModemReceiveBufferTail = 0;
 	}
@@ -297,12 +280,15 @@ void ProcessModemBuffer(void)
 	BOOL bResult;
 
 	// only process if there are characters
-	if(m_nModemReceiveBufferHead == m_nModemReceiveBufferTail) return;
+	if (m_nModemReceiveBufferHead == m_nModemReceiveBufferTail)
+		return;
 	// and some time has passed..
-	if(ElapsedTimeLowRes(tMessageGapTimer) < 10) return;
+	if (ElapsedTimeLowRes(tMessageGapTimer) < 10)
+		return;
 	// we have a message, process it
 	nTempData = getBufferByte();
-	if((nTempData != CONFIGURATION_CONSTANT) && (nTempData != COMMAND_CONSTANT)) return;
+	if ((nTempData != CONFIGURATION_CONSTANT) && (nTempData != COMMAND_CONSTANT))
+		return;
 	m_nModemRxCommand.nCommand = nTempData;
 	m_nModemReceivedLengthByteCount = 0;
 	m_nModemRxCommand.nLength.AsBytes[m_nModemReceivedLengthByteCount++] = getBufferByte();
@@ -310,15 +296,15 @@ void ProcessModemBuffer(void)
 	m_nModemRxCommand.nType = getBufferByte();
 	m_nModemRxCommand.nOpCode = getBufferByte();
 	nModemReceivedDataByteCount = 0;
-	while(nModemReceivedDataByteCount < (m_nModemRxCommand.nLength.AsHalfWord - 2))
+	while (nModemReceivedDataByteCount < (m_nModemRxCommand.nLength.AsHalfWord - 2))
 	{
 		m_nModemRxCommand.nData[nModemReceivedDataByteCount++] = getBufferByte();
 	}
 	m_nModemRxCommand.nCheckSum = getBufferByte();
 	bResult = computeCheckSum(&m_nModemRxCommand, false);
-	if(bResult)
+	if (bResult)
 	{
-		switch(m_nModemRxCommand.nCommand)
+		switch (m_nModemRxCommand.nCommand)
 		{
 			case CONFIGURATION_CONSTANT:
 				//This is for auto modem detection.
@@ -327,13 +313,13 @@ void ProcessModemBuffer(void)
 				break;
 			case COMMAND_CONSTANT:
 			{
-				switch(m_nModemRxCommand.nType)
+				switch (m_nModemRxCommand.nType)
 				{
 					case TYPE_RESPONSE: // 0x01
 						m_nResponse.nLength = m_nModemRxCommand.nLength.AsHalfWord - 2;
 						m_nResponse.eReply = getReplyOpCodeIndex(m_nModemRxCommand.nOpCode);
-						memcpy((void *)&m_nResponse.nData, (const void *)&m_nModemRxCommand.nData, m_nResponse.nLength);
-						if(m_nResponse.eReply != INVALID_MODEM_REPLY)
+						memcpy((void*) &m_nResponse.nData, (const void*) &m_nModemRxCommand.nData, m_nResponse.nLength);
+						if (m_nResponse.eReply != INVALID_MODEM_REPLY)
 						{
 							m_nResponse.bReplyReady = true;
 						}
@@ -341,8 +327,8 @@ void ProcessModemBuffer(void)
 					case TYPE_INDICATION: // 0x02
 						m_nIndication.nLength = m_nModemRxCommand.nLength.AsHalfWord - 2;
 						m_nIndication.eReply = getReplyOpCodeIndex(m_nModemRxCommand.nOpCode);
-						memcpy((void *)&m_nIndication.nData, (const void *)&m_nModemRxCommand.nData, m_nIndication.nLength);
-						if(m_nIndication.eReply != INVALID_MODEM_REPLY)
+						memcpy((void*) &m_nIndication.nData, (const void*) &m_nModemRxCommand.nData, m_nIndication.nLength);
+						if (m_nIndication.eReply != INVALID_MODEM_REPLY)
 						{
 							m_nIndication.bReplyReady = true;
 						}
@@ -351,10 +337,10 @@ void ProcessModemBuffer(void)
 						break;
 				}
 			}
-			break;
+				break;
 
 			default:
-			break;
+				break;
 		}
 	}
 } // end ProcessModemBuffer

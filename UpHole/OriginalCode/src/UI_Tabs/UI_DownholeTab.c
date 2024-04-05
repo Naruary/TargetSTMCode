@@ -82,182 +82,101 @@ const TAB_ENTRY DownholeTab = {
 //============================================================================//
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static PANEL *CurrentState(void)
+ *       @details
+ *******************************************************************************/
+static PANEL* CurrentState(void)
 {
-	switch(panelIndex)
+	switch (panelIndex)
 	{
 		case UI_DOWNHOLE_MAIN:
 			return &DownholePanel;
 			break;
 	}
 	return NULL;
-#if 0
-	if(getStartNewHoleDecisionPanelActive())
-	{
-		return &StartNewHole_DecisionPanel;
-	}
-	else if(getClearAllHoleDataDecisionPanelActive())
-	{
-		return &ClearAllHoleData_DecisionPanel;
-	}
-//	else if(getUpdateDiagnosticDownholeDecisionPanelActive())
-//	{
-//		return &UpdateDiagnosticDownhole_DecisionPanel;
-//	}
-	else if(getCompassDecisionPanelActive())
-	{
-		return &Compass_DecisionPanel;
-	}
-	else if(getChangePipeLengthDecisionPanelActive())
-	{
-		return &ChangePipeLength_DecisionPanel;
-	}
-	else if(getEnterNewPipeLengthPanelActive())
-	{
-		return &EnterNewPipeLength_Panel;
-	}
-	else if(getChangePipeLengthCorrectDecisionPanelActive())
-	{
-		return &ChangePipeLengthCorrect_DecisionPanel;
-	}
-	else
-	{
-		// can do main screen stuff here if necessary
-	}
-	return &DownholePanel;
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static MENU_ITEM* GetMenuItem(TAB_ENTRY* tab, U_BYTE index)
+ *       @details
+ *******************************************************************************/
+static MENU_ITEM* GetMenuItem(TAB_ENTRY * tab, U_BYTE index)
 {
-#if 0
-    if (index < tab->MenuSize(tab))
-    {
-        return &menu[index];
-    }
-    return NULL;
-#else
 	PANEL *apanel;
-	if(index < tab->MenuSize(tab))
+	if (index < tab->MenuSize(tab))
 	{
 		apanel = CurrentState();
-		if(apanel == NULL) return NULL;
+		if (apanel == NULL)
+			return NULL;
 		return CurrentState()->MenuItem(index);
 	}
 	return NULL;
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static U_BYTE GetMenuSize(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static U_BYTE GetMenuSize(TAB_ENTRY * tab)
 {
-#if 0
-    return MENU_SIZE;
-#else
+	tab = tab;
+
 	return CurrentState()->MenuCount;
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void TablePaint(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void TablePaint(TAB_ENTRY * tab)
 {
-#if 0
-	char text[100];
-	TabWindowPaint(tab);
-	U_BYTE nMenuCount = tab->MenuSize(tab);
-//	snprintf(text, 100, "Downhole Voltage          %.1f", (float)GetDownholeBatteryVoltage()/1000);
-//	ShowDownholeVoltageTabDiag(text, (nMenuCount * 15)+4 );
-//      15Oct2019 whs Removing the above two lines does not !!!!!!! remove the message from the screen
-	// convert seconds of run time to hours
-//	snprintf(text, 100, "Downhole Run Time         %lu", GetDownholeTotalOnTime()/3600ul);
-//      15Oct2019 removing the previous line does not remove the message from the DOW screen
-	ShowDownholeVoltageTabDiag(text, ((nMenuCount+1) * 15)+4 );
-	snprintf(text, 100, "Downhole Software Version: %s", GetDownholeSWVersion());
-	ShowDownholeVoltageTabDiag(text, ((nMenuCount+2) * 15)+4 );
-	snprintf(text, 100, "Downhole Software Build Date: %s", GetDownholeSWDate());
-	ShowDownholeVoltageTabDiag(text, ((nMenuCount+3) * 15)+4 );
-#else
 	CurrentState()->Paint(tab);
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void TableShow(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void TableShow(TAB_ENTRY * tab)
 {
-#if 0
-    UI_SetActiveFrame(&LabelFrame1);
-    SetActiveLabelFrame(LABEL1);
-    PaintNow(&HomeFrame);
-#else
-	if(CurrentState()->Show)
+	if (CurrentState()->Show)
 	{
 		CurrentState()->Show(tab);
 	}
 	PaintNow(&HomeFrame);
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void TableTimeElapsed(TAB_ENTRY* tab)
+ *       @details
+ *******************************************************************************/
+static void TableTimeElapsed(TAB_ENTRY * tab)
 {
-#if 0
-    MENU_ITEM* time = &menu[0];
-    if ((!time->editing) && (UI_GetActiveFrame()->eID != ALERT_FRAME))
-    {
-        RepaintNow(time->valueFrame);
-    }
-#else
-	if(CurrentState()->TimerElapsed)
+	if (CurrentState()->TimerElapsed)
 	{
 		CurrentState()->TimerElapsed(tab);
 	}
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-static void TableKeyPressed(TAB_ENTRY* tab, BUTTON_VALUE key)
+ *       @details
+ *******************************************************************************/
+static void TableKeyPressed(TAB_ENTRY * tab, BUTTON_VALUE key)
 {
-#if 0
-	// original non panelized did nothing here
-#else
-	if(CurrentState()->KeyPressed)
+	if (CurrentState()->KeyPressed)
 	{
 		CurrentState()->KeyPressed(tab, key);
 	}
-#endif
 }
 
 /*******************************************************************************
-*       @details
-*******************************************************************************/
-void ShowStatusMessageTabDiag(char* message1, char* message2)
+ *       @details
+ *******************************************************************************/
+void ShowStatusMessageTabDiag(char * message1, char * message2)
 {
-    RECT area;
-    const FRAME* frame = &WindowFrame;
-    area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 80;
-    area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
-    area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
-    UI_DisplayStringCentered(message1, &area);
-    area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 50;
-    UI_DisplayStringCentered(message2, &area);
+	RECT area;
+	const FRAME *frame = &WindowFrame;
+	area.ptTopLeft.nCol = frame->area.ptTopLeft.nCol + 5;
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 80;
+	area.ptBottomRight.nCol = frame->area.ptBottomRight.nCol - 5;
+	area.ptBottomRight.nRow = area.ptTopLeft.nRow + 15;
+	UI_DisplayStringCentered(message1, &area);
+	area.ptTopLeft.nRow = frame->area.ptBottomRight.nRow - 50;
+	UI_DisplayStringCentered(message2, &area);
 }
 
-/*******************************************************************************
-*       @details
-*******************************************************************************/
+
