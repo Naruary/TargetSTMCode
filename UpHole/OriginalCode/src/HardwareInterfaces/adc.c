@@ -37,6 +37,8 @@ enum ADC_PARAMETERS
 __IO uint16_t ADC1ConvertedValue[8];
 static REAL32 BatteryInputVoltage = 0.0;
 
+
+uint16_t dasValue[8];
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
@@ -46,6 +48,7 @@ static REAL32 BatteryInputVoltage = 0.0;
  *******************************************************************************/
 void ADC_InitPins(void)
 {
+
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_StructInit(&GPIO_InitStructure);
 	// Configure ADC1 Channel 8 pin as analog input
@@ -62,6 +65,7 @@ void ADC_InitPins(void)
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_WriteBit(GPIOA, GPIO_Pin_0, Bit_RESET);
+
 }
 
 /*******************************************************************************
@@ -69,6 +73,7 @@ void ADC_InitPins(void)
  *******************************************************************************/
 void ADC_Initialize(void)
 {
+
 #define ADC_DATA_REGISTER_OFFSET 0x4C
 
 	ADC_InitTypeDef ADC_InitStructure;
@@ -81,6 +86,7 @@ void ADC_Initialize(void)
 	DMA_InitStructure.DMA_Channel = DMA_Channel_0;
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (U_INT32) ADC1 + ADC_DATA_REGISTER_OFFSET;
 	DMA_InitStructure.DMA_Memory0BaseAddr = (U_INT32) &ADC1ConvertedValue[0];
+	//DAS DMA_InitStructure.DMA_Memory0BaseAddr = (U_INT32) &dasValue[0];
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
 	DMA_InitStructure.DMA_BufferSize = 8;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -107,6 +113,7 @@ void ADC_Initialize(void)
 	ADC_CommonInit(&ADC_CommonInitStructure);
 
 	// ADC3 Init
+	ADC_StructInit(&ADC_InitStructure);
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
 	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
