@@ -175,6 +175,7 @@ int main(void)
 	VerifyRTC();
 	// SetWatchdogTimer(WDT_20MS_TIMEOUT_VALUE);
 
+	Modem90KHzInit();
 	while (1)
 	{
 		KickWatchdog();
@@ -359,11 +360,13 @@ static void setup_RCC(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SDIO, DISABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, DISABLE);
+	/* Needed for 90 KHz PWM */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM10, DISABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM11, DISABLE);
 
 	//TODO Figure out all of the clock dividers here.
+
 
 	/* Setup the peripherals*/
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);

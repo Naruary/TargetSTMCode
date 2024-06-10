@@ -13,7 +13,7 @@
 //============================================================================//
 //      INCLUDES                                                              //
 //============================================================================//
-
+#include <stdbool.h>
 #include "portable.h"
 
 //============================================================================//
@@ -73,6 +73,9 @@ extern "C" {
 
     void Delay5us(void);
     void DelayHalfSecond(void);
+    void Modem90KHzInit(void);
+    void Modem90KHzEnable(bool enable);
+
 
 #ifdef __cplusplus
 }
