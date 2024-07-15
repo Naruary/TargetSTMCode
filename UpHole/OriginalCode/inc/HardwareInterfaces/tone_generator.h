@@ -24,8 +24,8 @@
 extern "C" {
 #endif
 
-	void tone_generator_InitPins(void);
-	void tone_generator_setstate(BOOL bState);
+	//void tone_generator_InitPins(void);
+	//void tone_generator_setstate(BOOL bState);
 
 #ifdef __cplusplus
 }

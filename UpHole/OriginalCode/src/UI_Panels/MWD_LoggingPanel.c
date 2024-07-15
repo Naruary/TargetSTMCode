@@ -144,17 +144,19 @@ static void TakeSurvey(MENU_ITEM * item)
 	switch (TakeSurveyState)
 	{
 		case TSS_IDLE: // first Survey button press, we issue a 250K tone for 2 seconds - to wake up Down-hole
+		    Modem90KHzEnable(true); //ZD 7/10/2024 This is where the CPU will issue the 90kHz signal to wake the downhole
 			bGetParam = true; // whs 5Jan2022 turns on the Downhole power and the Yitrans should connect
 			tSurveyRequest = ElapsedTimeLowRes(0);
-			tone_generator_setstate(true);
+			//tone_generator_setstate(true);
 			PaintNow(&HomeFrame); // prevents us from getting stuck on from previous partial shot
 			SystemArmedFlag = false;
 			SurveyTakenFlag = false; // whs 3Dec2021 who uses this???? no one I can find >>  TotalAwakeTime_secs = GetAwakeTimeSetting();
 			TakeSurveyState = TSS_ONE;
 			break;
 		case TSS_ONE: // a 2nd survey press got us here - if Ytran connected, allow message to turn on sensor
+			//Modem90KHzEnable(true); //ZD 7/10/2024 This is where the CPU will issue the 90kHz signal to wake the downhole
 			awakeTime = GetAwakeTimeLeft(); // whs 5Jan2022 2nd press should turn on Compass and Gamma - see lights if not lock up happened
-			if (awakeTime <= 5) // whs 6Dec2021 added this If statement
+			if (awakeTime <= 5) // whs 6Dec2021 added this I//f statement
 			{
 				TargProtocol_SetSensorPowerState(false); // turns off Tensteer
 				SystemArmedFlag = false;

@@ -21,6 +21,7 @@
 
 extern void SetStatusLEDState(BOOL state);
 
+#if 0
 //============================================================================//
 //      FUNCTION IMPLEMENTATIONS                                              //
 //============================================================================//
@@ -42,6 +43,8 @@ extern void SetStatusLEDState(BOOL state);
 ;
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+/*
 void tone_generator_InitPins(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -55,15 +58,17 @@ void tone_generator_InitPins(void)
     GPIO_InitStructure.GPIO_Pin  = TONE_PIN;
     GPIO_Init(TONE_PORT, &GPIO_InitStructure);
 }
+*\
 
-/*!
+
 ********************************************************************************
 *       @details
 *******************************************************************************/
-
+/*
 void tone_generator_setstate(BOOL bState)
 {
 	SetStatusLEDState(bState);
 	GPIO_WriteBit(TONE_PORT, TONE_PIN, ((bState) ? Bit_SET : Bit_RESET));
 }
-
+*/
+#endif

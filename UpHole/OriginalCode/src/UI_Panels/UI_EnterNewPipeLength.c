@@ -175,9 +175,9 @@ TIME_LR GetEnterNewPipeLengthTimer(void)
  *       @details
  *******************************************************************************/
 
-void SetNewPipeLength(INT16 length)
+void SetNewPipeLength(INT16 value) //ZD 7/10/2024 changed from value
 {
-	NewPipeLength = length;
+	NewPipeLength = value; //ZD 7/10/2024 Changed from NewPipeLength = Length
 }
 
 /*!

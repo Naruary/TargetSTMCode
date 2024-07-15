@@ -109,7 +109,7 @@ int main(void)
 	BUZZER_InitPins();	// does not require the systick timer
 	KEYPAD_InitPins();	// does not require the systick timer
 	LCD_InitPins();		// does not require the systick timer
-	tone_generator_InitPins();		// does not require the systick timer
+	//tone_generator_InitPins();		// does not require the systick timer
 	// It is OK to init modem pins in all product configurations
 	// no damage can be done if no modem is installed.
 	ModemDriver_InitPins();	// does not require the systick timer

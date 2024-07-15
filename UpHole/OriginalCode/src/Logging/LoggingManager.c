@@ -603,7 +603,7 @@ void WaitingForDownhole(void)
 	// used to take a survey, but now wait to turn off tone and return to logging
 	if (ElapsedTimeLowRes(GetWaitingForDownholeTimer()) >= TONE_POWERUP_SIGNAL_TIME)
 	{
-		tone_generator_setstate(false);
+		Modem90KHzEnable(false); //ZD 7/11/2024 Disables 90KHz for logging
 		SetLoggingState(LOGGING);
 	}
 }

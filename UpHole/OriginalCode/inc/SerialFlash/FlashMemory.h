@@ -83,7 +83,7 @@ typedef struct
 {
 	U_INT16 nBacklightOnTime_sec;
 	U_INT16 nLCDOnTime_sec;
-	INT16 nDefaultPipeLengthFeet; // in whole feet
+	INT16 nDefaultPipeLengthFeet; // Decimal Number
 	ANGLE_TIMES_TEN nDeclination; // an unsigned short int
 	ANGLE_TIMES_TEN nToolface;
 	INT16 nDesiredAzimuth;

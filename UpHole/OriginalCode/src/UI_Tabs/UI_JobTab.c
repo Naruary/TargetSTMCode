@@ -147,10 +147,10 @@ static void JobTabShow(TAB_ENTRY * tab)
 /*******************************************************************************
  *       @details
  *******************************************************************************/
-void SetDefaultPipeLength(INT16 length)
+void SetDefaultPipeLength(INT16 value) //ZD 7/10/2024 Changed from (INT16 length)
 {
 	// pipe length is stored in feet
-	NVRAM_data.nDefaultPipeLengthFeet = length;
+	NVRAM_data.nDefaultPipeLengthFeet = value; //ZD 7/10/2024 changed from nDefaultPipeLengthFeet = Length so that is no longer a whole number
 }
 
 /*******************************************************************************

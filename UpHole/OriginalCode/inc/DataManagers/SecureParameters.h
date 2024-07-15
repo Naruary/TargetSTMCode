@@ -197,7 +197,7 @@ extern "C" {
     ///@brief  
     ///@param  
     ///@return 
-    void SetDefaultPipeLength(INT16 length);
+    void SetDefaultPipeLength(INT16 value); //ZD 7/10/2024 Changed from (INT16 Length) so that a decimal can be typed in
     
     ///@brief  
     ///@param  

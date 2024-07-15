@@ -103,7 +103,7 @@ void Modem90KHzInit(void)
 
 	TIM_ARRPreloadConfig(TIM9, ENABLE);
 
-	Modem90KHzEnable(true);
+	//Modem90KHzEnable(true); //ZD 7/10/2024 This is the line of code to enable Modem output for 90kHz
 
 }
 
