@@ -51,7 +51,7 @@ void ADC_InitPins(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_InitStructure.GPIO_Pin = BATT_MEAS_AIN_PIN;
-    GPIO_InitStructure.GPIO_Pin = BATT_2_MEAS_AIN_PIN;
+    //DAS GPIO_InitStructure.GPIO_Pin = BATT_2_MEAS_AIN_PIN;
     GPIO_Init(BATT_MEAS_AIN_PORT, &GPIO_InitStructure);
     GPIO_StructInit(&GPIO_InitStructure);
 
@@ -144,6 +144,7 @@ void ADC_Initialize(void)
     ADC_CommonInit(&ADC_CommonInitStructure);
 
     // ADC3 Init
+	ADC_StructInit(&ADC_InitStructure);
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
     ADC_InitStructure.ADC_ScanConvMode = DISABLE;
     ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
@@ -160,6 +161,7 @@ void ADC_Initialize(void)
     ADC_RegularChannelConfig(ADC3, ADC_Channel_10, 1, ADC_SampleTime_15Cycles);
 
 	// ADC1 Init
+	ADC_StructInit(&ADC_InitStructure);
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
     ADC_InitStructure.ADC_ScanConvMode = DISABLE;
     ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
