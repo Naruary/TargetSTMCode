@@ -34,8 +34,8 @@ extern "C" {
 	void setEnterNewPipeLengthPanelActive(BOOL bFlag);
 	BOOL getEnterNewPipeLengthPanelActive(void);
 	TIME_LR GetEnterNewPipeLengthTimer(void);
-	INT16 GetNewPipeLength(void);
-	void SetNewPipeLength(INT16 length);
+	float GetNewPipeLength(void);
+	void SetNewPipeLength(float value);
         
         
         extern volatile BOOL Shift_Button_Pushed_Flag;

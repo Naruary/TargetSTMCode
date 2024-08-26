@@ -81,28 +81,24 @@ typedef enum
 
 typedef struct
 {
-	U_INT16 nBacklightOnTime_sec;
-	U_INT16 nLCDOnTime_sec;
-	INT16 nDefaultPipeLengthFeet; // Decimal Number
-	ANGLE_TIMES_TEN nDeclination; // an unsigned short int
-	ANGLE_TIMES_TEN nToolface;
-	INT16 nDesiredAzimuth;
-//	INT16 nDownholeOffTime;
-//	INT16 nDownholeOnTime;
-	INT16 nCheckPollTime_sec;
-	LANGUAGE_SETTING nLanguage; // an enum
-	STATE_OF_LOGGING loggingState; // an enum
-	U_BYTE sModelNum[MAX_MODEL_NUM_BYTES + 2];
-	U_BYTE sSerialNum[MAX_SERIAL_NUM_BYTES + 2];
-	U_BYTE sDeviceOwner[MAX_DEVICE_OWNER_BYTES + 2];
-	U_BYTE sBoreholeName[MAX_BOREHOLE_NAME_BYTES + 2];
-//	U_BYTE fGammaSensorEnable;
-//	U_BYTE fDownholeDeepSleep;
-	U_BYTE fKeyBeeperEnable;
-	U_BYTE fCheckShot;
-	U_BYTE fEnableErrorCorrectAzimuth;
-	U_BYTE LoggingBranchSet;
-	U_INT32 calculatedCrc;
+    U_INT16 nBacklightOnTime_sec;
+    U_INT16 nLCDOnTime_sec;
+    float nDefaultPipeLengthFeet; // Changed to float for decimal precision
+    ANGLE_TIMES_TEN nDeclination;
+    ANGLE_TIMES_TEN nToolface;
+    INT16 nDesiredAzimuth;
+    INT16 nCheckPollTime_sec;
+    LANGUAGE_SETTING nLanguage;
+    STATE_OF_LOGGING loggingState;
+    U_BYTE sModelNum[MAX_MODEL_NUM_BYTES + 2];
+    U_BYTE sSerialNum[MAX_SERIAL_NUM_BYTES + 2];
+    U_BYTE sDeviceOwner[MAX_DEVICE_OWNER_BYTES + 2];
+    U_BYTE sBoreholeName[MAX_BOREHOLE_NAME_BYTES + 2];
+    U_BYTE fKeyBeeperEnable;
+    U_BYTE fCheckShot;
+    U_BYTE fEnableErrorCorrectAzimuth;
+    U_BYTE LoggingBranchSet;
+    U_INT32 calculatedCrc;
 } NVRAM_image;
 
 // struct to hold details of the external flash chip

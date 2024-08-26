@@ -32,20 +32,20 @@ extern const TAB_ENTRY JobTab;
 extern "C" {
 #endif
 
-	INT16 GetDesiredAzimuth(void);
-	void SetDesiredAzimuth(INT16 value);
-	void SetDefaultPipeLength(INT16 length);
-	INT16 GetDefaultPipeLength(void);
-	void Set90DegErr(INT16 length);
-	INT16 Get90DegErr(void);
-	void Set270DegErr(INT16 length);
-	INT16 Get270DegErr(void);
-	void SetMaxErr(INT16 length);
-	INT16 GetMaxErr(void);
-	void SetDeclination(INT16 length);
-	INT16 GetDeclination(void);
-	void SetBoreholeName(char* value);
-	char* GetBoreholeName(void);
+    float GetDesiredAzimuth(void);
+    void SetDesiredAzimuth(float value);
+    void SetDefaultPipeLength(float length);
+    float GetDefaultPipeLength(void);
+    void Set90DegErr(float length);
+    float Get90DegErr(void);
+    void Set270DegErr(float length);
+    float Get270DegErr(void);
+    void SetMaxErr(float length);
+    float GetMaxErr(void);
+    void SetDeclination(float value);
+    float GetDeclination(void);
+    void SetBoreholeName(char* value);
+    char* GetBoreholeName(void);
 
 #ifdef __cplusplus
 }

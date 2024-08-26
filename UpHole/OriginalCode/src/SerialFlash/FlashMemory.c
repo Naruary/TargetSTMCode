@@ -26,62 +26,68 @@
 TIME_LR g_tFlashIdleTimer;
 
 NVRAM_image NVRAM_data;
-const NVRAM_image NVRAM_defaults = { 300, // U_INT16 nBacklightOnTime_sec;
-		1200, // U_INT16 nLCDOnTime_sec;
-		10, // INT16 nDefaultPipeLengthFeet; // in whole feet
-		0, // INT16 nDeclination;
-		0, // INT16 nToolface;
-		0, // INT16 nDesiredAzimuth;
-		5, // INT16 nCheckPollTime_sec
-		USE_ENGLISH, // LANGUAGE_SETTING nLanguage;
-		NOT_LOGGING, // STATE_OF_LOGGING loggingState;
-		"Magnestar 100       ", // sModelNum
-		"000001              ", // sSerialNum
-		"Bob                 ", // sDeviceOwner
-		"1 left            ", // BoreholeName
-		1, // fKeyBeeperEnable;
-		1, // fCheckShot;
-		0, // fEnableErrorCorrectAzimuth
-		0, // LoggingBranchSet;
-		};
+const NVRAM_image NVRAM_defaults =
+{
+	300, // U_INT16 nBacklightOnTime_sec;
+	1200, // U_INT16 nLCDOnTime_sec;
+	10.0f, // float nDefaultPipeLengthFeet; // in feet with decimal precision // Changed to accommodate a float value ZD 24August2024
+	0, // INT16 nDeclination;
+	0, // INT16 nToolface;
+	0, // INT16 nDesiredAzimuth;
+	5, // INT16 nCheckPollTime_sec
+	USE_ENGLISH, // LANGUAGE_SETTING nLanguage;
+	NOT_LOGGING, // STATE_OF_LOGGING loggingState;
+	"Magnestar 100       ", // sModelNum
+	"000001              ", // sSerialNum
+	"Bob                 ", // sDeviceOwner
+	"1 left            ", // BoreholeName
+	1, // fKeyBeeperEnable;
+	1, // fCheckShot;
+	0, // fEnableErrorCorrectAzimuth
+	0, // LoggingBranchSet;
+};
 
-const NVRAM_image NVRAM_min = { 10, //60, // U_INT16 nBacklightOnTime_sec;
-		10, //120, // U_INT16 nLCDOnTime_sec;
-		1, // INT16 nDefaultPipeLengthFeet; // in whole feet
-		-250, // ANGLE_TIMES_TEN nDeclination;
-		0, // ANGLE_TIMES_TEN nToolface;
-		0, // ANGLE_TIMES_TEN nDesiredAzimuth;
-		1, // INT16 nCheckPollTime_sec
-		USE_ENGLISH, // LANGUAGE_SETTING nLanguage;
-		NOT_LOGGING, // STATE_OF_LOGGING loggingState;
-		"", // sModelNum
-		"", // sSerialNum
-		"", // sDeviceOwner
-		"", // BoreholeName
-		0, // fKeyBeeperEnable;
-		0, // fCheckShot;
-		0, // fEnableErrorCorrectAzimuth
-		0, // LoggingBranchSet;
-		};
+const NVRAM_image NVRAM_min =
+{
+	10, // U_INT16 nBacklightOnTime_sec;
+	10, // U_INT16 nLCDOnTime_sec;
+	0.1f, // float nDefaultPipeLengthFeet; // Minimum value for pipe length in feet //Changed to accommodate a float value ZD 24August2024
+	-250, // ANGLE_TIMES_TEN nDeclination;
+	0, // ANGLE_TIMES_TEN nToolface;
+	0, // ANGLE_TIMES_TEN nDesiredAzimuth;
+	1, // INT16 nCheckPollTime_sec
+	USE_ENGLISH, // LANGUAGE_SETTING nLanguage;
+	NOT_LOGGING, // STATE_OF_LOGGING loggingState;
+	"", // sModelNum
+	"", // sSerialNum
+	"", // sDeviceOwner
+	"", // BoreholeName
+	0, // fKeyBeeperEnable;
+	0, // fCheckShot;
+	0, // fEnableErrorCorrectAzimuth
+	0, // LoggingBranchSet;
+};
 
-const NVRAM_image NVRAM_max = { 10000, // U_INT16 nBacklightOnTime;
-		10000, // U_INT16 nLCDOnTime_sec;
-		50, // INT16 nDefaultPipeLengthFeet; // in whole feet
-		250, // ANGLE_TIMES_TEN nDeclination;
-		3600, // ANGLE_TIMES_TEN nToolface;
-		3600, // ANGLE_TIMES_TEN nDesiredAzimuth;
-		99, // INT16 nCheckPollTime_sec
-		USE_ENGLISH, // LANGUAGE_SETTING nLanguage;
-		NUMBER_OF_LOGGING_STATES, // STATE_OF_LOGGING loggingState;
-		"", // sModelNum
-		"", // sSerialNum
-		"", // sDeviceOwner
-		"", // BoreholeName
-		1, // fKeyBeeperEnable;
-		1, // fCheckShot;
-		1, // fEnableErrorCorrectAzimuth
-		1, // LoggingBranchSet;
-		};
+const NVRAM_image NVRAM_max =
+{
+	10000, // U_INT16 nBacklightOnTime_sec;
+	10000, // U_INT16 nLCDOnTime_sec;
+	99.99f, // float nDefaultPipeLengthFeet; // Maximum value for pipe length in feet //Changed to accommodate a float value ZD 24August2024
+	250, // ANGLE_TIMES_TEN nDeclination;
+	3600, // ANGLE_TIMES_TEN nToolface;
+	3600, // ANGLE_TIMES_TEN nDesiredAzimuth;
+	99, // INT16 nCheckPollTime_sec
+	USE_ENGLISH, // LANGUAGE_SETTING nLanguage;
+	NUMBER_OF_LOGGING_STATES, // STATE_OF_LOGGING loggingState;
+	"", // sModelNum
+	"", // sSerialNum
+	"", // sDeviceOwner
+	"", // BoreholeName
+	1, // fKeyBeeperEnable;
+	1, // fCheckShot;
+	1, // fEnableErrorCorrectAzimuth
+	1, // LoggingBranchSet;
+};
 
 // from RecordManager, make these structs non-volatile
 BOREHOLE_STATISTICS boreholeStatistics;
@@ -919,7 +925,7 @@ void Check_NV_data_boundaries(void)
 		NVRAM_data.nLCDOnTime_sec = NVRAM_defaults.nLCDOnTime_sec;
 	if ((NVRAM_data.nLanguage < NVRAM_min.nLanguage) || (NVRAM_data.nLanguage > NVRAM_max.nLanguage))
 		NVRAM_data.nLanguage = NVRAM_defaults.nLanguage;
-	if ((NVRAM_data.nDefaultPipeLengthFeet < NVRAM_min.nDefaultPipeLengthFeet) || (NVRAM_data.nDefaultPipeLengthFeet > NVRAM_max.nDefaultPipeLengthFeet))
+	if ((NVRAM_data.nDefaultPipeLengthFeet < NVRAM_min.nDefaultPipeLengthFeet) || (NVRAM_data.nDefaultPipeLengthFeet > NVRAM_max.nDefaultPipeLengthFeet))// fixed for new float default ZD 23August2024
 		NVRAM_data.nDefaultPipeLengthFeet = NVRAM_defaults.nDefaultPipeLengthFeet;
 	if ((NVRAM_data.nDeclination < NVRAM_min.nDeclination) || (NVRAM_data.nDeclination > NVRAM_max.nDeclination))
 		NVRAM_data.nDeclination = NVRAM_defaults.nDeclination;

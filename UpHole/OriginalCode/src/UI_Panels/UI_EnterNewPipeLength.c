@@ -54,7 +54,7 @@ static void FinishEditing(MENU_ITEM* item);
 //      DATA DEFINITIONS                                                      //
 //============================================================================//
 
-static INT16 NewPipeLength = 0;
+static float NewPipeLength = 0;
 
 static MENU_ITEM EnterNewPipeLength_Menu[] =
 {
@@ -175,7 +175,7 @@ TIME_LR GetEnterNewPipeLengthTimer(void)
  *       @details
  *******************************************************************************/
 
-void SetNewPipeLength(INT16 value) //ZD 7/10/2024 changed from value
+void SetNewPipeLength(float value) //ZD 7/10/2024 changed from value
 {
 	NewPipeLength = value; //ZD 7/10/2024 Changed from NewPipeLength = Length
 }
@@ -185,9 +185,9 @@ void SetNewPipeLength(INT16 value) //ZD 7/10/2024 changed from value
  *       @details
  *******************************************************************************/
 
-INT16 GetNewPipeLength(void)
+float GetNewPipeLength(void)
 {
-	INT16 value;
+	float value;
 	value = NewPipeLength;
 	return value;
 }

@@ -63,7 +63,8 @@
 //#define VERSION "5.0.0" //ZD 10/16/2023 Tetsting
 //#define VERSION "5.0.3" //ZD 12/14/2023 Fixes with the uploading of Data to the Uphole Box & the allowance of Both the Upload and the Connection to Modem
 //#define VERSION "5.0.4" //ZD 12/22/2023 Fixes the Records from having branch issues.
-#define VERSION "5.0.5" // ZD 06/18/2024 90kHz from STM
+//#define VERSION "5.0.5" // ZD 06/18/2024 90kHz from STM
+#define VERSION "5.0.6" //ZD 08/25/2024 Pipe Length modifed as a float entry (allowance for 9.83ft instead of a whole number
 // 3.7, 3-21-2019, This version has new NV access and completely new
 //  Target Protocol for serial, and also serial terminal access to PC logging.
 

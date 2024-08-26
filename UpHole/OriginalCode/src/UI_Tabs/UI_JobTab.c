@@ -4,7 +4,7 @@
 *       @file       Uphole/src/UI_Tabs/UI_JobTab.c
 *       @date       July 2014
 *       @copyright  COPYRIGHT (c) 2014 Target Drilling Inc. All rights are
-*                   reserved.  Reproduction in whole or in part is prohibited
+*                   reserved. Reproduction in whole or in part is prohibited
 *                   without the prior written consent of the copyright holder.
 *******************************************************************************/
 
@@ -41,7 +41,8 @@ static U_BYTE GetJobMenuSize(TAB_ENTRY* tab);
 static void JobTabPaint(TAB_ENTRY* tab);
 static void JobTabMakeRequest(TAB_ENTRY* tab);
 static void JobTabShow(TAB_ENTRY* tab);
-ANGLE_TIMES_TEN GetCorrectToolFaceValue(void);
+static float GetCorrectToolFaceValue(void);
+
 //============================================================================//
 //      DATA DECLARATIONS                                                     //
 //============================================================================//
@@ -53,13 +54,13 @@ static MENU_ITEM menu[] =
 	CREATE_STRING_FIELD(TXT_HOLE_NAME,			&LabelFrame1, &ValueFrame1,
 		CurrrentLabelFrame, GetBoreholeName,      SetBoreholeName),
 	CREATE_FIXED_FIELD(TXT_SETUP_PIPE_LENGTH,	&LabelFrame2, &ValueFrame2,
-		CurrrentLabelFrame, GetDefaultPipeLength, SetDefaultPipeLength, 2, 0, 0, 99), // 500
+		CurrrentLabelFrame, GetDefaultPipeLength, SetDefaultPipeLength, 5, 2, 0.0f, 99.99f), // Updated format and range 24August2024
 	CREATE_FIXED_FIELD(TXT_DECLINATION,			&LabelFrame3, &ValueFrame3,
-		CurrrentLabelFrame, GetDeclination,       SetDeclination,       4, 1, -999, 999), // -25.0 to +25.0
+		CurrrentLabelFrame, GetDeclination,       SetDeclination,       4, 1, -999.0f, 999.0f), // Fixed range to be float 24August2024
 	CREATE_FIXED_FIELD(TXT_DESIRED_AZIMUTH ,	&LabelFrame4, &ValueFrame4,
-		CurrrentLabelFrame, GetDesiredAzimuth,    SetDesiredAzimuth,    4, 1, 0, 9999), // 3600 (THREE_SIXTY_TIMES_TEN)
+		CurrrentLabelFrame, GetDesiredAzimuth,    SetDesiredAzimuth,    4, 1, 0.0f, 9999.0f), // Fixed range to be float ZD 24August2024
 	CREATE_FIXED_FIELD(TXT_ENTER_TOOLFACE,	&LabelFrame5, &ValueFrame5,
-		CurrrentLabelFrame, GetCorrectToolFaceValue,    SetToolface,    4, 1, 0, 9999),
+		CurrrentLabelFrame, GetCorrectToolFaceValue,    SetToolface,    4, 1, 0.0f, 9999.0f),
 	CREATE_MENU_ITEM(TXT_SET_TOOLFACE_ZERO, &LabelFrame6, SetToolFaceZeroFinalValue),
 	CREATE_MENU_ITEM(TXT_CLEAR_TOOLFACE_ZERO, &LabelFrame7, ClearToolFaceZero),
 	CREATE_MENU_ITEM(TXT_USB_CRF, &LabelFrame8, CreateFile),  // whs 27Jan2022 dumps all stored shots to the USB
@@ -103,19 +104,28 @@ static U_BYTE GetJobMenuSize(TAB_ENTRY * tab)
  *******************************************************************************/
 static void JobTabPaint(TAB_ENTRY * tab)
 {
-	char text[100];
+    char text[100];
 
-	TabWindowPaint(tab);
+    // Paint the tab window
+    TabWindowPaint(tab);
 
-	if (((float) GetToolFaceValue() / 10.0f) > 360.0f)
-	{   // the above line and below .. if else statement was added 19Nov2019 whs
-		snprintf(text, 100, "%.1f", ((double) GetToolFaceValue() / 10.0f) - 360.0f);
+    // Display the Toolface value
+    float toolFaceValue = GetToolFaceValue() / 10.0f;
+
+	if (toolFaceValue > 360.0f)
+	{
+		snprintf(text, 100, "%.1f", toolFaceValue - 360.0f);
 	}
 	else
-	{   //previously only the below line was here before 19Nov2019 whs
-		snprintf(text, 100, "%.1f", (double) GetToolFaceValue() / 10.0f);
-	}   // without the added statements the Uphole Job Tab LCD would show > 360 degrees
+	{
+		snprintf(text, 100, "%.1f", toolFaceValue);
+	}
+
+    // Now, handle the pipe length display
+    float pipeLength = GetDefaultPipeLength();
+    snprintf(text, sizeof(text), "Pipe Length: %.2f", pipeLength);
 }
+
 
 /*******************************************************************************
  *       @details
@@ -143,33 +153,34 @@ static void JobTabShow(TAB_ENTRY * tab)
 	PaintNow(&HomeFrame);
 }
 
-
 /*******************************************************************************
  *       @details
  *******************************************************************************/
-void SetDefaultPipeLength(INT16 value) //ZD 7/10/2024 Changed from (INT16 length)
+void SetDefaultPipeLength(float value)
 {
-	// pipe length is stored in feet
-	NVRAM_data.nDefaultPipeLengthFeet = value; //ZD 7/10/2024 changed from nDefaultPipeLengthFeet = Length so that is no longer a whole number
+    if (value < 0.0f || value > 99.99f) // Ensure value is within valid range
+    {
+        value = 10.00f; // Default value if out of range
+    }
+    NVRAM_data.nDefaultPipeLengthFeet = value;
+}
+/*******************************************************************************
+ *       @details
+ *******************************************************************************/
+float GetDefaultPipeLength(void)
+{
+    float value = NVRAM_data.nDefaultPipeLengthFeet;
+    if (value < 0.0f || value > 99.99f) // Ensure value is within valid range
+    {
+        value = 10.00f; // Return a default value if NVRAM data is corrupted or out of range
+    }
+    return value;
 }
 
 /*******************************************************************************
  *       @details
  *******************************************************************************/
-INT16 GetDefaultPipeLength(void)
-{
-	// pipe length is stored in feet
-	INT16 value;
-	value = NVRAM_data.nDefaultPipeLengthFeet;
-	if (value < 0)
-		value = 0;
-	return value;
-}
-
-/*******************************************************************************
- *       @details
- *******************************************************************************/
-INT16 GetDesiredAzimuth(void)
+float GetDesiredAzimuth(void)
 {
 	return NVRAM_data.nDesiredAzimuth;
 }
@@ -177,22 +188,23 @@ INT16 GetDesiredAzimuth(void)
 /*******************************************************************************
  *       @details
  *******************************************************************************/
-void SetDesiredAzimuth(INT16 value)
+void SetDesiredAzimuth(float value)
 {
 	NVRAM_data.nDesiredAzimuth = value;
-}
-/*******************************************************************************
- *       @details
- *******************************************************************************/
-void SetDeclination(INT16 length)
-{
-	NVRAM_data.nDeclination = length;
 }
 
 /*******************************************************************************
  *       @details
  *******************************************************************************/
-INT16 GetDeclination(void)
+void SetDeclination(float value)
+{
+	NVRAM_data.nDeclination = value;
+}
+
+/*******************************************************************************
+ *       @details
+ *******************************************************************************/
+float GetDeclination(void)
 {
 	return NVRAM_data.nDeclination;
 }
@@ -225,15 +237,15 @@ char* GetBoreholeName(void)
 	return (char*) NVRAM_data.sBoreholeName;
 }
 
-ANGLE_TIMES_TEN GetCorrectToolFaceValue(void)
+float GetCorrectToolFaceValue(void)
 {
-	if ((GetToolFaceValue() / 10) > 360)
+	float toolFaceValue = GetToolFaceValue() / 10.0f;
+	if (toolFaceValue > 360.0f)
 	{
-		return GetToolFaceValue() - 3600;
+		return toolFaceValue - 360.0f;
 	}
 	else
 	{
-		return GetToolFaceValue();
+		return toolFaceValue;
 	}
 }
-

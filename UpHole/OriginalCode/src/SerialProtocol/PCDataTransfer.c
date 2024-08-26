@@ -104,7 +104,7 @@ struct STRUCT_RECORD_DATA
 {
     char BoreName[100];
     int Rec;
-    int PipeLength;
+    float PipeLength;
     float Azimuth;
     float Pitch;
     float Roll;
@@ -130,7 +130,7 @@ struct STRUCT_RECORD_DATA
 struct NEWHOLE_INFO
 {
     char BoreholeName[100]; // Name of the new borehole
-    int DefaultPipeLength;  // Default length of the pipe for the new borehole
+    float DefaultPipeLength;  // Default length of the pipe for the new borehole
     int Declination;        // Declination angle for the new borehole
     int DesiredAzimuth;     // Desired azimuth angle for the new borehole
     int Toolface;           // Tool face angle for the new borehole

@@ -153,32 +153,45 @@ void FixedHighlight(MENU_ITEM * item)
  *******************************************************************************/
 void FixedFinishEdit(MENU_ITEM * item)
 {
-	const REAL32 convert[5] =
-	{ 1.0, 10.0, 100.0, 1000.0, 10000.0 };
-	if (digitsEntered == 0)
-	{
-		// no change to previous value
-		goto FixedFinishEdit1;
-	}
-	edit_value = atof(digits);
-	if (signHolder)
-	{
-		edit_value = -edit_value;
-	}
-	edit_value *= convert[item->fixed.fractionDigits];
-	item->fixed.value = (INT16) edit_value;
-	if (item->fixed.maxValue < item->fixed.value)
-	{
-		item->fixed.value = item->fixed.maxValue;
-	}
-	if (item->fixed.minValue > item->fixed.value)
-	{
-		item->fixed.value = item->fixed.minValue;
-	}
-	item->fixed.SetValue(item->fixed.value);
-	FixedFinishEdit1: item->editing = false;
-	item->NextFrame(item);
+    const REAL32 convert[5] =
+    { 1.0, 10.0, 100.0, 1000.0, 10000.0 };
+
+    // If no digits were entered, keep the previous value
+    if (digitsEntered == 0)
+    {
+        goto FixedFinishEdit1;
+    }
+
+    // Convert digits entered to a floating-point value
+    edit_value = atof(digits);
+
+    // Handle negative values if the sign holder is set
+    if (signHolder)
+    {
+        edit_value = -edit_value;
+    }
+
+    // Adjust based on the fraction digits specified (for example, handling 2 decimal places)
+    edit_value *= convert[item->fixed.fractionDigits];
+
+    // Ensure the value stays within the specified range
+    if (edit_value > item->fixed.maxValue)
+    {
+        edit_value = item->fixed.maxValue;
+    }
+    else if (edit_value < item->fixed.minValue)
+    {
+        edit_value = item->fixed.minValue;
+    }
+
+    // Store the value using the SetValue callback, scaling it back down for display
+    item->fixed.SetValue(edit_value / convert[item->fixed.fractionDigits]);
+
+FixedFinishEdit1:
+    item->editing = false;
+    item->NextFrame(item);
 }
+
 
 /*******************************************************************************
  *       @details

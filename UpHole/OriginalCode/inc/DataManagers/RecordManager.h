@@ -75,7 +75,7 @@ typedef struct _NEWHOLE_INFO
     U_INT16 BoreholeNumber;
     U_INT16 StartingRecordNumber;
     U_INT16 EndingRecordNumber;
-    INT16 DefaultPipeLength;
+    float DefaultPipeLength;
     INT16 Declination;
     INT16 Toolface;
     INT16 DesiredAzimuth;
