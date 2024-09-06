@@ -58,7 +58,7 @@ static INT16 NewPipeLength = 0;
 
 static MENU_ITEM EnterNewPipeLength_Menu[] =
 {
-    CREATE_FIXED_FIELD(TXT_ENTER_PIPE_LENGTH,  &LabelFrame1, &ValueFrame1, CurrrentLabelFrame, GetNewPipeLength, SetNewPipeLength, 2, 0, 0, 99), // 1-50
+    CREATE_FIXED_FIELD(TXT_ENTER_PIPE_LENGTH,  &LabelFrame1, &ValueFrame1, CurrrentLabelFrame, GetNewPipeLength, SetNewPipeLength, 4, 2, 0, 9999), // 1-50
     CREATE_MENU_ITEM(TXT_FINISH_SET_LENGTH, &LabelFrame2, FinishEditing),
     CREATE_MENU_ITEM(TXT_BACK, &LabelFrame3, ReturnToMain),
 };

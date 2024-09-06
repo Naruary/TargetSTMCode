@@ -53,7 +53,7 @@ static MENU_ITEM menu[] =
 	CREATE_STRING_FIELD(TXT_HOLE_NAME,			&LabelFrame1, &ValueFrame1,
 		CurrrentLabelFrame, GetBoreholeName,      SetBoreholeName),
 	CREATE_FIXED_FIELD(TXT_SETUP_PIPE_LENGTH,	&LabelFrame2, &ValueFrame2,
-		CurrrentLabelFrame, GetDefaultPipeLength, SetDefaultPipeLength, 2, 0, 0, 99), // 500
+		CurrrentLabelFrame, GetDefaultPipeLength, SetDefaultPipeLength, 4, 2, 0, 9999), // 500
 	CREATE_FIXED_FIELD(TXT_DECLINATION,			&LabelFrame3, &ValueFrame3,
 		CurrrentLabelFrame, GetDeclination,       SetDeclination,       4, 1, -999, 999), // -25.0 to +25.0
 	CREATE_FIXED_FIELD(TXT_DESIRED_AZIMUTH ,	&LabelFrame4, &ValueFrame4,

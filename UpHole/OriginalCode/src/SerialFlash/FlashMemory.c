@@ -47,7 +47,7 @@ const NVRAM_image NVRAM_defaults = { 300, // U_INT16 nBacklightOnTime_sec;
 
 const NVRAM_image NVRAM_min = { 10, //60, // U_INT16 nBacklightOnTime_sec;
 		10, //120, // U_INT16 nLCDOnTime_sec;
-		1, // INT16 nDefaultPipeLengthFeet; // in whole feet
+		100, // INT16 nDefaultPipeLengthFeet; // in whole feet
 		-250, // ANGLE_TIMES_TEN nDeclination;
 		0, // ANGLE_TIMES_TEN nToolface;
 		0, // ANGLE_TIMES_TEN nDesiredAzimuth;
@@ -66,7 +66,7 @@ const NVRAM_image NVRAM_min = { 10, //60, // U_INT16 nBacklightOnTime_sec;
 
 const NVRAM_image NVRAM_max = { 10000, // U_INT16 nBacklightOnTime;
 		10000, // U_INT16 nLCDOnTime_sec;
-		50, // INT16 nDefaultPipeLengthFeet; // in whole feet
+		5000, // INT16 nDefaultPipeLengthFeet; // in whole feet
 		250, // ANGLE_TIMES_TEN nDeclination;
 		3600, // ANGLE_TIMES_TEN nToolface;
 		3600, // ANGLE_TIMES_TEN nDesiredAzimuth;
