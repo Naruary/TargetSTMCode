@@ -243,9 +243,9 @@ REAL32 GetLastLength(void)
 /*******************************************************************************
  *       @details
  *******************************************************************************/
-U_INT32 GetLastLengthuInt32(void)
+REAL32 GetLastLengthuReal32(void)
 {
-	return (U_INT32) boreholeStats.MostRecentSurvey.nTotalLength;
+	return boreholeStats.MostRecentSurvey.nTotalLength / 100.0;
 }
 
 /*******************************************************************************

@@ -91,9 +91,9 @@ static void ChangePipeLengthCorrect_Decision_Paint(TAB_ENTRY * tab)
 	char stringValue[40];
 	ChangePipeLengthCorrect_Decision_Show(tab);
 	TabWindowPaint(tab);
-	//ZACH DAS needs to display float for pipe length
-	float zd = GetNewPipeLength() / 100.0;
-	snprintf(stringValue, 40, "%s %5.2f%s", "Pipe Length =", zd, ", Are you sure?");
+	//ZD September 22 2024 needs to display float for pipe length
+	float PipeLengthStringVariable = GetNewPipeLength() / 100.0;
+	snprintf(stringValue, 40, "%s %5.2f%s", "Pipe Length =", PipeLengthStringVariable, ", Are you sure?");
 	ShowChangePipeLengthCorrectDecisionMessage(stringValue);
 	ShowChangePipeLengthCorrectInfoMessage("New Length in effect for one survey.", "Remember: DO NOT RESTART Uphole box", "until the next survey is taken.");
 }

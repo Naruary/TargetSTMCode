@@ -38,7 +38,7 @@ typedef struct __STRUCT_RECORD_DATA__
     INT16 X;
     INT32 Z;
     U_INT16 nRecordNumber;
-    U_INT16 nTotalLength;
+    U_INT32 nTotalLength;
     RTC_DateTypeDef date;
     INT16 StatusCode;
     INT16 NumOfBranch;
@@ -107,7 +107,7 @@ extern "C" {
     REAL32 GetLastRoll(void);
     //   Retrieves length of last record in table
     REAL32 GetLastLength(void);
-    U_INT32 GetLastLengthuInt32(void);
+    REAL32 GetLastLengthuReal32(void);
     //   Retrieves record number of last record in table
     U_INT32 GetLastRecordNumber(void);
     U_INT32 getLastRecordNumber(void);

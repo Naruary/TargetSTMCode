@@ -86,7 +86,7 @@ static GroupBox surveyGroup =
 { 212, 310 } },
 {
 { TXT_RECORDNUM, DisplayUint32Value, .uint32 = GetLastRecordNumber },
-{ TXT_LENGTH, DisplayUint32Value, .uint32 = GetLastLengthuInt32 },
+{ TXT_LENGTH, DisplayReal32Value, .uint32 = GetLastLengthuReal32 },
 		{ TXT_AZIMUTH, DisplayReal32Value, .real32 = GetLastAzimuth },
 		{ TXT_PITCH, DisplayReal32Value, .real32 = GetLastPitch },
 		{ TXT_TOOLFACE, DisplayReal32Value, .real32 = GetLastRoll },

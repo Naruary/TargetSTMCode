@@ -228,7 +228,7 @@ static void RecordData_Paint(TAB_ENTRY * tab)
 			}
 			RecordData_DisplayColumn(strValue, &recordColumn);
 			RecordData_IncrementColumn(&recordColumn);
-			snprintf(strValue, 100, "%d", record.nTotalLength); /// 10);
+			snprintf(strValue, 100, "%4.1f", (REAL32)(record.nTotalLength/100.0)); /// 10);
 			RecordData_DisplayColumn(strValue, &lengthColumn);
 			RecordData_IncrementColumn(&lengthColumn);
 			snprintf(strValue, 100, "%4.1f", RealValue(record.nAzimuth));
