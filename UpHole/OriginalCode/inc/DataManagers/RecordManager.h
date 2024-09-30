@@ -38,7 +38,7 @@ typedef struct __STRUCT_RECORD_DATA__
     INT16 X;
     INT32 Z;
     U_INT16 nRecordNumber;
-    U_INT32 nTotalLength;
+    REAL32 nTotalLength;
     RTC_DateTypeDef date;
     INT16 StatusCode;
     INT16 NumOfBranch;
@@ -56,7 +56,7 @@ typedef struct _BOREHOLE_STATISTICS
 {
     char BoreholeName[MAX_BOREHOLE_NAME_BYTES];
     U_INT32 RecordCount;
-    U_INT32 TotalLength;
+    REAL32 TotalLength;
     INT32 TotalDepth;
     REAL32 TotalNorthings;
     REAL32 TotalEastings;

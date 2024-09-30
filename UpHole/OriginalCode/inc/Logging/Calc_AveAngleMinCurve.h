@@ -33,7 +33,7 @@ typedef struct __POSITION_DATA_STRUCT__
 {
 	ANGLE_DATA_STRUCT   nAzimuth;
 	ANGLE_DATA_STRUCT   nInclination;
-	INT32               nPipeLength;
+	REAL32               nPipeLength;
 } POSITION_DATA_STRUCT;
 
 typedef struct __EASTING_NORTHING_DATA_STRUCT__

@@ -245,7 +245,7 @@ REAL32 GetLastLength(void)
  *******************************************************************************/
 REAL32 GetLastLengthuReal32(void)
 {
-	return boreholeStats.MostRecentSurvey.nTotalLength / 100.0;
+	return boreholeStats.MostRecentSurvey.nTotalLength;
 }
 
 /*******************************************************************************
@@ -367,7 +367,7 @@ void RECORD_TakeSurveyMWD(void)
 	{
 		if (GetChangePipeLengthFlag() == true)
 		{
-			boreholeStats.TotalLength += GetNewPipeLength();
+			boreholeStats.TotalLength += (REAL32) (GetNewPipeLength() / 100.00);
 			SetChangePipeLengthFlag(false);
 			SetNewPipeLength(0);
 			//// Can delete if removing shift function
@@ -395,7 +395,7 @@ void RECORD_TakeSurveyMWD(void)
 			}
 			else
 			{
-				boreholeStats.TotalLength += GetDefaultPipeLength();
+				boreholeStats.TotalLength += (REAL32) (GetDefaultPipeLength() / 100.00);
 				//// delete outter most bracket below
 			}
 		}
