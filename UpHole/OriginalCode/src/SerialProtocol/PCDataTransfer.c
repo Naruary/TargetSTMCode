@@ -314,7 +314,7 @@ void PCPORT_StateMachine(void)  // whs 26Jan2022 should be ThumbDrivePort
 					snprintf(nBuffer, 500, "%s, %d, %4.2f, %.1f, %.1f, %.1f, ", // Create the message for the first part of the log data
 							HoleInfoRecord.BoreholeName,    // 1
 							record.nRecordNumber,           // 2
-							(REAL32) record.nTotalLength / 100.00,            // 3
+							record.nTotalLength,            // 3
 							(REAL32) record.nAzimuth / 10.0, // 4
 							(REAL32) record.nPitch / 10.0,   // 5
 							(REAL32) record.nRoll / 10.0);   // 6
@@ -322,7 +322,7 @@ void PCPORT_StateMachine(void)  // whs 26Jan2022 should be ThumbDrivePort
 				else
 				{ //whs 17Feb2022 added GetBoreholeName below
 					snprintf(nBuffer, 500, "%s, %d, %4.2f, %.1f, %.1f, %.1f, ", // If Borehole Name doesn't exist, use the function GetBoreholeName
-							GetBoreholeName(), record.nRecordNumber, (REAL32) record.nTotalLength / 100.00, (REAL32) record.nAzimuth / 10.0, (REAL32) record.nPitch / 10.0, (REAL32) record.nRoll / 10.0);
+							GetBoreholeName(), record.nRecordNumber, record.nTotalLength, (REAL32) record.nAzimuth / 10.0, (REAL32) record.nPitch / 10.0, (REAL32) record.nRoll / 10.0);
 				}
 				UART_SendMessage(CLIENT_PC_COMM, (U_BYTE const*) nBuffer, strlen(nBuffer)); // Send the prepared message via UART
 				tPCDTGapTimer = ElapsedTimeLowRes((TIME_LR) 0); // Reset the timer
@@ -516,8 +516,8 @@ void ProcessCsvLine(char * line)
 	record.nRecordNumber = iTemp;
 
 	token = strtok(NULL, ",");                          // 3
-	sscanf(token, "%lf", &fTemp);
-	record.nTotalLength = (U_INT32) (fTemp * 100.0);
+	sscanf(token, "%4.2f", &fTemp);
+	record.nTotalLength = (fTemp *100.0);
 
 	token = strtok(NULL, ",");                          // 4
 	sscanf(token, "%lf", &fTemp);
@@ -624,8 +624,8 @@ void ProcessCsvLine(char * line)
 	record.branchWasSet = nTemp > 0 ? true : false;
 
 	token = strtok(NULL, ",");                          // 32
-	sscanf(token, "%4.2f", &iTemp);
-	bs.TotalLength = (U_INT32) fTemp;
+	sscanf(token, "%4.2f", &fTemp);
+	bs.TotalLength = fTemp;
 
 	token = strtok(NULL, ",");                          // 33
 	sscanf(token, "%d", &iTemp);
