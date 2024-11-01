@@ -116,7 +116,7 @@ void Compass_Initialize(void)
 		//compass power pin on/off overridden due to lower voltage of compass
 		KickWatchdog();
 	}
-	//EnableCompassPower(TRUE);
+	EnableCompassPower(TRUE);
 	m_nCompassStateMachine = COMPASS_INIT;
 	Compass_ClearReceiveBuffer();
 }
@@ -333,7 +333,7 @@ void Compass_ProcessRxData(void)
 	TF_Gmagnitude = sqrt(TF_Gx*TF_Gx + TF_Gy*TF_Gy + TF_Gz*TF_Gz);
 	// inclination (pitch) in degrees:
 	//  INC = atan2(TF_Gz, TF_Gradial)
-	TF_Inclination = -1*(180.0 * atan2(TF_Gz, TF_Gradial) / M_PI); // in degrees
+	TF_Inclination = 180.0 * atan2(TF_Gz, TF_Gradial) / M_PI; // in degrees
 	// nah, try the APS method..
 //	TF_Inclination = 180.0 * acos(TF_Gx / TF_Gmagnitude) / M_PI; // in degrees
 	// highside degrees:
@@ -352,8 +352,16 @@ void Compass_ProcessRxData(void)
 	TF_y = ( (TF_Hx * TF_Gy) - (TF_Hy * TF_Gx) ) * TF_Gmagnitude;
 	//  AZ = arctan2(TF_x, TF_y)
 	//TF_Azimuth = 360.0 - (180.0 * atan2(TF_x, TF_y) / M_PI); // in degrees
-	TF_Azimuth = (180*atan2(TF_y, TF_x))/M_PI;
-        //  AZ += DEC
+        TF_Azimuth = (180.0 * atan2(TF_x, TF_y) / M_PI); // in degrees
+        if(TF_Azimuth < 0.0)
+        {
+                TF_Azimuth = TF_Azimuth + 360.0; // in degrees
+        }
+        if(TF_Azimuth > 359.99)
+        {
+                TF_Azimuth = TF_Azimuth - 359.99; // in degrees
+        }
+	//  AZ += DEC
 	// bound AZ
 	// DIP degrees:
 	//  y = (-Hx*Gx - Hy*Gy + Hz*Gz) / Gtotal

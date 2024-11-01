@@ -42,7 +42,7 @@
 // absence of the minor increment character.
 ////////////////////////////////////////////////////////////////////////////////
 //#define VERSION "3.3"
-#define VERSION "3.4" //ZD 7July2023 Chnaged for new board design Battery Voltage Detector
+#define VERSION "3.4"// ZD 1Nov2024 BETA VERSION code currently commented out in adc.c to try and get second Battery voltage to send & show on Uphole (Also had to add back in lines 355-364 in compass.c)
 
 // So that others can allocate a buffer to hold the SW Version the length is.
 #define MAX_VERSION_LEN     7   //Including terminating NULL
