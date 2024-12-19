@@ -66,6 +66,7 @@
 //#define VERSION "5.0.5" // ZD 06/18/2024 90kHz from STM
 //#define VERSION "5.1.0" // ZD 10/01/2024 Pipe Length expansion for 9.84
 #define VERSION "5.2.0" // ZD 11/14/2024 Fix for Uploading of Pipe Length w/ float
+#define VERSION "5.2.1" //ZD 12/19/2024 Fix for pulsing signal that causes DH to loop or not turn off
 // 3.7, 3-21-2019, This version has new NV access and completely new
 //  Target Protocol for serial, and also serial terminal access to PC logging.
 

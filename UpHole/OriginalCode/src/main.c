@@ -175,7 +175,8 @@ int main(void)
 	VerifyRTC();
 	// SetWatchdogTimer(WDT_20MS_TIMEOUT_VALUE);
 
-	Modem90KHzInit();
+	SetModemOutput(true);
+
 	while (1)
 	{
 		KickWatchdog();
