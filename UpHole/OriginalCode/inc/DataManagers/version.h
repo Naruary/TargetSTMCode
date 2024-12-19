@@ -49,6 +49,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 //#define VERSION "3.2" // 3 since major change in Graphic LCD like, Graphs, Analog meters
 //#define VERSION "3.7" // after 3 months CLE changed most code, 2019-02-21
+//#define VERSION  "3.7.1", 3-21-2019, This version has new NV access and completely new
+//  Target Protocol for serial, and also serial terminal access to PC logging.
 //#define VERSION "3.8" // First change in 4 months. Changed PCDataTransfer timer, 06/21/2021
 //#define VERSION "4.1" // Chris is back. Added signal strength, no sleep in DH, 9/9/2021 
 //#define VERSION "4.1.1" // ZD small update - implementation of keypad code changes - Making it so when user presses a button it won't show up twice 1/6/2023 
@@ -67,8 +69,7 @@
 //#define VERSION "5.1.0" // ZD 10/01/2024 Pipe Length expansion for 9.84
 #define VERSION "5.2.0" // ZD 11/14/2024 Fix for Uploading of Pipe Length w/ float
 #define VERSION "5.2.1" //ZD 12/19/2024 Fix for pulsing signal that causes DH to loop or not turn off
-// 3.7, 3-21-2019, This version has new NV access and completely new
-//  Target Protocol for serial, and also serial terminal access to PC logging.
+
 
 // So that others can allocate a buffer to hold the SW Version the length is.
 #define MAX_VERSION_LEN     7   //Including terminating NULL
