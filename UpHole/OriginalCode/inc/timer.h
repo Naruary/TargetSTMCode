@@ -74,6 +74,7 @@ extern "C" {
     void Delay5us(void);
     void DelayHalfSecond(void);
     void Modem90KHzInit(void);
+    void SetModemOutput(bool state);
     void Modem90KHzEnable(bool enable);
 
 
