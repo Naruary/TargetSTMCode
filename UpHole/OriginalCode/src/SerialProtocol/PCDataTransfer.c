@@ -516,8 +516,8 @@ void ProcessCsvLine(char * line)
 	record.nRecordNumber = iTemp;
 
 	token = strtok(NULL, ",");                          // 3
-	sscanf(token, "%4.2f", &fTemp);
-	record.nTotalLength = (fTemp *100.0);
+	sscanf(token, "%lf", &fTemp);
+	record.nTotalLength = (fTemp);
 
 	token = strtok(NULL, ",");                          // 4
 	sscanf(token, "%lf", &fTemp);
@@ -624,7 +624,7 @@ void ProcessCsvLine(char * line)
 	record.branchWasSet = nTemp > 0 ? true : false;
 
 	token = strtok(NULL, ",");                          // 32
-	sscanf(token, "%4.2f", &fTemp);
+	sscanf(token, "%lf", &fTemp);
 	bs.TotalLength = fTemp;
 
 	token = strtok(NULL, ",");                          // 33
